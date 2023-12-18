@@ -1,0 +1,39 @@
+\graphicspath{{chapters/6_conclusión/figures/}}
+
+\chapter{Conclusiones y Trabajo Futuro}\label{chap:conclusions}
+
+Luego de todo el trabajo, se logró pasar de un paper académico a una implementación práctica, open source.
+Se enfocó en aprender bien lo que se estaba implementando y de documentarlo bien en la implementación para que otros puedan aprenderlo también.
+Fingxels logró ejecutar oclusión de ambiente a X FPS e iluminación indirecta a Y FPS, mientras que el paper original logró FPS de Z y W respectivamente.
+Esto se debe a la calidad de la implementación y al hardware moderno utilizado. % Ver realmente qué tanto difieren en el capítulo sobre experimentos, ojalá nos salve el hardware de no quedar taaan mal
+En conclusión, se logró satisfactoriamente lo que se propuso cumplir y se aprendió mucho haciéndolo.
+
+La principal dificultad que fue encontrada en el transcurso de la tésis, fue la dificultad de implementar un algoritmo enteramente en la GPU.
+El equipo tiene mayoritariamente experiencia programando en la CPU y manipulando etapas del pipeline gráfico, pero el uso extensivo de compute shaders, texturas (lineales, 2D, 3D), imágenes y samplers fue algo que sin dudas enlenteció y desmotivó a la hora de hacer la tésis.
+
+% TODO: Está capaz muy honesta esta parte :'(
+El primer año de desarrollo tuvo avance muy lento.
+Esto se debió más que nada a los problemas con la GPU, pero a su vez a la falta de fijación de objetivos y fechas límite para lograrlos.
+
+Proximos pasos incluyen:
+\begin{itemize}
+    \item Optimizaciones varias\\
+        Varias optimizaciones mencionadas en el paper no se pudieron alcanzar debido a falta de tiempo. Para poder comparar la verdadera mejora de FPS, habría que implementar como mínimo las mismas optimizaciones. Esto incluye cosas como: usar estructuras especiales para reducir la cantidad de hilos lanzados para algunos shaders, cambiar código para reducir llamadas innecesarias, entre otros.
+    \item Objetos dinámicos\\ % Me hubiera re gustado haber llegado a esto
+        Más allá de la capacidad de renderizar imágenes muy buenas de iluminación global en tiempo real, es posible tener objetos dinámicos en la escena, que al moverse subdividen el octree nuevamente.
+    \item Pasar a Vulkan\\
+        Esto se explicó que no se pudo lograr por temas de experiencia en la tecnología. Pero sería un buen experimento para aprenderla el pasar el programa a Vulkan. También sería un buen experimento ver la mejora en eficiencia que resulta, dado que Vulkan tiene más herramientas de optimización.
+    \item Mejores herramientas de exploración\\
+        Poder elegir nodos con el mouse en lugar de seleccionarlos en el menú. Esto sería particularmente útil para la exploración del programa por programadores interesados en aprender cómo funciona todo.
+\end{itemize}
+
+% En este capítulo se evalúan los resultados alcanzados y
+% dificultades encontradas, se establece lo que se planteó hacer y lo que se hizo
+% realmente, cuales fueron los aportes, se muestran posibles extensiones al trabajo, se
+% realiza una autocrítica de lo que se hizo y lo que faltó (por problemas de tiempo,
+% recursos, cómo se puede continuar, qué cosas hacer, prioridades, etc.) y se incluye
+% información sobre la gestión del proyecto, si aplica
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parte final
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
