@@ -23,13 +23,13 @@ En este capítulo se explicaran en detalle los conceptos teóricos y los anteced
 \section{¿Qué es la luz?}
 
 Antes de definir el problema de la iluminación global en computación gráfica y hablar de diversos trabajos que se han realizado al respecto, conviene dar un paso atrás y preguntarnos, ¿qué es la luz?
-Esta pregunta es relevante porque, más allá de las aproximaciones que se puedan hacer, la gran mayoría de técnicas de iluminación global se basan en modelar a la luz físicamente.
+Esta pregunta es relevante porque, más allá de las variaciones, la gran mayoría de técnicas de iluminación global se basan en modelar a la luz físicamente.
 
 El libro \textit{Physically Based Rendering}, de Pharr, Jakob y Humphreys \cite{pbr} brinda una explicación clara y resumida de la historia de la interacción entre los humanos y la luz.
 La percepción a partir de la luz es central para nuestra existencia.
 La incógnita de la naturaleza de la luz ha ocupado las mentes de grandes filósofos y físicos desde el comienzo de los tiempos.
 La antigua escuela filosófica hinduista de Vaisheshika (siglos 5 a 6 antes de cristo) veía a la luz como una colección de pequeñas partículas viajando a través de rayos a una alta velocidad.
-En el siglo 5 antes de cristo, el filósofo griego Empedocles postulaba que un fuego divino emergía de los ojos humanos y combinado con los rayos de luz del sol producía visión.
+En el siglo 5 antes de cristo, el filósofo griego Empédocles postulaba que un fuego divino emergía de los ojos humanos y combinado con los rayos de luz del sol producía visión.
 Entre los siglos 18 y 19, eruditos como Isaac Newton, Thomas Young, Augustin-Jean Fresnel desarrollaron teorías conflictivas, donde algunas modelaban la luz como consecuencia de la propagación de ondas, y otras de partículas.
 Al mismo tiempo, André-Marie Ampère, Joseph-Louis Lagrange, Carl Friedrich Gauß, y Michael Faraday investigaban las relaciones entre electricidad y magnetismo que culminaron en la repentina y dramática unificación de James Clerk Maxwell en una teoría combinada conocida como \textbf{electromagnetismo}, \cite{maxwell-equations}.
 
@@ -54,9 +54,9 @@ La luz existe tanto como onda y como partícula \cite{quantum-light}.
 Afortunadamente, el complejo comportamiento de onda de la luz aparece en escalas muy pequeñas, por lo que, para la computación gráfica, en la mayoría de los casos, se la puede tratar como partícula.
 Esto simplifica los cálculos \cite{pbr}.
 
-Tratar a la luz como una partícula es el campo de la óptima geométrica, en contraposición a la óptica física.
-La óptica geométrica trata a la luz como rayos que se mueven en lineas rectas.
-La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrandose en fenómenos como la interferencia, la difracción, la polarización.
+Tratar a la luz como una partícula es el campo de la óptica geométrica, en contraposición a la óptica física.
+La óptica geométrica trata a la luz como rayos que se mueven en líneas rectas.
+La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrándose en fenómenos como la interferencia, la difracción, la polarización.
 Si asumimos que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite{rtr}.
 Esto remueve otros fenómenos como la fluorescencia, la fosforescencia y la polarización.
 
@@ -127,8 +127,11 @@ $$
 La radiancia es lo que miden los sensores, como los ojos o cámaras.
 El objetivo de evaluar una ecuación de sombreado es calcular la radiancia a lo largo de un rayo, desde el punto de vista de la cámara.
 
+Lo anteriormente expuesto son algunas unidades de la radiometria que trata unicamente con cantidades fisicas de la luz.
+En contraposicion, un campo relacionado, la fotometría mide la luz en funcion de la percepcion del ojo humano.
+
 La radiometría trata únicamente con cantidades físicas de la luz.
-Un campo relacionado, la fotometría, es parecido la radiometría, pero pesa todas sus cantidades por la sensibilidad del ojo humano.
+En contraposición, un campo relacionado, la fotometría, mide la luz tal como es percibida por el ojo humano, teniendo en cuenta la sensibilidad de este a distintas longitudes de onda.
 En la tabla \ref{table:light_units} se muestran algunas unidades equivalentes en radiometría y fotometría.
 
 \begin{table}
@@ -171,6 +174,25 @@ La luz especular simula el brillo que se ve cuando la luz se refleja sobre super
 Este componente depende de la dirección de vista, de la normal de la superficie y de la dirección de la fuente luminosa en cada punto de la superficie.
 
 % TODO: Fotos, ambiente, difusa, especular y todo junto
+
+\begin{figure}
+    \begin{center}
+
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{sphere-unshaded.png}
+        \caption{Sin sombreado}
+    \end{subfigure}
+
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{sphere-diffuse.png}
+        \caption{Con sombreado difuso}
+    \end{subfigure}
+
+    \end{center}
+
+    \caption{Esfera iluminada mediante el módelo local de Blinn-Phong}
+    \label{fig:sphere-blinn-phong}
+\end{figure}
 
 \subsection{Iluminación global}
 
@@ -245,7 +267,7 @@ En la figura \ref{fig:whitted-ray-tracing} se puede ver una imagen generada por 
 
 Este método sufre de \textit{aliasing}, los bordes irregulares.
 Esto ocurre debido a una falta de resolución, es decir, cantidad de píxeles, que no logra capturar todo el detalle de la imagen.
-Sucede al representar curvas.
+Suele notarse al representar curvas.
 Se puede ver en la figura \ref{fig:whitted-ray-tracing}.
 
 % TODO: Agregar diagramas de 1) sombra, 2) reflexión y 3) refracción.
@@ -424,7 +446,7 @@ Sin embargo, en la mayoría de los casos no es necesario.
 Una observación útil es que en muchas aplicaciones es suficiente tener vóxeles en el límite entre un objeto y el espacio vacío, siendo innecesario el relleno.
 
 Otra observación útil es que, para una buena representación, es suficiente con tener mucho detalle en la frontera entre espacio vacío y lleno.
-Para lograr esto, se puede usar un \textit{octree} disperso, en el que solo se subdividen las regiones que necesitan mayor detalle.
+Para lograr esto, se puede usar un \textit{octree} disperso, que será explicado a continuación.
 
 \section{Octrees}\label{sec:octree}
 
