@@ -178,12 +178,12 @@ Este componente depende de la dirección de vista, de la normal de la superficie
 \begin{figure}
     \begin{center}
 
-    \begin{subfigure}{.49\textwidth}
+    \begin{subfigure}{.24\textwidth}
         \includegraphics[width=\textwidth]{sphere-unshaded.png}
         \caption{Sin sombreado}
     \end{subfigure}
 
-    \begin{subfigure}{.49\textwidth}
+    \begin{subfigure}{.24\textwidth}
         \includegraphics[width=\textwidth]{sphere-diffuse.png}
         \caption{Con sombreado difuso}
     \end{subfigure}
@@ -204,9 +204,9 @@ Esto causa que sea difícil alcanzar tiempos interactivos.
 
 Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad, el \textit{photon mapping}, y el \textit{path tracing}, que serán presentadas a continuación.
 
-En 1986, James T. Kajiya presentó la ecuación de renderizado, formalizando varios métodos para el cálculo de iluminación global como aproximaciones a la solución de una misma ecuación, \cite{rendering-equation}:
+En 1986, James T. Kajiya presentó la \textbf{ecuación de renderizado}, formalizando varios métodos para el cálculo de iluminación global como aproximaciones a la solución de una misma ecuación, \cite{rendering-equation}:
 
-\begin{equation}\label{eq:rendering_equation}
+\begin{equation}\label{eq:rendering-equation}
     I(x, x') = g(x, x') \cdot \left[\epsilon(x, x') + \int_S f(x, x', x'') \cdot I(x', x'') \cdot dx'' \right]
 \end{equation}
 
@@ -216,9 +216,10 @@ donde:
     \item $g(x, x')$ es un término de "geometría", evalúa si hay algo interponiéndose en el camino de $x'$ a $x$.
     \item $\epsilon(x, x')$ se relaciona con la intensidad emitida desde $x'$ en dirección a $x$.
     \item $f(x, x', x'')$ es la función de distribución de reflectancia bidireccional (BRDF, por sus siglas en inglés). Se relaciona con la intensidad de luz reflejada desde $x''$ hacia $x$ a través de $x'$. En la sección \ref{sec:brdf} se analizan casos particulares de esta función.
+    \item $S = \cup{S_i}$, el dominio de la integral, es la unión de todas las superficies de la escena. Esto significa que los puntos $x, x', x''$ varían a lo largo de todas las superficies.
 \end{itemize}
 
-En palabras, la ecuación \ref{eq:rendering_equation} establece que la intensidad que llega a un punto $x$ desde otro punto $x'$, es la intensidad que $x'$ emite en dirección a $x$ más la intensidad reflejada por $x'$ hacia $x$ desde cualquier otro punto de la escena.
+En palabras, la ecuación \ref{eq:rendering-equation} establece que la intensidad que llega a un punto $x$ desde otro punto $x'$, es la intensidad que $x'$ emite en dirección a $x$ más la intensidad reflejada por $x'$ hacia $x$ desde cualquier otro punto de la escena.
 Todo sujeto a si hay geometría en el camino de $x$ a $x'$, si es que $x'$ ``ve'' a $x$.
 
 Los términos ``intensidad radiante'' e ``intensidad emitida'' tal y como son planteados no son exactamente ninguna de las unidades radiométricas vistas en la sección \ref{sec:radiometry} pero son cantidades que pueden derivarse de estas.
@@ -227,6 +228,29 @@ Esta ecuación es la base de varios métodos de iluminación global \cite{rtr}.
 Se puede observar que esta ecuación tiene en cuenta toda la escena para calcular la luz en un punto.
 
 La ecuación no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se calculan soluciones numéricas para su resolución.
+
+La ecuación \ref{eq:rendering-equation} considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
+La \textbf{ecuación de reflectancia} se deriva de la de renderizado y se enfoca en el cálculo de la luz indirecta.
+
+\begin{equation}\label{eq:reflectance-equation}
+    L_o(p, \omega_o) = \int_{\Omega}{f(p, \omega_i, \omega_o) L_i(p, \omega_i) n \cdot \omega_i d\omega_i}
+\end{equation}
+
+Esta ecuación calcula la radiancia saliente $L_o$ de un punto $p$ y un pequeño ángulo sólido $\omega_o$ como una integral sobre el hemisferio $\Omega$ centrado en el punto.
+Sus términos son muy parecidos a los de la ecuación de renderizado.
+Vemos que ya no están el término geométrico, dado que se trata de direcciones y no puntos, ni el término de emisión, dado que solo se considera luz indirecta.
+$f$ es la BRDF.
+$L_i(p, \omega_i)$ es la radiancia entrante hacia $p$ por otra dirección $\omega_i$.
+$n$ es la normal en el punto $p$ y $n \cdot \omega_i$ es el producto interno entre la normal y la dirección, que equivale al coseno del ángulo entre ellos.
+La radiancia saliente es la suma por todo el hemisferio $\Omega$ centrado en $p$.
+La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, como se vió anteriormente.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{}
+    \caption{Hemisferio centrado en un punto $p$}
+    \label{fig:hemisphere}
+\end{figure}
 
 \section{BRDF}\label{sec:brdf}
 
@@ -343,6 +367,11 @@ En la figura \ref{fig:shadow-rays-and-cones} se pueden ver diagramas mostrando e
 Esta técnica sigue hallando la intersección de manera analítica, por lo que las ecuaciones son mucho más complejas.
 Tanto es así que originalmente Whitted había considerado usar conos pero la complejidad añadida de las ecuaciones lo hizo descartarlos.
 Aún así, los beneficios superan a las desventajas en la mayoría de los casos.
+
+Para calcular la luz indirecta se halla la radiancia saliente de un punto en dirección a la cámara.
+En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
+Esto implica tomar varias muestras, que son los rayos que son lanzados desde $p$ en todas las direcciones $\omega_i$.
+En el caso de trazado de conos, en lugar de rayos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos, como se muestra en la figura \ref{fig:partitioned-hemisphere-cones}.
 
 % TODO: Estaría bueno hablar del método de radiosidad antes capaz
 % TODO: Se iba a llamar "Otros métodos de iluminación global" pero por ahora es uno solo jeje
@@ -560,95 +589,92 @@ A su vez, \textit{forward rendering} soporta mejor la transparencia.
 Sin embargo, a medida que la complejidad de la escena aumenta, el renderizado diferido se vuelve cada vez una opción mejor para mejorar la eficiencia.
 También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como bloom, HDR (High Dynamic Range), corrección gamma, y normalización, entre otras.
 
-% TODO: Esto volverlo a poner, en teoría de pre-filtrado
-% Tiene que ir esto y ray marching
+\section{Integral de rendering}
 
-% \section{Integral de rendering}
+Ya fue mencionada la ecuación de rendering \ref{eq:rendering-equation}.
+% TODO: Esto es teoría de la luz en general, ver cómo ponerlo
+Este modelo se basa en la óptica geométrica, que asume que la luz se propaga en una linea recta cuando no tiene interacción con la materia, en contraste con la óptica física, que considera la característica de onda de la luz y sus dos posibles estados de polarización.
 
-% Ya fue mencionada la ecuación de rendering \ref{eq:rendering_equation}.
-% % TODO: Esto es teoría de la luz en general, ver cómo ponerlo
-% Este modelo se basa en la óptica geométrica, que asume que la luz se propaga en una linea recta cuando no tiene interacción con la materia, en contraste con la óptica física, que considera la característica de onda de la luz y sus dos posibles estados de polarización.
+La energía de luz se describe por su radiancia $I(x, \omega)$.
+Describe el campo de radiación en un punto $x$, dada la dirección $\omega$.
+Se expresa en $W\cdot sr^{-1}\cdot m^{-2}$ y se define como:
 
-% La energía de luz se describe por su radiancia $I(x, \omega)$.
-% Describe el campo de radiación en un punto $x$, dada la dirección $\omega$.
-% Se expresa en $W\cdot sr^{-1}\cdot m^{-2}$ y se define como:
+\begin{equation}
+    I(x, \omega) = \frac{dQ}{dA\cdot cos\theta\cdot d\Omega\cdot dt}
+\end{equation}
 
-% \begin{equation}
-%     I(x, \omega) = \frac{dQ}{dA\cdot cos\theta\cdot d\Omega\cdot dt}
-% \end{equation}
+con $Q$ la energía radiante (en Joules), $A$ el área (en $m^2$), $\theta$ el ángulo entre la dirección de la luz $\omega$ y el vector normal a la superficie, y $\Omega$ el ángulo sólido (en estereorradianes).
 
-% con $Q$ la energía radiante (en Joules), $A$ el área (en $m^2$), $\theta$ el ángulo entre la dirección de la luz $\omega$ y el vector normal a la superficie, y $\Omega$ el ángulo sólido (en estereorradianes).
+La radiancia a lo largo de un rayo de luz es afectada cuando pasa por un medio participativo.
+Esta interacción entre la luz y la materia se modela con tres tipos de interacciones: emisión, absorción y dispersión.
 
-% La radiancia a lo largo de un rayo de luz es afectada cuando pasa por un medio participativo.
-% Esta interacción entre la luz y la materia se modela con tres tipos de interacciones: emisión, absorción y dispersión.
+Emisión describe la cantidad de energía radiante de luz que se emite directamente por el medio participativo.
+Absorción es la cantidad de energía que es absorbida por el material.
+Finalmente, la dispersión describe la cantidad de energía que es dispersada por el material, cambiando la dirección de la propagación de la luz.
+La dispersión puede tanto incrementar (dispersión entrante) como reducir (dispersión saliente) la energía a lo largo del rayo.
 
-% Emisión describe la cantidad de energía radiante de luz que se emite directamente por el medio participativo.
-% Absorción es la cantidad de energía que es absorbida por el material.
-% Finalmente, la dispersión describe la cantidad de energía que es dispersada por el material, cambiando la dirección de la propagación de la luz.
-% La dispersión puede tanto incrementar (dispersión entrante) como reducir (dispersión saliente) la energía a lo largo del rayo.
+La ecuación de la transferencia de luz se obtiene combinando estos tres efectos:
 
-% La ecuación de la transferencia de luz se obtiene combinando estos tres efectos:
+\begin{equation}
+    \omega \cdot \nabla_x I(x, \omega) = -\chi I(x, \omega) + \eta
+\end{equation}
 
-% \begin{equation}
-%     \omega \cdot \nabla_x I(x, \omega) = -\chi I(x, \omega) + \eta
-% \end{equation}
+donde $\nabla_x I$ es la derivada direccional (el gradiente) de la radiancia.
+El producto escalar entre la dirección de la luz $\omega$ y el gradiente de la radiancia $\nabla_x I$ describe el gradiente tomado en la dirección de la luz.
+El término $\chi(x, \omega)$ es el coeficiente de absorción total.
+Se define como la suma de $\kappa(x, \omega)$, el verdadero coeficiente de absorción, y $\sigma(x, \omega)$, el coeficiente de dispersión saliente:
 
-% donde $\nabla_x I$ es la derivada direccional (el gradiente) de la radiancia.
-% El producto escalar entre la dirección de la luz $\omega$ y el gradiente de la radiancia $\nabla_x I$ describe el gradiente tomado en la dirección de la luz.
-% El término $\chi(x, \omega)$ es el coeficiente de absorción total.
-% Se define como la suma de $\kappa(x, \omega)$, el verdadero coeficiente de absorción, y $\sigma(x, \omega)$, el coeficiente de dispersión saliente:
+\begin{equation}
+    \chi = \kappa + \sigma
+\end{equation}
 
-% \begin{equation}
-%     \chi = \kappa + \sigma
-% \end{equation}
+La razón $\frac{\sigma}{\chi}$ de coeficiente de dispersión saliente sobre coeficiente de dispersión total es el \textit{albedo}.
+Un albedo de $1$ significa que no hay absorción, hay dispersión perfecta.
 
-% La razón $\frac{\sigma}{\chi}$ de coeficiente de dispersión saliente sobre coeficiente de dispersión total es el \textit{albedo}.
-% Un albedo de $1$ significa que no hay absorción, hay dispersión perfecta.
+El término $\eta(x, \omega)$ de la ecuación es el coeficiente de emisión total.
+Es la suma del coeficiente de emisión real $q(x, \omega)$ y el coeficiente de dispersión entrante $j(x, \omega)$:
 
-% El término $\eta(x, \omega)$ de la ecuación es el coeficiente de emisión total.
-% Es la suma del coeficiente de emisión real $q(x, \omega)$ y el coeficiente de dispersión entrante $j(x, \omega)$:
+\begin{equation}
+    \eta = q + j
+\end{equation}
 
-% \begin{equation}
-%     \eta = q + j
-% \end{equation}
+Mientras $\kappa$, $\sigma$ y $q$ son propiedades ópticas del material, el coeficiente de dispersión entrante $j$ tiene que ser calculado integrando la contribución de todas las direcciones entrantes de luz sobre la esfera:
 
-% Mientras $\kappa$, $\sigma$ y $q$ son propiedades ópticas del material, el coeficiente de dispersión entrante $j$ tiene que ser calculado integrando la contribución de todas las direcciones entrantes de luz sobre la esfera:
+\begin{equation}
+    j(x, \omega) = \frac{1}{4\pi} \int_\Omega \sigma(x, \omega')\cdot p(x, \omega', \omega'')\cdot I(x, \omega')\cdot d\omega'
+\end{equation}
 
-% \begin{equation}
-%     j(x, \omega) = \frac{1}{4\pi} \int_\Omega \sigma(x, \omega')\cdot p(x, \omega', \omega'')\cdot I(x, \omega')\cdot d\omega'
-% \end{equation}
+Las contribuciones de la luz incidente $I(x, \omega')$ son pesadas por tanto el coeficiente de dispersión $q$ y una \textit{función de fase} $p(x, \omega', \omega)$ que describe la probabilidad de dispersión desde la dirección entrante $\omega'$ hacia la dirección $\omega$.
 
-% Las contribuciones de la luz incidente $I(x, \omega')$ son pesadas por tanto el coeficiente de dispersión $q$ y una \textit{función de fase} $p(x, \omega', \omega)$ que describe la probabilidad de dispersión desde la dirección entrante $\omega'$ hacia la dirección $\omega$.
+Como usualmente consideramos la transferencia de luz a través de un solo rayo, podemos reescribir la ecuación para considerar un parametro $s$ a lo largo del rayo expresado como $x = p + s\omega$, con $p$ un punto de referencia arbitrario en el rayo:
 
-% Como usualmente consideramos la transferencia de luz a través de un solo rayo, podemos reescribir la ecuación para considerar un parametro $s$ a lo largo del rayo expresado como $x = p + s\omega$, con $p$ un punto de referencia arbitrario en el rayo:
+\begin{equation}\label{eq:light_transfer}
+    \frac{dI(s)}{ds} = -\chi(s)I(s) + \eta(s)
+\end{equation}
 
-% \begin{equation}\label{eq:light_transfer}
-%     \frac{dI(s)}{ds} = -\chi(s)I(s) + \eta(s)
-% \end{equation}
+En vóxel cone tracing, se usa el modelo óptico de emisión-absorción, descrito en \cite{real-time-volume-graphics}.
+En este modelo, se ignora la dispersión y la iluminación indirecta, representando solo emisión y absorción.
+La ecuación \ref{eq:light_transfer} queda:
 
-% En vóxel cone tracing, se usa el modelo óptico de emisión-absorción, descrito en \cite{real-time-volume-graphics}.
-% En este modelo, se ignora la dispersión y la iluminación indirecta, representando solo emisión y absorción.
-% La ecuación \ref{eq:light_transfer} queda:
+\begin{equation}
+    \frac{dI(s)}{ds} = -\kappa(s)I(s) + q(s)
+\end{equation}
 
-% \begin{equation}
-%     \frac{dI(s)}{ds} = -\kappa(s)I(s) + q(s)
-% \end{equation}
+Esta ecuación se puede resolver transformandola en una integral pura entre un punto de comienzo en el rayo $s = s_0$ y un punto de fin $s = D$.
+Definimos $I_0$ como la radiancia inicial.
+La integral resultante es:
 
-% Esta ecuación se puede resolver transformandola en una integral pura entre un punto de comienzo en el rayo $s = s_0$ y un punto de fin $s = D$.
-% Definimos $I_0$ como la radiancia inicial.
-% La integral resultante es:
+\begin{equation}
+    I(D) = I_0\cdot e^{-\tau(s_0, D)} + \int_{s_0}^D q(s)\cdot e^{-\tau(s, D)}\cdot ds
+\end{equation}
 
-% \begin{equation}
-%     I(D) = I_0\cdot e^{-\tau(s_0, D)} + \int_{s_0}^D q(s)\cdot e^{-\tau(s, D)}\cdot ds
-% \end{equation}
+El término $\tau(s1, s2)$ se llama la profundidad óptica o grosor óptico.
 
-% El término $\tau(s1, s2)$ se llama la profundidad óptica o grosor óptico.
-
-% % TODO: Estaría bueno hablar de todas las referencias que habla el paper acá sobre luz. Completar.
-% % Hay hasta un par de papers que usan vóxels, solo un poco distinto a ellos.
-% % Cuando arrancó la tésis, tendríamos que habernos mandado de una a leer todas estas referencias.
-% Las mejores soluciones en terminos de velocidad trabajan en el espacio de imágen en lugar del espacio del mundo.
-% vóxel cone tracing es menos eficiente que esas soluciones pero no requiere aproximaciones tan fuertes.
+% TODO: Estaría bueno hablar de todas las referencias que habla el paper acá sobre luz. Completar.
+% Hay hasta un par de papers que usan vóxels, solo un poco distinto a ellos.
+% Cuando arrancó la tésis, tendríamos que habernos mandado de una a leer todas estas referencias.
+Las mejores soluciones en terminos de velocidad trabajan en el espacio de imágen en lugar del espacio del mundo.
+vóxel cone tracing es menos eficiente que esas soluciones pero no requiere aproximaciones tan fuertes.
 
 % TODO: Volver a poner la parte de normlaes si realmente usamos normales.
 % Ojalá no.

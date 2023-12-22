@@ -436,11 +436,10 @@ La entrada al algoritmo de \textit{cone tracing} son los \textit{geometry buffer
 El algoritmo de trazado de conos es ejecutado para cada píxel de los geometry buffers para calcular el color final.
 
 Dado un punto de origen, se lanza uno o varios conos con cierta dirección y apertura, dependiendo del efecto que se quiere lograr.
-% TODO: Tema de las normales
-% todo considerando el hemisferio hacia el lado de la normal del punto.
+% TODO: Tema de las normales todo considerando el hemisferio hacia el lado de la normal del punto.
 
 Dado un cono, se parte desde su origen y se avanza en su dirección con un cierto tamaño de paso.
-% TODO: Acá estaría bueno poder linkear a algo de ray marching
+Esto se conoce como \textit{ray marching}. % TODO: No se si está bueno poner el nombre sin haberlo mencionado antes
 Después de cada paso tomado, se calcula el diámetro del cono en ese punto.
 Dado el diámetro, se calcula un nivel del octree, y dado ese nivel y la posición a lo largo del cono, se recorre el octree y se encuentra el nodo que corresponde a ese nivel y a esa posición.
 Ese nodo tiene un brick asociado, cuyos vóxeles tienen los valores prefiltrados, conseguidos en \ref{design:filtering}.
@@ -448,14 +447,17 @@ Se usa el valor del vóxel que corresponde con la posición y se acumula.
 Se sigue avanzando paso a paso en el cono acumulando valores hasta satisfacer un criterio de parada.
 El algoritmo de \textit{cone tracing} en si es simple dado todos los pasos anteriores.
 
-% TODO: Agregar la ecuación de acumulación
-% c = c * (1 - a) + new_c * a
+Cada cono calcula un color $c$ y una opacidad $\alpha$.
+Si en cada paso consideramos $c$ y $\alpha$ como los valores hasta el momento, y $c_2$ y $\alpha_2$ como los valores nuevos encontrados en el vóxel del paso, entonces en cada paso los valores de $c$ y $\alpha$ se calculan de la siguiente manera:
 
-\section{Efectos}
+$$
+\begin{cases}
+    c = \alpha c + (1 - \alpha) \alpha_2 c_2 \\
+    \alpha = \alpha + (1 - \alpha) \alpha_2
+\end{cases}
+$$
 
-Dependiendo de la cantidad, el tamaño, la dirección y el criterio de parada de los conos, se pueden lograr varios efectos con \textit{cone tracing}.
-
-\subsection{Oclusión ambiental}
+\section{Oclusión ambiental}
 
 La oclusión ambiental es una técnica de rendering que se usa para calcular qué tan expuesto está cada punto de una escena a la luz ambiental.
 \textit{Cone tracing} se puede usar para calcular este valor.
@@ -466,20 +468,22 @@ El único valor necesario es la opacidad.
 A medida que se va viajando a lo largo de un cono, se va acumulando la opacidad de los vóxels que se tocan.
 Se define una distancia máxima y el criterio de parada es cuando el punto a lo largo del cono pasa esa distancia máxima.
 
-\subsection{Conos de sombra}
+\section{Conos de sombra}
 
 De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, en este caso se logran lanzando un cono hacia la fuente de luz.
 El cono toma en cuenta únicamente la opacidad y su criterio de parada es alcanzar la luz o 1 de opacidad antes.
 El beneficio de que sea un cono en lugar de un rayo es que se logran sombras suaves, sin necesidad de tener que tomar muchas muestras y promediarlas.
 
-\subsection{Dispersión difusa}
+% TODO: La cantidad de conos de difusa y especular se pueden mencionar en un párrafo en la sección sobre cone tracing
+
+\section{Dispersión difusa}
 
 Para la dispersión difusa, se lanzan conos para cubrir el hemisferio centrado en la normal del punto.
 En la mayoría de los casos, 5 conos anchos difusos dan un buen resultado.
 Cada cono acumula el color de los vóxeles con los que se encuentra multiplicado por la cantidad de fotones.
 Esto logra un efecto de \textit{light bleed}, donde las superficies adquieren color de otras superficies cercanas que reciben y dispersan luz.
 
-\subsection{Reflejos}
+\section{Reflejos}
 
 Para los reflejos, se lanza un solo cono fino en la dirección de reflexión.
 Este cono, al ser más fino, se encuentra con nodos de niveles más bajos, con lo que el reflejo tiene mejor definición.
