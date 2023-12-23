@@ -115,10 +115,8 @@ La \textbf{intensidad radiante} es el flujo radiante dada una dirección, o mejo
 Se denota $I(\omega) = \frac{d\Theta}{d\omega}$ y se mide en watts por estereorradián.
 
 Llegamos a la unidad radiométrica más importante, la \textbf{radiancia}.
-La radiancia es la cantidad infinitesimal de flujo radiante contenida en un rayo de luz entrante o saliente por unidad de superficie y por unidad de ángulo sólido.
-Se considera al rayo como un cono ``infinitesimal'' con su vértice en un punto en una superficie.
-Es la cantidad de flujo radiante con respecto a tanto área como ángulo sólido, se denota como $L$ y se mide en watts por metro cuadrado por estereorradián.
-Si el valor $X$ de radiancia emitida por ese rayo se extendiese a todo un estereorradián y a toda una unidad de superficie, entonces se estarían emitiendo $X$ watts.
+La radiancia es la cantidad de flujo radiante emitida, reflejada, transmitida o recibida por una superficie por unidad de área y por unidad de ángulo sólido.
+Se denota como $L$ y se mide en watts por metro cuadrado por estereorradián.
 
 $$
 L = \frac{d^2\Theta}{(dA\,\cos\theta)d\omega}
@@ -141,9 +139,13 @@ En la tabla \ref{table:light_units} se muestran algunas unidades equivalentes en
     \textbf{Radiometría (unidad)} & \textbf{Fotometría (unidad)} \\
     \hline
     Flujo radiante ($W$) & Flujo luminoso ($lumen, lm$) \\
+    \hline
     Radiosidad $\left(\frac{W}{m^2}\right)$ & Emitancia luminosa $\left(\frac{lm}{m^2} = lux, lx\right)$ \\
+    \hline
     Irradiancia $\left(\frac{W}{m^2}\right)$ & Iluminancia ($lx$) \\
+    \hline
     Intensidad radiante $\left(\frac{W}{sr}\right)$ & Intensidad luminosa ($candela, cd$) \\
+    \hline
     Radiancia $\left(\frac{W}{(m^2sr)}\right)$ & Luminancia $\left(\frac{cd}{m^2} = nit\right)$ \\
     \hline
 \end{tabular}
@@ -162,7 +164,7 @@ Consiste en calcular la iluminación directa para cada objeto individualmente, s
 Al no calcular la interacción de la luz con otros objetos, se simplifican significativamente los cálculos necesarios para generar la imagen.
 
 Sus ventajas son su simplicidad y su eficiencia.
-Su mayor desventaja es que no abarca fenómenos como la iluminación indirecta, la refracción, las cáusticas y el sangrado, entre otros.
+Su mayor desventaja es que no abarca fenómenos como la refracción, las cáusticas y el sangrado, entre otros.
 
 Un modelo ampliamente utilizado para iluminación local es el de Blinn-Phong, \cite{blinn-phong}.
 Este posee tres componentes principales: luz \textbf{ambiente}, \textbf{difusa} y \textbf{especular}.
@@ -177,21 +179,18 @@ Este componente depende de la dirección de vista, de la normal de la superficie
 
 \begin{figure}
     \begin{center}
-
-    \begin{subfigure}{.49\textwidth}
+    \begin{subfigure}{.24\textwidth}
         \includegraphics[width=\textwidth]{sphere-unshaded.png}
         \caption{Sin sombreado}
     \end{subfigure}
 
-    \begin{subfigure}{.49\textwidth}
+    \begin{subfigure}{.24\textwidth}
         \includegraphics[width=\textwidth]{sphere-diffuse.png}
         \caption{Con sombreado difuso}
     \end{subfigure}
-
-    \end{center}
-
     \caption{Esfera iluminada mediante el módelo local de Blinn-Phong}
     \label{fig:sphere-blinn-phong}
+    \end{center}
 \end{figure}
 
 \subsection{Iluminación global}
@@ -204,9 +203,9 @@ Esto causa que sea difícil alcanzar tiempos interactivos.
 
 Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad, el \textit{photon mapping}, y el \textit{path tracing}, que serán presentadas a continuación.
 
-En 1986, James T. Kajiya presentó la ecuación de renderizado, formalizando varios métodos para el cálculo de iluminación global como aproximaciones a la solución de una misma ecuación, \cite{rendering-equation}:
+En 1986, James T. Kajiya presentó la \textbf{ecuación de renderizado}, formalizando varios métodos para el cálculo de iluminación global como aproximaciones a la solución de una misma ecuación, \cite{rendering-equation}:
 
-\begin{equation}\label{eq:rendering_equation}
+\begin{equation}\label{eq:rendering-equation}
     I(x, x') = g(x, x') \cdot \left[\epsilon(x, x') + \int_S f(x, x', x'') \cdot I(x', x'') \cdot dx'' \right]
 \end{equation}
 
@@ -216,9 +215,10 @@ donde:
     \item $g(x, x')$ es un término de "geometría", evalúa si hay algo interponiéndose en el camino de $x'$ a $x$.
     \item $\epsilon(x, x')$ se relaciona con la intensidad emitida desde $x'$ en dirección a $x$.
     \item $f(x, x', x'')$ es la función de distribución de reflectancia bidireccional (BRDF, por sus siglas en inglés). Se relaciona con la intensidad de luz reflejada desde $x''$ hacia $x$ a través de $x'$. En la sección \ref{sec:brdf} se analizan casos particulares de esta función.
+    \item $S = \cup{S_i}$, el dominio de la integral, es la unión de todas las superficies de la escena. Esto significa que los puntos $x, x', x''$ varían a lo largo de todas las superficies.
 \end{itemize}
 
-En palabras, la ecuación \ref{eq:rendering_equation} establece que la intensidad que llega a un punto $x$ desde otro punto $x'$, es la intensidad que $x'$ emite en dirección a $x$ más la intensidad reflejada por $x'$ hacia $x$ desde cualquier otro punto de la escena.
+En palabras, la ecuación \ref{eq:rendering-equation} establece que la intensidad que llega a un punto $x$ desde otro punto $x'$, es la intensidad que $x'$ emite en dirección a $x$ más la intensidad reflejada por $x'$ hacia $x$ desde cualquier otro punto de la escena.
 Todo sujeto a si hay geometría en el camino de $x$ a $x'$, si es que $x'$ ``ve'' a $x$.
 
 Los términos ``intensidad radiante'' e ``intensidad emitida'' tal y como son planteados no son exactamente ninguna de las unidades radiométricas vistas en la sección \ref{sec:radiometry} pero son cantidades que pueden derivarse de estas.
@@ -228,12 +228,36 @@ Se puede observar que esta ecuación tiene en cuenta toda la escena para calcula
 
 La ecuación no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se calculan soluciones numéricas para su resolución.
 
+La ecuación \ref{eq:rendering-equation} considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
+La \textbf{ecuación de reflectancia} se deriva de la de renderizado y se enfoca en el cálculo de la luz indirecta.
+
+\begin{equation}\label{eq:reflectance-equation}
+    L_o(p, \omega_o) = \int_{\Omega}{f(p, \omega_i, \omega_o) L_i(p, \omega_i) n \cdot \omega_i d\omega_i}
+\end{equation}
+
+Esta ecuación calcula la radiancia saliente $L_o$ de un punto $p$ y un pequeño ángulo sólido $\omega_o$ como una integral sobre el hemisferio $\Omega$ centrado en el punto.
+Sus términos son muy parecidos a los de la ecuación de renderizado.
+Vemos que ya no están el término geométrico, dado que se trata de direcciones y no puntos, ni el término de emisión, dado que solo se considera luz indirecta.
+$f$ es la BRDF.
+$L_i(p, \omega_i)$ es la radiancia entrante hacia $p$ por otra dirección $\omega_i$.
+$n$ es la normal en el punto $p$ y $n \cdot \omega_i$ es el producto interno entre la normal y la dirección, que equivale al coseno del ángulo entre ellos.
+La radiancia saliente es la suma por todo el hemisferio $\Omega$ centrado en $p$.
+La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, como se vió anteriormente.
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\textwidth]{}
+%     \caption{Hemisferio centrado en un punto $p$}
+%     \label{fig:hemisphere}
+% \end{figure}
+
 \section{BRDF}\label{sec:brdf}
 
 La \textbf{función de distribución de reflectancia bidireccional} (BRDF, por sus siglas en inglés), es una función $f(x, \omega, \omega')$ que dado un punto $x$, una dirección $\omega$ entrante y una saliente $\omega'$, retorna cuánta luz se refleja desde la dirección entrante hacia la saliente en el punto.
 
 Está función se puede obtener usando tanto modelos analíticos como midiendo objetos reales con cámaras calibradas y fuentes de luz.
 A lo largo de los años, se han propuesto varios BRDFs, tanto teóricos como empíricos \cite{review-of-brdf-models}.
+Los BRDFs son propios de los materiales, y este es uniforme a lo largo de todo el material, por lo que no se diferencia entre dos puntos distintos $x$ y $x'$ del mismo material.
 
 % TODO: Agregar una foto de la máquina utilizada para medir BRDFs
 % TODO: Podemos hablar más de cómo se representan capaz
@@ -344,6 +368,11 @@ Esta técnica sigue hallando la intersección de manera analítica, por lo que l
 Tanto es así que originalmente Whitted había considerado usar conos pero la complejidad añadida de las ecuaciones lo hizo descartarlos.
 Aún así, los beneficios superan a las desventajas en la mayoría de los casos.
 
+Para calcular la luz indirecta se halla la radiancia saliente de un punto en dirección a la cámara.
+En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
+Esto implica tomar varias muestras, que son los rayos que son lanzados desde $p$ en todas las direcciones $\omega_i$.
+En el caso de trazado de conos, en lugar de rayos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
+
 % TODO: Estaría bueno hablar del método de radiosidad antes capaz
 % TODO: Se iba a llamar "Otros métodos de iluminación global" pero por ahora es uno solo jeje
 \section{Photon Mapping}\label{sec:photon-mapping}
@@ -355,7 +384,7 @@ Con \textit{photon mapping} se pueden generar cáusticas, que son los dibujos qu
 En la figura \ref{fig:caustics} se puede ver este efecto.
 
 % TODO: Estaría bueno poder usar imágenes generadas por nosotros en computación gráfica, pero no guardamos las imágenes en el repo como hicimos con whitted :c
-\begin{figure}
+\begin{figure}[h!]
     \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{photon-mapping-cornell-box-torus.png}
@@ -450,9 +479,9 @@ Para lograr esto, se puede usar un \textit{octree} disperso, que será explicado
 
 \section{Octrees}\label{sec:octree}
 
-Un \textit{octree} es una estructura de datos espaciales \cite{octree-textures}.
-Es un árbol formado por nodos, en los que cada nodo interno (no hoja) tiene exactamente $8$ hijos \cite{rtr}.
-Se utilizan para dividir el espacio 3D de manera jerárquica, con varios niveles.
+Un \textit{octree} es una estructura de datos de ``árbol'', en la que cada nodo interno (no hoja) tiene $8$ hijos \cite{rtr}.
+Suele usarse para representar datos espaciales \cite{octree-textures}.
+Se puede utilizar para dividir el espacio 3D de manera jerárquica, con varios niveles.
 
 Se parte de un volumen original cúbico o paralelepípedo que se divide en dos partes iguales por dimensión, resultando en $8$ octantes iguales.
 En la estructura de árbol, el nodo raíz representa el volumen original y cada uno de sus $8$ hijos representa a cada octante.
@@ -521,7 +550,8 @@ El desarrollador debe escribir \textit{shaders} para estos pasos, que se pueden 
 Los \textit{shaders} son programas que ejecutan en la GPU.
 Estos programas son ejecutados con un alto grado de paralelización en la tarjeta gráfica.
 
-Los pasos programables son el \textit{vertex shader} (\textit{shader} de vértices), \textit{geometry shader} (geometría), y \textit{fragment} o \textit{pixel shader} (fragmentos o píxeles).
+Las etapas programables son el \textit{vertex shader} (\textit{shader} de vértices), \textit{geometry shader} (geometría), y \textit{fragment} o \textit{pixel shader} (fragmentos o píxeles).
+Cada una de estas etapas pueden comunicar datos a etapas posteriores.
 El resto de las etapas son fijas.
 
 El \textit{vertex shader} toma los vértices de la geometría de la escena y los puede transformar a otro sistema de coordenadas.
@@ -534,7 +564,8 @@ Aquí se ejecuta un hilo por cada primitiva de salida del \textit{vertex shader}
 
 Finalmente, el \textit{fragment shader} (o \textit{pixel shader}) trabaja con píxeles y no con vértices.
 Es en este \textit{shader} donde se realizan los cálculos de iluminación para calcular el color de cada píxel.
-Se ejecuta un hilo por cada píxel de la imagen que se quiere generar.
+Se ejecutan mínimo un hilo por cada píxel de la imagen que se quiere generar.
+Pueden ejecutarse más de uno en el caso que dos objetos aporten color al mismo píxel, en cuyo caso puede ser que uno sea descartado o pueden mezclarse los colores de ambos en caso de que sean transparentes.
 
 Otro ducto muy relevante, que es usado para implementar la mayoría del algoritmo, es el ducto de cómputo de propósito general.
 Este es muy simple, consiste en la inicialización de datos de entrada, luego la ejecución de un programa en la GPU llamado \textit{compute shader} (\textit{shader} de cómputo) y finalmente el retorno de datos hacia la CPU.
@@ -546,26 +577,24 @@ Notar que este ducto no es utilizado para generar una imagen, sino para realizar
 A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa conocida como renderizado diferido.
 
 En el primero, se procesan todos los vértices en el programa.
-Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por un test de profundidad.
+Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por una prueba de profundidad.
+Cuando un píxel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a una prueba de profundidad.
+Dados dos fragmentos que podrían darle color a un mismo píxel, una prueba de profundidad descarta el que se encuentra detrás del otro, a menos que halla transparencia.
 
-En el renderizado diferido, se procesan todos los vértices del programa solo para la etapa del \textit{vertex shader}.
-Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}.
-Al hacer esto, se ahorran los cálculos para todos los vértices que son desechados después del vertex shader. % TODO: Es durante o después
+En el renderizado diferido, se procesan todos los vértices del programa pero se saltean calculos pesados en el \textit{fragment shader}.
+Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora se realizar calculos pesados de sombreado.
 % TODO: Hablar del volumen de vista?
 Estos suelen ser un buen porcentaje del total, teniendo en cuenta los objetos fuera del ángulo de vista y detrás de otros objetos.
 
 El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
-En escenas con pocos objetos y fuentes de luz, la complejidad extra del renderizado diferido no está justificada, dado que el aumento de rendimiento es despreciable.
+En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no está justificada dado que el aumento de rendimiento es despreciable.
 A su vez, \textit{forward rendering} soporta mejor la transparencia.
-Sin embargo, a medida que la complejidad de la escena aumenta, el renderizado diferido se vuelve cada vez una opción mejor para mejorar la eficiencia.
+Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumetentar el rendimiento.
 También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como bloom, HDR (High Dynamic Range), corrección gamma, y normalización, entre otras.
-
-% TODO: Esto volverlo a poner, en teoría de pre-filtrado
-% Tiene que ir esto y ray marching
 
 % \section{Integral de rendering}
 
-% Ya fue mencionada la ecuación de rendering \ref{eq:rendering_equation}.
+% Ya fue mencionada la ecuación de rendering \ref{eq:rendering-equation}.
 % % TODO: Esto es teoría de la luz en general, ver cómo ponerlo
 % Este modelo se basa en la óptica geométrica, que asume que la luz se propaga en una linea recta cuando no tiene interacción con la materia, en contraste con la óptica física, que considera la característica de onda de la luz y sus dos posibles estados de polarización.
 
@@ -650,23 +679,23 @@ También, el renderizado diferido facilita ciertas técnicas de post-procesamien
 % Las mejores soluciones en terminos de velocidad trabajan en el espacio de imágen en lugar del espacio del mundo.
 % vóxel cone tracing es menos eficiente que esas soluciones pero no requiere aproximaciones tan fuertes.
 
-% TODO: Volver a poner la parte de normlaes si realmente usamos normales.
-% Ojalá no.
+% % TODO: Volver a poner la parte de normlaes si realmente usamos normales.
+% % Ojalá no.
 
-% \section{Filtrado de normales}\label{sec:normal_filtering}
+% % \section{Filtrado de normales}\label{sec:normal_filtering}
 
-% Filtrar datos geométricos, como las normales, no es tan fácil como con colores.
-% El problema, como se muestra en la figura \ref{fig:ndf}, es que dos normales en direcciones opuestas, al ser promediadas, no representan correctamente la región conjunta.
-% Todos los enfoques para filtrar normales se basan en la idea de representar la información de las normales como una distribución estadística de direcciones.
-% Esta representación se define por una función de distribución de normales (NDF, por sus siglas en inglés), que dada una dirección, devuelve la densidad de normales para cada punto de la superficie.
+% % Filtrar datos geométricos, como las normales, no es tan fácil como con colores.
+% % El problema, como se muestra en la figura \ref{fig:ndf}, es que dos normales en direcciones opuestas, al ser promediadas, no representan correctamente la región conjunta.
+% % Todos los enfoques para filtrar normales se basan en la idea de representar la información de las normales como una distribución estadística de direcciones.
+% % Esta representación se define por una función de distribución de normales (NDF, por sus siglas en inglés), que dada una dirección, devuelve la densidad de normales para cada punto de la superficie.
 
-% \begin{figure}[h!]
-%     \centering
-%     \includegraphics[width=\textwidth]{figs/ndf.png}
-%     \caption{El problema filtrando normales. Fuente: \cite{normal-map-filtering}}
-%     \label{fig:ndf}
-% \end{figure}
+% % \begin{figure}[h!]
+% %     \centering
+% %     \includegraphics[width=\textwidth]{figs/ndf.png}
+% %     \caption{El problema filtrando normales. Fuente: \cite{normal-map-filtering}}
+% %     \label{fig:ndf}
+% % \end{figure}
 
-% \cite{toksvig} propuso una representación muy compacta para un NDF.
-% Esta representación se basa en solo una dirección media no normalizada generalmente computada con un mipmap simple de un normal map.
-% El largo de este vector media se usa como una medida de la consistencia de las direcciones normales de la superficie, y se usa para estimar la desviación estándar de una distribución Gaussiana.
+% % \cite{toksvig} propuso una representación muy compacta para un NDF.
+% % Esta representación se basa en solo una dirección media no normalizada generalmente computada con un mipmap simple de un normal map.
+% % El largo de este vector media se usa como una medida de la consistencia de las direcciones normales de la superficie, y se usa para estimar la desviación estándar de una distribución Gaussiana.

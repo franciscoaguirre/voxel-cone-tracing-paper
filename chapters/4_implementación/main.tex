@@ -34,10 +34,10 @@ Por esto se optó por utilizar los compute shaders de OpenGL para el cómputo de
 El desarrolló se realizó en el sistema operativo \textbf{Linux} debido a los ambientes de desarrollo utilizados.
 De igual manera, tanto Rust como OpenGL son multiplataforma, con lo que la aplicación es facilmente portable a otros sistemas operativos.
 
-La arquitectura de la aplicación consta de tres paquetes: \textit{cli}, \textit{core} y \textit{engine}.
+La arquitectura de la aplicación consta de tres paquetes: \textit{CLI}, \textit{Core} y \textit{Engine}.
 \textit{Engine} contiene todas las abstracciones sobre OpenGL utilizadas, provee tipos como \textit{Transform}, \textit{Light}, \textit{Camera} que permiten manipular objetos en el espacio 3D.
 \textit{Core} contiene todas las etapas y programas del algoritmo que han sido mencionados: voxelización, construcción del \textit{octree}, filtrado, actualización y el trazado de conos en si.
-El paquete \textit{cli} es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
+El paquete \textit{CLI} es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
 Estos tres paquetes se muestran en la figura \ref{fig:overall_architecture}.
 
 \begin{figure}
@@ -88,7 +88,7 @@ Los primeros 4 téxeles representan una subdivisión con valor de $z$ menor mien
 Dentro de cada grupo de 4, los primeros 2 son un valor menor de $y$ y los últimos uno mayor.
 Dentro de los grupos de 2, el primero es menor $x$ y el último mayor.
 Si un téxel tiene el valor $0$, entonces ese hijo del nodo no existe.
-Si un téxel tiene un valor $x != 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
+Si un téxel tiene un valor $x \not = 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
 
 Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \textit{brick pool}.
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
