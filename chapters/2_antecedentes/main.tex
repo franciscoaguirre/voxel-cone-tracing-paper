@@ -580,12 +580,12 @@ Notar que este ducto no es utilizado para generar una imagen, sino para realizar
 A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa conocida como renderizado diferido.
 
 En el primero, se procesan todos los vértices en el programa.
-Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por un test de profundidad.
-Cuando un pixel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario. Esto ocurre porque si se hace un test de profundidad solo uno de los fragmentos va a ser necesario para darle valor fianl al pixel, mientas el resto va a ser descartado.
+Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por una prueba de profundidad.
+Cuando un píxel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a una prueba de profundidad.
+Dados dos fragmentos que podrían darle color a un mismo píxel, una prueba de profundidad descarta el que se encuentra detrás del otro, a menos que halla transparencia.
 
 En el renderizado diferido, se procesan todos los vértices del programa pero se saltean calculos pesados en el \textit{fragment shader}.
 Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora se realizar calculos pesados de sombreado.
-Al hacer esto, se ahorran los cálculos para todos las geometrias que son desechadas, al estar fueras de vista pero igual generar fragmentos que utilizan computo en el \textit{fragment shader}, reduciendo lo calculos pesados solo para partes de la escena que van a aparecer en pantalla. % TODO: Es durante o después
 % TODO: Hablar del volumen de vista?
 Estos suelen ser un buen porcentaje del total, teniendo en cuenta los objetos fuera del ángulo de vista y detrás de otros objetos.
 
