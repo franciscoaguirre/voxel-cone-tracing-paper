@@ -156,7 +156,7 @@ Se explicará en la sección \ref{sec:border_transfer}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.3\textwidth]{node-and-brick.png}
-    \caption{Nodo con su brick asociado (en 2D)}
+    \caption{Nodo (en rojo) con su brick asociado (azul)}
     \label{fig:node_and_brick}
 \end{figure}
 
@@ -186,7 +186,7 @@ Al encontrar una sección de un nodo marcada, crea un nuevo nodo en la estructur
 
 Siempre y cuando haya un fragmento en la región de la escena representada por un nodo, este será subdividido nivel tras nivel.
 
-Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de uno cae en la misma hoja.
+Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de uno tiene la misma posición en la grilla de vóxeles.
 Esto último pasa más mientras más triángulos tiene la escena original y menos resolución tiene la grilla de vóxels.
 Las hojas no tienen hijos.
 
@@ -296,7 +296,7 @@ Es parcial porque para los vóxeles limítrofes con otro nodo, este valor tiene 
 \end{figure}
 
 Dado el vóxel superior izquierdo de la figura \ref{fig:svo_filtering_corners}, se considera solo el brick del hijo superior izquierdo del nodo.
-De ese brick, se consideran los vóxeles iluminados.
+De ese brick, se consideran los vóxeles amarillos en la figura.
 El valor final del vóxel del padre se calcula promediando los valores de los vóxeles del hijo, pesados por el porcentaje de solapamiento.
 Si nombramos los vóxeles del brick hijo $a, \cdots, i$ y los del brick padre $a', \cdots, i'$, como en la figura \ref{fig:brick-voxel-naming}, entonces el valor del vóxel del padre se calcula como:
 
@@ -389,7 +389,6 @@ Llamémosle al valor de cada fila \textbf{valor direccional}.
 En la figura \ref{fig:svo_filtering_anisotropic} se pueden ver todos los valores direccionales que deben ser calculados para un brick en 2D, para todas las direcciones.
 Para cada fila, se ejecuta un algoritmo de acumulación de opacidad que va avanzando en la dirección dada.
 Si el algoritmo llega a opacidad 1, termina y devuelve el valor direccional para esa fila.
-Este algoritmo soluciona situaciones como la de la pared mencionada anteriormente.
 
 \begin{figure}
     \begin{center}
@@ -410,12 +409,20 @@ Este algoritmo soluciona situaciones como la de la pared mencionada anteriorment
     \label{fig:svo_filtering_anisotropic}
 \end{figure}
 
+Este tipo de filtrado soluciona situaciones como la de la pared mencionada anteriormente.
+Con él, el vóxel que contiene la pared es opaco en la dirección paralela a su normal y transparente en la dirección perpendicular.
+
 \section{Inyección de fotones}\label{sec:photon-injection}
 
 Hasta ahora tenemos la estructura de datos creada, conteniendo el color de toda la escena en las hojas y un promedio de los niveles inferiores en todos los nodos interiores.
 El objetivo del algoritmo es la iluminación global de una escena, por lo que necesitamos información de la luz.
 En este paso, lanzamos fotones a partir de la fuente de luz de la escena, similar a como se hace en \textit{photon mapping}.
-El ducto raster es usado para esto.
+Para hacer esto, se usa el ducto raster.
+
+Se rasteriza la escena del punto de vista de la luz usando el ducto raster para generar una textura 2D.
+En lugar de tener colores en cada téxel de esta textura, se almacenan las posiciones de los objetos de la escena.
+La existencia de una posición en esta textura significa que esa posición es visible desde la luz, por lo cual debe recibir un fotón.
+Las posiciones son utilizadas para recorrer el árbol y almacenar los fotones en vóxeles del mismo.
 
 Los fotones se almacenan en los vóxeles del árbol, esto es la \textbf{irradiancia}, el flujo recibido por la superficie.
 Luego pasan por el mismo proceso de \textit{border\_transfer} y filtrado que el color.
@@ -457,6 +464,15 @@ $$
 \end{cases}
 $$
 
+Para la luz indirecta difusa, se lanzan conos para cubrir el hemisferio centrado en la normal del punto.
+En la mayoría de los casos, 5 conos anchos difusos dan un buen resultado.
+Cada cono acumula el color de los vóxeles con los que se encuentra multiplicado por la cantidad de fotones.
+Esto logra un efecto de \textit{light bleed}, donde las superficies adquieren color de otras superficies cercanas que reciben y dispersan luz.
+
+Para la luz indirecta especular, se lanza un solo cono fino en la dirección de reflexión.
+Este cono, al ser más fino, se encuentra con nodos de niveles más bajos, con lo que el reflejo tiene mejor definición.
+Si se utiliza un mayor ángulo de apertura del cono, el reflejo se ve más turbio, simulando una superficie menos pulida.
+
 \section{Oclusión ambiental}
 
 La oclusión ambiental es una técnica de rendering que se usa para calcular qué tan expuesto está cada punto de una escena a la luz ambiental.
@@ -473,19 +489,5 @@ Se define una distancia máxima y el criterio de parada es cuando el punto a lo 
 De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, en este caso se logran lanzando un cono hacia la fuente de luz.
 El cono toma en cuenta únicamente la opacidad y su criterio de parada es alcanzar la luz o 1 de opacidad antes.
 El beneficio de que sea un cono en lugar de un rayo es que se logran sombras suaves, sin necesidad de tener que tomar muchas muestras y promediarlas.
-
-% TODO: La cantidad de conos de difusa y especular se pueden mencionar en un párrafo en la sección sobre cone tracing
-
-\section{Dispersión difusa}
-
-Para la dispersión difusa, se lanzan conos para cubrir el hemisferio centrado en la normal del punto.
-En la mayoría de los casos, 5 conos anchos difusos dan un buen resultado.
-Cada cono acumula el color de los vóxeles con los que se encuentra multiplicado por la cantidad de fotones.
-Esto logra un efecto de \textit{light bleed}, donde las superficies adquieren color de otras superficies cercanas que reciben y dispersan luz.
-
-\section{Reflejos}
-
-Para los reflejos, se lanza un solo cono fino en la dirección de reflexión.
-Este cono, al ser más fino, se encuentra con nodos de niveles más bajos, con lo que el reflejo tiene mejor definición.
 
 % END.

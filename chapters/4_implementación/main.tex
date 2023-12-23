@@ -88,7 +88,7 @@ Los primeros 4 téxeles representan una subdivisión con valor de $z$ menor mien
 Dentro de cada grupo de 4, los primeros 2 son un valor menor de $y$ y los últimos uno mayor.
 Dentro de los grupos de 2, el primero es menor $x$ y el último mayor.
 Si un téxel tiene el valor $0$, entonces ese hijo del nodo no existe.
-Si un téxel tiene un valor $x != 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
+Si un téxel tiene un valor $x \not = 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
 
 Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \textit{brick pool}.
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.

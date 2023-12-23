@@ -3,17 +3,19 @@
 \chapter{Conclusiones y Trabajo Futuro}\label{chap:conclusions}
 
 Luego de todo el trabajo, se logró pasar de un paper académico a una implementación práctica, open source.
-Se enfocó en aprender bien lo que se estaba implementando y de documentarlo bien en la implementación para que otros puedan aprenderlo también.
-Fingxels logró ejecutar oclusión de ambiente a X FPS e iluminación indirecta a Y FPS, mientras que el paper original logró FPS de Z y W respectivamente.
-Esto se debe a la calidad de la implementación y al hardware moderno utilizado. % Ver realmente qué tanto difieren en el capítulo sobre experimentos, ojalá nos salve el hardware de no quedar taaan mal
-En conclusión, se logró satisfactoriamente lo que se propuso cumplir y se aprendió mucho haciéndolo.
+Se enfocó en aprender a fondo el algoritmo y en su documentación en la implementación para que sea un recurso útil para otros estudiantes interesados en este tema.
+Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el paper original logró aproximadamente 30 FPS.
+En una tarjeta de última generación se lograron aproximadamente 140 FPS.
+Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original.
+De esto se concluye que no fue dedicado suficiente tiempo a la optimización de la implementación.
+La mayoría del tiempo fue dedicado a entender los conceptos y la programación en GPU mediante el uso de \textit{compute shaders}.
+La eficiencia no era uno de los focos de este trabajo.
+La implementación fue lograda y se aprendió mucho haciendola.
 
 La principal dificultad que fue encontrada en el transcurso de la tésis, fue la dificultad de implementar un algoritmo enteramente en la GPU.
 El equipo tiene mayoritariamente experiencia programando en la CPU y manipulando etapas del pipeline gráfico, pero el uso extensivo de compute shaders, texturas (lineales, 2D, 3D), imágenes y samplers fue algo que sin dudas enlenteció y desmotivó a la hora de hacer la tésis.
 
-% TODO: Está capaz muy honesta esta parte :'(
-El primer año de desarrollo tuvo avance muy lento.
-Esto se debió más que nada a los problemas con la GPU, pero a su vez a la falta de fijación de objetivos y fechas límite para lograrlos.
+En el transcurso del trabajo, se perdió mucho tiempo debido a los problemas de la programación en GPU usando \textit{compute shaders} y a la falta de planificación y fijación de objetivos y fechas límite para lograrlos.
 
 Proximos pasos incluyen:
 \begin{itemize}
