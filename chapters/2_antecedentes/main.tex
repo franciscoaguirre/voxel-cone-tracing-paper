@@ -581,17 +581,18 @@ A la hora de renderizar una escena, hay dos grandes modelos que se pueden utiliz
 
 En el primero, se procesan todos los vértices en el programa.
 Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por un test de profundidad.
+Cuando un pixel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario. Esto ocurre porque si se hace un test de profundidad solo uno de los fragmentos va a ser necesario para darle valor fianl al pixel, mientas el resto va a ser descartado.
 
-En el renderizado diferido, se procesan todos los vértices del programa solo para la etapa del \textit{vertex shader}.
-Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}.
-Al hacer esto, se ahorran los cálculos para todos los vértices que son desechados después del vertex shader. % TODO: Es durante o después
+En el renderizado diferido, se procesan todos los vértices del programa pero se saltean calculos pesados en el \textit{fragment shader}.
+Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora se realizar calculos pesados de sombreado.
+Al hacer esto, se ahorran los cálculos para todos las geometrias que son desechadas, al estar fueras de vista pero igual generar fragmentos que utilizan computo en el \textit{fragment shader}, reduciendo lo calculos pesados solo para partes de la escena que van a aparecer en pantalla. % TODO: Es durante o después
 % TODO: Hablar del volumen de vista?
 Estos suelen ser un buen porcentaje del total, teniendo en cuenta los objetos fuera del ángulo de vista y detrás de otros objetos.
 
 El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
-En escenas con pocos objetos y fuentes de luz, la complejidad extra del renderizado diferido no está justificada, dado que el aumento de rendimiento es despreciable.
+En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no está justificada dado que el aumento de rendimiento es despreciable.
 A su vez, \textit{forward rendering} soporta mejor la transparencia.
-Sin embargo, a medida que la complejidad de la escena aumenta, el renderizado diferido se vuelve cada vez una opción mejor para mejorar la eficiencia.
+Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumetentar el rendimiento.
 También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como bloom, HDR (High Dynamic Range), corrección gamma, y normalización, entre otras.
 
 % \section{Integral de rendering}

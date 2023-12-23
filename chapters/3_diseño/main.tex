@@ -22,18 +22,18 @@ En este capítulo se detalla el diseño de \textit{voxel cone tracing} \cite{vox
 Reduce los costos asociados a estos algoritmos clásicos trazando conos en lugar de rayos (\ref{sec:historical-cone-tracing}) y usando una representación de la escena de vóxeles (\ref{sec:voxels}) almacenada en un \textit{octree} disperso (\ref{sec:octree}).
 
 Otra forma de reducir costos y aumentar la velocidad del algoritmo es reutilizar el ducto raster \ref{sec:graphics-pipeline} y renderizado diferido \ref{sec:deferred-rendering}.
-Los cálculos de luz se realizan en el \textit{fragment shader} del ducto de raster, sobre los \textit{geometry buffers} para reducir la cantidad de vértices sobre los que se trabaja.
+Los cálculos de luz se realizan en el \textit{fragment shader} del ducto de raster, sobre los \textit{geometry buffers} para reducir la cantidad de fragmentos o hilos de la gpu sobre los que se corren calculos pesados, sin perder calidad de imagen.
 Esto difiere del trazado de rayos clásico, que renderiza toda la escena puramente mediante intersecciones entre rayos y geometría.
 
 % TODO: Este párrafo es nuevo, así que hay que darle una pasada
 La principal aproximación que realiza el algoritmo es trabajar sobre una representación voxelizada pre-filtrada de la escena.
-Se vió en la sección sobre trazado de conos, que en su planteo original, se hallaban las intersecciones del cono con los objetos de la escena de manera analítica, lo que es costoso.
-Aquí, en lugar de hallar la intersección analiticamente, se muestrean distintos puntos a lo largo del cono.
-En cada punto, se toma el diámetro del cono y se usa para calcular el nivel del \textit{octree} necesario.
-Se recorre el árbol usando las coordenadas y el nivel para hallar un vóxel que represente esa región del espacio.
-Este vóxel contiene toda la información necesaria, oclusión, color, irradiancia, debido a que la estructura es previamente filtrada.
+Se recorre el árbol usando las coordenadas para hallar un vóxel que represente esa región del espacio.
+Este vóxel contiene toda la información necesaria sobre oclusión, color, irradiancia, debido a que la estructura es previamente filtrada.
 En el filtrado, la información parte de las hojas del árbol y es promediada hacia niveles mayores hasta que todo el árbol tiene información.
 La información del vóxel en ese nivel resume la información de todos los hijos.
+Se vió en la sección sobre trazado de conos, que en su planteo original, se hallaban las intersecciones del cono con los objetos de la escena de manera analítica, lo que es costoso.
+Aquí, en lugar de hallar la intersección analiticamente, se muestrean distintos puntos a lo largo del cono.
+En cada punto, se toma el diámetro del cono y se usa para calcular el nivel del \textit{octree} necesario, dado que nivels mas altos del octree son una aproximación de sus hijos con menos lujo de detalle.
 Esto permite acumular la información a lo largo del cono de manera rápida.
 
 % Estaría bueno poner diagramas de cada etapa:
@@ -62,7 +62,7 @@ La cantidad de vóxeles es configurable, siendo usualmente $512$ o $1024$ por di
 Para voxelizar la escena, se realiza el procedimiento detallado en ``OpenGL Insights, capítulo 22'' \cite{opengl-insights}, un aporte escrito por Crassin luego de haber publicado el artículo de \textit{voxel cone tracing}, aprovechando mejoras en las herramientas disponibles en el momento.
 Ese mismo proceso será explicado a continuación, para más información, consultar la referencia.
 
-Usando la rendering pipeline de OpenGL, se voxelizan todos los triángulos de la geometría de la escena.
+Usando la rendering pipeline de OpenGL, se procesan todos los triángulos de la geometría de la escena.
 Esto genera una lista de \textbf{vóxeles}, en los que se almacena la posición y el color del triángulo original.
 Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura.
 
@@ -84,30 +84,31 @@ Basado en esta observación, se sigue la serie de pasos que se muestra en la fig
 
 Primero, cada triángulo de la geometría se proyecta ortográficamente en la dimensión dominante de su normal.
 La dimensión dominante se elige dinámicamente por triángulo en el \textit{geometry shader}, donde la información de los tres vértices de cada triángulo está disponible.
+Esto se realiza para maximizar el area del triangulo proyectado.
 
 Cada triángulo proyectado se rasteriza para conseguir fragmentos correspondientes a la resolución 3D de la grilla de vóxeles.
 Se fija el tamaño del \textit{viewport} a coincidir con la cantidad de vóxeles, por ejemplo un \textit{viewport} de tamaño $512\times512$ para una grilla de $512^3$ vóxeles.
 % Mientras se hace esto, se mantienen las operaciones del framebuffer desactivadas, como el depth testing. % TODO: Habría que explicar por qué, no entendí del capítulo de OpenGL Insights
 
 Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D.
-Estos fragmentos pueden intersecar con a lo sumo 3 vóxeles de la grilla. % TODO: Por qué?
-A su vez, debido a la elección de la dimensión dominante de la normal para la proyección, solo pueden intersecar con 3 vóxeles en la profundidad también. % TODO: Por qué?
+Debido a la elección de la dimensión dominante de la normal para la proyección, solo pueden intersecar con 3 vóxeles en profundidad. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile:
 Entonces, por cada fragmento 2D, los vóxeles que intersecaron con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas en espacio de pantalla. % TODO: Hacemos lo de las derivadas?
 
-Luego de realizada la voxelización, se obtiene la lista de vóxeles necesaria para crear el árbol.
+Luego de realizada la voxelización, se obtiene la lista de vóxeles necesaria para crear el árbol, con su posicion, color y normal.
 Estos vóxeles son una generalización en 3D de los fragmentos 2D.
 Cada uno tiene una coordenada que lo identifica dentro de la grilla 3D de la escena, así como color y posición.
 
 \subsection{Rasterización conservativa}
 
 El método descrito anteriormente a veces no crea vóxeles para elementos muy finos, como un asta de bandera.
-Esto pasa porque solo se prueba el centro del píxel contra los triángulos para generar fragmentos. % TODO: Revisar en el código
+Esto pasa porque en el rasteriado del ducto raster solo se prueba el centro del píxel contra los triángulos para generar fragmentos. % TODO: Revisar en el código
 Se necesita una manera de generar fragmentos para cada píxel tocado por un triángulo, no necesariamente en el centro.
 Un algoritmo así se detalla en \cite{conservative-rasterization}.
 
-La idea es generar, por cada triángulo, un polígono acotante ligeramente más grande, para asegurarse que cualquier triángulo proyectado que toca un triángulo (en cualquier punto) también toca su centro. % TODO: Esto es triángulo que toca un triángulo o que toca un vóxel/píxel?
-Esto se hace alargando las aristas del triángulo hacia afuera.
-Hay fragmentos que resultan de sobreestimar la cobertura de este triángulo, los cuales se descartan.
+La idea es generar, por cada triángulo, un polígono acotante ligeramente más grande, para asegurarse que cualquier triángulo proyectado que toca un pixel (en cualquier punto) también toca su centro.
+Esto se hace alargando las aristas del triángulo hacia afuera, la mitad de la diagonal de un pixel, generando un triangulo semejante.
+Hay fragmentos que resultan de sobreestimar la cobertura de este triángulo, dado que este nuevo triangulo puede tocar el centro de pixeles que antes no tocaba.
+Para evitar este problema tambien se genera una caja acotante alineada con los ejes, y se descartan fragmentos por fuera de la misma.
 Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 
 % TODO: Cambiar por una foto nuestra?
@@ -237,17 +238,17 @@ De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como 
 
 Al usar un octree disperso, no existen nodos donde no hay geometría.
 Esto tiene un problema.
-A la hora de interpolar para generar la imagen final, esta interpolación solo llega hasta el final de los nodos existentes, luego se corta abruptamente.
+El border transfer asume que todos nodo tiene un vecino, pero esto se rompe cuando se consideran los nodos que tienen como vecinos espacio vacio. Esto rompe nuestro modelo ya que la ausencia de un nodo simboliza espacio vacio, pero los bricks de los nodos tiene datos que son compartidos con otros nodos. Entonces un nodo vecino de espacio vacio puede tener que el voxel que comparte con el espacio vacio es rojo, mientras que la ausencia de nodo en el espacio vacio marca que ese mismo voxel es transparente.
 Para que la interpolación continue y logre difuminar el sombreado, es preciso una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, entre la geometría y el espacio vacío.
 Estos nodos se añaden en cada nivel del árbol a la hora de construírlo.
-Sus bricks no contienen valores, existen solo para interpolar los valores con 0 y difuminar los bordes de la geometría.
-
+Sus bricks no contienen valores, existen solo para interpolar los valores con 0 y difuminar los bordes de la geometría. De esta forma los voxels compartidos por espacio vacio y geometria tienen un promedio de ambas, similar al resto de los voxeles compartidos entre nodos.
+El mismo problema no se genera entre estos nuevos nodos y el espacio vacio, dado que los voxels compartidos con el espacio vacio van a tener como valor total transparencia, por lo que terminamos con una estructura consistente.
 % TODO: Dibujos para explicar nodos frontera
 
 \subsection{Filtrado}\label{design:filtering}
 
 Una vez que todos los atributos se encuentran en las hojas del octree, estos deben ser filtrados a posiciones superiores.
-Filtrarlos implica promediarlos de tal manera que para un nodo interior (no hoja) $A$, su brick tenga un resumen de la información contenida en los bricks de todos sus hijos.
+Filtrarlos implica promediarlos de tal manera que para un nodo interior (no hoja) $A$, su brick tenga un promedio de la información contenida en los bricks de todos sus hijos.
 Esto se realiza en $n - 1$ pasos, con $n$ el máximo nivel del octree.
 En cada paso, se calcula el valor de cada vóxel del brick del padre, usando los bricks de los hijos.
 
