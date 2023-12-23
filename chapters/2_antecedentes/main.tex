@@ -179,7 +179,6 @@ Este componente depende de la dirección de vista, de la normal de la superficie
 
 \begin{figure}
     \begin{center}
-
     \begin{subfigure}{.24\textwidth}
         \includegraphics[width=\textwidth]{sphere-unshaded.png}
         \caption{Sin sombreado}
@@ -189,11 +188,9 @@ Este componente depende de la dirección de vista, de la normal de la superficie
         \includegraphics[width=\textwidth]{sphere-diffuse.png}
         \caption{Con sombreado difuso}
     \end{subfigure}
-
-    \end{center}
-
     \caption{Esfera iluminada mediante el módelo local de Blinn-Phong}
     \label{fig:sphere-blinn-phong}
+    \end{center}
 \end{figure}
 
 \subsection{Iluminación global}
@@ -374,7 +371,7 @@ Aún así, los beneficios superan a las desventajas en la mayoría de los casos.
 Para calcular la luz indirecta se halla la radiancia saliente de un punto en dirección a la cámara.
 En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
 Esto implica tomar varias muestras, que son los rayos que son lanzados desde $p$ en todas las direcciones $\omega_i$.
-En el caso de trazado de conos, en lugar de rayos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos, como se muestra en la figura \ref{fig:partitioned-hemisphere-cones}.
+En el caso de trazado de conos, en lugar de rayos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
 
 % TODO: Estaría bueno hablar del método de radiosidad antes capaz
 % TODO: Se iba a llamar "Otros métodos de iluminación global" pero por ahora es uno solo jeje
