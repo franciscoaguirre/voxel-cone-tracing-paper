@@ -56,6 +56,8 @@
 
 \graphicspath{{figures/}}
 
+\hyphenation{in-te-rac-ción}
+
 \begin{document}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,11 +89,11 @@ Agradecer, siempre es bueno agradecer. % TODO: Hacer a lo último
 % acrónimos sin explicar su significado.
 
 En este trabajo se aborda el problema de la iluminación global en tiempo real, un problema desafiante y relevante en la industria de los videojuegos, cine, simulaciones y la computación gráfica en general.
-La mayoría de las técnicas de iluminación global se basan en el método de Monte Carlo, que las hace computacionalmente costosas, requiriendo hardware especializado y técnicas de aprendizaje automático para alcanzar el tiempo real.
+La mayoría de las técnicas de iluminación global se basan en el método de Monte Carlo, y esto las hace computacionalmente costosas, requiriendo hardware especializado y técnicas de aprendizaje automático para alcanzar el tiempo real.
 
 En este contexto, se hace foco en el algoritmo de \textit{voxel cone tracing}, una técnica de trazado de conos que usa una estructura de datos basada en vóxeles que se ha demostrado prometedora por su capacidad para producir efectos de iluminación global de alta calidad en tiempo real sin necesidad de hardware especializado.
 
-El objetivo principal de este trabajo es crear una implementación open source del algoritmo de \textit{voxel cone tracing} y probarla en hardware moderno. Esta implementación no solo demuestra la viabilidad y eficacia de la técnica en un entorno de hardware actual, sino que también es un recurso didáctico valioso para cualquier persona interesada en aprender acerca de computación gráfica, iluminación global y su implementación.
+El objetivo principal de este trabajo es crear una implementación open source del algoritmo de \textit{voxel cone tracing} y probarla en hardware moderno. La implementación realizada no solo demuestra la viabilidad y eficacia de la técnica en un entorno de hardware actual, sino que también es un recurso didáctico valioso para cualquier persona interesada en aprender acerca de computación gráfica, iluminación global y su implementación.
 
 Para esta implementación, se utilizaron principalmente las herramientas Rust y OpenGL, debido a su alto rendimiento, abundancia de documentación y simplicidad.
 El algoritmo corre exclusivamente en la GPU, aprovechando la alta paralelización que esta provee.
