@@ -6,27 +6,26 @@ Para analizar el rendimiento de la implementación, se realizaron experimentos e
 La escena utilizada se muestra en la figura \ref{fig:cornell-box-full}.
 Esta escena presenta luz indirecta difusa, luz indirecta especular y sombras suaves.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{cornell-box-full.png}
 	\caption{Escena con iluminación indirecta mediante \textit{voxel cone tracing}}
 	\label{fig:cornell-box-full}
 \end{figure}
 
-Los experimentos varian la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS) y el tiempo de construcción del \textit{octree} en segundos.
+Los experimentos varian la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS, por sus siglas en inglés) y el tiempo de construcción del \textit{octree} en segundos.
 Para conseguir los FPS se corrió el programa por un minuto, tomando una muestra de este valor cada segundo, luego se promediaron.
-Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se promedió el tiempo.
-Para que el cache no afectara estas ejecuciones en serie, se realizaron en procesos separados.
+Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedió.
+Para que el cache no afectara estas ejecuciones en serie, cada instancia se ejecutó en un proceso separado.
 
 En las tablas \ref{tab:cisco-laptop}, \ref{tab:pizzo-laptop} y \ref{tab:pizzo-desktop} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070 respectivamente.
-Una observacion es la falta de optimización, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
-Los valores de estas métricas son mucho menores que en las del artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
 
-Otra observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
-Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
-En la construcción, probablemente lo que más este beneficiando a la segunda tarjeta es la cercanía física entre CPU y GPU, que implica una comunicación más rápida.
+% TODO: Agregar todos los datos de hardware de cada una de estas opciones:
+% - Cantidad de memoria (VRAM)
+% - Cantidad de cores
+% - Velocidad del clock (GHz)
 
-\begin{table}
+\begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|}
 	\hline
@@ -39,11 +38,11 @@ En la construcción, probablemente lo que más este beneficiando a la segunda ta
 	$1024$ & $9.215$ & $1.656$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una Intel Mesa ADL GT2}
+\caption{Experimentos: Intel Mesa ADL GT2, 96 cores, 1.45GHz}
 \label{tab:cisco-laptop}
 \end{table}
 
-\begin{table}
+\begin{table}[hb]
 \centering
 \begin{tabular}{|c|c|c|}
 	\hline
@@ -60,7 +59,7 @@ En la construcción, probablemente lo que más este beneficiando a la segunda ta
 \label{tab:pizzo-laptop}
 \end{table}
 
-\begin{table}
+\begin{table}[hb]
 \centering
 \begin{tabular}{|c|c|c|}
 	\hline
@@ -73,6 +72,15 @@ En la construcción, probablemente lo que más este beneficiando a la segunda ta
 	$1024$ & $141.406$ & $1.950$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una RTX 4070}
+\caption{Experimentos: Nvidia Geforce RTX 4070, 5888 nucleos, 1313 MHz}
 \label{tab:pizzo-desktop}
 \end{table}
+
+\section{Análisis de resultados}
+
+Una observacion es la falta de optimización, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
+Los valores de estas métricas son mucho menores que en las del artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
+
+Otra observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
+Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
+En la construcción, probablemente lo que más este beneficiando a la segunda tarjeta es la cercanía física entre CPU y GPU, que implica una comunicación más rápida.

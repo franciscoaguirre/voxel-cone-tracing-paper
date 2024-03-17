@@ -1,15 +1,25 @@
 \graphicspath{{chapters/6_conclusión/figures/}}
 
+% En este capítulo se evalúan los resultados alcanzados y
+% dificultades encontradas, se establece lo que se planteó hacer y lo que se hizo
+% realmente, cuales fueron los aportes, se muestran posibles extensiones al trabajo, se
+% realiza una autocrítica de lo que se hizo y lo que faltó (por problemas de tiempo,
+% recursos, cómo se puede continuar, qué cosas hacer, prioridades, etc.) y se incluye
+% información sobre la gestión del proyecto, si aplica
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parte final
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \chapter{Conclusiones y Trabajo Futuro}\label{chap:conclusions}
 
-Luego de todo el trabajo, se logró pasar de un artículo académico a una implementación práctica, open source.
+Se logró pasar de un artículo académico a una implementación práctica, open source.
 Se enfocó en aprender a fondo el algoritmo y en documentar la implementación para que sea un recurso útil para otros estudiantes interesados en este tema.
 Dicho esto, se cumplieron los objetivos principales.
 
 Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
 En una tarjeta de última generación se lograron aproximadamente 140 FPS.
 Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
-De esto se concluye que no fue dedicado suficiente tiempo a la optimización de la implementación.
 
 La mayoría del tiempo fue dedicado a entender los conceptos y la programación en GPU mediante el uso de \textit{compute shaders}.
 Esta fue la principal dificultad encontrada en el transcurso del trabajo, implementar un algoritmo principalmente en la GPU.
@@ -21,12 +31,12 @@ Se plantean posibles tareas de un trabajo futuro:
 \begin{itemize}
     \item Optimizaciones varias\\
         Como fue visto en los experimentos, la implementación realizada, si bien funciona, no está optimizada.
-        Varias optimizaciones fueron identificadas pero no se pudieron alcanzar debido a falta de tiempo.
+        Varias optimizaciones fueron identificadas pero quedaron fuera del alcance.
         Para que la comparación de eficiencia sea más fiel, habría que implementar estas optimizaciones.
         Esto incluye cosas como: usar estructuras especiales para reducir la cantidad de hilos lanzados para algunos \textit{shaders}, reducir llamadas innecesarias, reducir comunicación entre CPU y GPU, entre otros.
     \item Objetos dinámicos\\
         Más allá de la capacidad de renderizar imágenes buenas de iluminación global en tiempo real, es posible tener objetos dinámicos en la escena, que al moverse subdividen el \textit{octree} nuevamente.
-        La estructura fue implementada con esto en mente, pero no se llegó por temas de tiempo.
+        La estructura fue implementada con esto en mente, pero quedó fuera del alcance.
         Dicho esto, no debería ser extremadamente complejo agregar esta funcionalidad en un trabajo futuro.
     \item Pasar a Vulkan\\
         Esto se explicó que no se pudo lograr por temas de experiencia en la tecnología.
@@ -34,17 +44,6 @@ Se plantean posibles tareas de un trabajo futuro:
         También sería un buen experimento ver la mejora en eficiencia que resulta, dado que Vulkan permite mejor control de la GPU lo que ofrece más oportunidades de optimización.
     \item Mejores herramientas interactivas de exploración\\
         Por último, el menú fue una funcionalidad muy útil para entender el funcionamiento de todos los pasos involucrados.
-        Dado más tiempo, hubiera sido de interés extender el mismo incorporando funcionalidades como: habilitar y deshabilitar etapas para ver cómo afectan a la imagen, poder elegir objetos con el mouse para facilitar explorar sus materiales y nodos, entre otros.
+        En un trabajo futuro, sería de interés extender el mismo incorporando funcionalidades como: habilitar y deshabilitar etapas para ver cómo afectan a la imagen, poder elegir objetos con el mouse para facilitar explorar sus materiales y nodos, entre otros.
         Esto sería particularmente útil para la exploración del programa por programadores interesados en aprender cómo funciona todo.
 \end{itemize}
-
-% En este capítulo se evalúan los resultados alcanzados y
-% dificultades encontradas, se establece lo que se planteó hacer y lo que se hizo
-% realmente, cuales fueron los aportes, se muestran posibles extensiones al trabajo, se
-% realiza una autocrítica de lo que se hizo y lo que faltó (por problemas de tiempo,
-% recursos, cómo se puede continuar, qué cosas hacer, prioridades, etc.) y se incluye
-% información sobre la gestión del proyecto, si aplica
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parte final
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
