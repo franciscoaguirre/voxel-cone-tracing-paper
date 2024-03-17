@@ -78,9 +78,24 @@ En las tablas \ref{tab:cisco-laptop}, \ref{tab:pizzo-laptop} y \ref{tab:pizzo-de
 
 \section{Análisis de resultados}
 
-Una observacion es la falta de optimización, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
-Los valores de estas métricas son mucho menores que en las del artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
+Una observación es la falta de rendimiento, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
+Los valores de estas métricas son mucho mejores en el artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
 
 Otra observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
 Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
 En la construcción, probablemente lo que más este beneficiando a la segunda tarjeta es la cercanía física entre CPU y GPU, que implica una comunicación más rápida.
+
+Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
+En una tarjeta de última generación se lograron aproximadamente 140 FPS.
+Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
+
+% TODO: Agregar tabla comparando con los resultados del algoritmo original.
+% \begin{table}[hb]
+% 	\centering
+% 	\begin{tabular}
+% 		\hline
+% 		\textbf{Etapa} & \textbf{Ras} & \textbf{Dir} & \textbf{}
+% 	\end{tabular}
+% 	\caption{Tiempos por cuadro del artículo original}
+% 	\label{tab:original-times}
+% \end{table}

@@ -17,10 +17,6 @@ Se logró pasar de un artículo académico a una implementación práctica, open
 Se enfocó en aprender a fondo el algoritmo y en documentar la implementación para que sea un recurso útil para otros estudiantes interesados en este tema.
 Dicho esto, se cumplieron los objetivos principales.
 
-Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
-En una tarjeta de última generación se lograron aproximadamente 140 FPS.
-Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
-
 La mayoría del tiempo fue dedicado a entender los conceptos y la programación en GPU mediante el uso de \textit{compute shaders}.
 Esta fue la principal dificultad encontrada en el transcurso del trabajo, implementar un algoritmo principalmente en la GPU.
 El equipo tiene mayoritariamente experiencia programando en la CPU y manipulando etapas del pipeline gráfico, pero el uso extensivo de \textit{compute shaders}, texturas (lineales, 2D, 3D), imágenes y \textit{samplers} fue algo que sin dudas enlenteció el desarrollo.
@@ -29,21 +25,11 @@ A su vez, en el transcurso del trabajo, la falta de planificación, fijación de
 
 Se plantean posibles tareas de un trabajo futuro:
 \begin{itemize}
-    \item Optimizaciones varias\\
-        Como fue visto en los experimentos, la implementación realizada, si bien funciona, no está optimizada.
-        Varias optimizaciones fueron identificadas pero quedaron fuera del alcance.
-        Para que la comparación de eficiencia sea más fiel, habría que implementar estas optimizaciones.
-        Esto incluye cosas como: usar estructuras especiales para reducir la cantidad de hilos lanzados para algunos \textit{shaders}, reducir llamadas innecesarias, reducir comunicación entre CPU y GPU, entre otros.
     \item Objetos dinámicos\\
-        Más allá de la capacidad de renderizar imágenes buenas de iluminación global en tiempo real, es posible tener objetos dinámicos en la escena, que al moverse subdividen el \textit{octree} nuevamente.
+        Es posible tener objetos dinámicos en la escena, que al moverse subdividen el \textit{octree} nuevamente.
         La estructura fue implementada con esto en mente, pero quedó fuera del alcance.
-        Dicho esto, no debería ser extremadamente complejo agregar esta funcionalidad en un trabajo futuro.
     \item Pasar a Vulkan\\
-        Esto se explicó que no se pudo lograr por temas de experiencia en la tecnología.
-        Pasar el programa a Vulkan sería un buen experimento para aprenderla.
-        También sería un buen experimento ver la mejora en eficiencia que resulta, dado que Vulkan permite mejor control de la GPU lo que ofrece más oportunidades de optimización.
+        Pasar el programa a Vulkan sería un buen experimento para aprender y medir la mejora en eficiencia que resulta, dado que Vulkan permite mejor control de la GPU lo que ofrece más oportunidades de optimización.
     \item Mejores herramientas interactivas de exploración\\
-        Por último, el menú fue una funcionalidad muy útil para entender el funcionamiento de todos los pasos involucrados.
-        En un trabajo futuro, sería de interés extender el mismo incorporando funcionalidades como: habilitar y deshabilitar etapas para ver cómo afectan a la imagen, poder elegir objetos con el mouse para facilitar explorar sus materiales y nodos, entre otros.
-        Esto sería particularmente útil para la exploración del programa por programadores interesados en aprender cómo funciona todo.
+        Mejorar las herramientas interactivas para la exploración del algoritmo.
 \end{itemize}

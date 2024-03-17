@@ -164,7 +164,7 @@ Se explicará en la sección \ref{sec:border_transfer}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.5\textwidth]{brick-border-overlap.png}
-    \caption{Solapamiento entre vóxels de bricks de nodos vecinos}
+    \caption{Solapamiento entre vóxeles de bricks de nodos vecinos}
     \label{fig:brick_border_overlap}
 \end{figure}
 
@@ -188,12 +188,12 @@ Al encontrar una sección de un nodo marcada, crea un nuevo nodo en la estructur
 Siempre y cuando haya un fragmento en la región de la escena representada por un nodo, este será subdividido nivel tras nivel.
 
 Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de uno tiene la misma posición en la grilla de vóxeles.
-Esto último pasa más mientras más triángulos tiene la escena original y menos resolución tiene la grilla de vóxels.
+Esto último pasa más mientras más triángulos tiene la escena original y menos resolución tiene la grilla de vóxeles.
 Las hojas no tienen hijos.
 
 En \ref{sec:nodes_and_bricks}, se vió como los bricks ocupan una región más amplia del espacio.
 % TODO: Habría que explicar que los vóxeles son un octavo de nodo del último nivel. Para que esto tenga sentido.
-Para consolidar esto con el tamaño de los vóxels, estos se almacenan únicamente en las esquinas de los bricks.
+Para consolidar esto con el tamaño de los vóxeles, estos se almacenan únicamente en las esquinas de los bricks.
 Se almacenan en la esquina más cercana a la posición del vóxel.
 Luego, se aplica un programa \textit{spread\_leaves}, para esparcir estos valores a lo largo de todo el brick.
 Esto funciona de la siguiente manera, la cual se muestra en 2D en la figura \ref{fig:spread-leaves}:
@@ -238,7 +238,7 @@ De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como 
 
 Al usar un octree disperso, no existen nodos donde no hay geometría.
 \textit{Border transfer} asume que todo nodo tiene un vecino, pero esto no es siempre verdad, por ejemplo en el límite entre la geometría y el espacio vacío.
-Estos nodos si un vecino causan un problema, dado que no se puede promediar el valor de sus vóxeles con el vecino, lo que causa problemas de interpolación.
+Los nodos sin vecino causan un problema, dado que no se puede promediar el valor de sus vóxeles con el vecino, lo que causa problemas de interpolación.
 Para que la interpolación continue y logre difuminar el sombreado, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, entre la geometría y el espacio vacío.
 
 Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo.
@@ -322,7 +322,7 @@ En el caso tridimensional, hay que agregar un quinto factor multiplicado por $\f
     \label{fig:svo_filtering_corners}
 \end{figure}
 
-De la misma manera se calculan los vóxels de los bordes y de las caras, solo que en esos casos se usan más de un brick hijo, como se puede ver en las figuras \ref{fig:svo_filtering_edges} y \ref{fig:svo_filtering_faces}.
+De la misma manera se calculan los vóxeles de los bordes y de las caras, solo que en esos casos se usan más de un brick hijo, como se puede ver en las figuras \ref{fig:svo_filtering_edges} y \ref{fig:svo_filtering_faces}.
 
 \begin{figure}
     \begin{center}
@@ -357,11 +357,11 @@ De la misma manera se calculan los vóxels de los bordes y de las caras, solo qu
 \end{figure}
 
 % TODO: Solo traer de vuelta si realmente usamos normales en el código.
-% Si los vóxels almacenan normales, estas se promedian como se mencionó en la sección \ref{sec:normal_filtering}.
+% Si los vóxeles almacenan normales, estas se promedian como se mencionó en la sección \ref{sec:normal_filtering}.
 
 \subsection{Filtrado anisotrópico}
 
-El filtrado descrito en la sección anterior resulta en vóxeles cuyos valores son los mismos vistos en todas las direcciones.
+El filtrado descrito en la sección anterior resulta en vóxeles con valores independientes del punto de vista.
 Una propiedad deseable es que se almacenen distintos valores, pudiendo usarse según el ángulo del que se mira.
 Esto es muy útil a la hora de representar un atributo como el color en una escena 3D.
 
@@ -485,13 +485,13 @@ Este efecto no aporta más al realismo de una escena una vez que se usan los de 
 
 Para calcularlo, se lanzan varios conos, cubriendo el hemisferio centrado en la normal del punto.
 El único valor necesario es la opacidad.
-A medida que se va viajando a lo largo de un cono, se va acumulando la opacidad de los vóxels que se tocan.
+A medida que se va viajando a lo largo de un cono, se va acumulando la opacidad de los vóxeles que se tocan.
 Se define una distancia máxima y el criterio de parada es cuando el punto a lo largo del cono pasa esa distancia máxima.
 
 \section{Conos de sombra}
 
 De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, en este caso se logran lanzando un cono hacia la fuente de luz.
 El cono toma en cuenta únicamente la opacidad y su criterio de parada es alcanzar la luz o 1 de opacidad antes.
-El beneficio de que sea un cono en lugar de un rayo es que se logran sombras suaves, sin necesidad de tener que tomar muchas muestras y promediarlas.
+El beneficio de que sea un cono en lugar de un rayo, y de tener la estructura jerárquica del \textit{octree}, es que se logran sombras suaves, sin necesidad de tener que tomar muchas muestras y promediarlas.
 
 % END.
