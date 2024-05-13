@@ -4,30 +4,29 @@
 
 La primera decisión de relvancia en el proceso de desarrollo fue implementar el algoritmo en la GPU.
 La principal razón para esto es el alto grado de paralelismo que la misma ofrece.
-A su vez, el ducto de rasterización, ampliamente implementado y optimizado en las GPUs, puede ser reutilizado.
-Esto reduce los cálculos necesarios a la hora de generar una imagen.  
+A su vez, el ducto de rasterización, ampliamente implementado y optimizado en las GPUs, puede ser reutilizado lo cual reduce los cálculos necesarios a la hora de generar una imagen.
 
-La programación en GPU precisa un lenguaje de \textbf{CPU}, una \textbf{API de gráficos} y un lenguaje de \textbf{sombreado}.
+La programación en GPU precisa un lenguaje para la \textbf{CPU}, una \textbf{API de gráficos} y un lenguaje de \textbf{sombreado}.
 El lenguaje de CPU es el que realiza y coordina las llamadas a funcionalidades de la GPU.
 La API de gráficos es la que provee la interfaz que utiliza el lenguaje de CPU para comunicarse con la GPU.
 La misma es una especificación que los fabricantes de las tarjetas de video deben implementar si deciden soportarla.
-El lenguaje de sombreado es el que se utiliza para escribir los \textit{shaders}, programas que ejecutan directo en la GPU y hacen uso del paralelismo que esta ofrece.
+El lenguaje de sombreado es el que se utiliza para escribir los \textit{shaders}, programas que ejecutan directo en la GPU y hacen uso del paralelismo de la misma.
 
 Como lenguaje de CPU se eligió \textbf{Rust}, un lenguaje de sistemas moderno multiparadigma.
 Fue escogido debido a su gran comunidad, su amplia documentación y a su poderoso manejador de paquetes \textit{cargo}.  
 Se caracteriza por ser eficiente, al permitir un acceso a primitivas de bajo nivel, pero manteniendo una buena experiencia de desarrollo, debido a las abstracciones de costo cero que provee.
-Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución.
+Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución como punteros nulos en situaciones que se espera un valor, o accesos a espacios de memoria no inizialidos o liberados.
 
 Se consideró a su vez C++ dado que es el lenguaje más popular para aplicaciones gráficas.  
 Si bien ambos lenguajes presentan una eficiencia similar, el factor que más pesó en la decisión fue la presencia de un manejador de paquetes.
-El mismo permitió instalar varias dependencias más rápido y cambiarlas a lo largo del ciclo de desarrollo cuando esto fue necesario.
-En este caso, dada la implementación en la GPU, la eficiencia y el manejo de memoria fue secundario. 
+El mismo permitió instalar varias dependencias más rápido y cambiarlas a lo largo del ciclo de desarrollo cuando fue necesario.
+Dada la implementación en la GPU, la eficiencia y el manejo de memoria fue secundario. 
 
-Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque este soporte otros lenguajes.
+Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque soporte otros lenguajes.
 También fueron consideradas CUDA y Vulkan, pero se terminó por escoger OpenGL debido a la facilidad de desarrollo, el conocimiento previo del equipo y la facilidad de trabajo con \textit{compute shaders}.
 Si bien Vulkan es una API más moderna, es conocida por ser más compleja que OpenGL y el equipo del trabajo no contaba con la suficiente experiencia para utilizarlo adecuadamente.
 Su uso hubiera llevado a mayores tiempos de desarrollo y no necesariamente a una implementación más eficiente.
-CUDA suele usarse para cómputo de propósito general en la GPU, el cual fue ampliamente utilizado, sin embargo, también fue utilizado el ducto raster, algo que CUDA no tiene.
+CUDA suele usarse para cómputo de propósito general en la GPU, el cual fue ampliamente utilizado, sin embargo, también fue utilizado el ducto de rasterización, algo que CUDA no tiene.
 Se optó por utilizar los \textit{compute shaders} de OpenGL para el cómputo de propósito general necesario.
 
 El desarrolló se realizó en el sistema operativo \textbf{Linux} debido a los ambientes de desarrollo utilizados.
