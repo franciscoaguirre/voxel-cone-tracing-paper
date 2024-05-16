@@ -35,7 +35,7 @@ De igual manera, tanto Rust como OpenGL son multiplataforma, con lo que la aplic
 La arquitectura de la aplicación consta de tres paquetes: \textit{CLI}, \textit{Core} y \textit{Engine}.
 \textit{Engine} contiene todas las abstracciones sobre OpenGL utilizadas, provee tipos como \textit{Transform}, \textit{Light}, \textit{Camera}, comunes en aplicaciones interactivas, que permiten manipular objetos en el espacio 3D.
 \textit{Core} contiene todas las etapas y programas del algoritmo que han sido mencionados: voxelización, construcción del \textit{octree}, filtrado, actualización y el trazado de conos en si.
-El paquete \textit{CLI} (\textit{Command-Line Interface}, línea de comandos) es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
+El paquete \textit{CLI} (\textit{Command-Line Interface}, interfaz por línea de comandos) es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
 La arquitectura se muestra en la figura \ref{fig:overall_architecture}.
 
 \begin{figure}
@@ -120,25 +120,34 @@ El \textit{ConeTracer} reune todos los conceptos anteriores e implementa el algo
 
 \subsection{Representación del \textit{octree}}
 
-El \textit{octree} se representa en la GPU con una textura lineal.
-Esta textura contiene los nodos del árbol y se llama \textit{node pool}.
+La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
+Esta textura se llama \textit{node pool}.
 Cada téxel, píxel de textura, de esta textura es un puntero a otro nodo.
-Se toma la convención de que cada grupo de 8 téxeles es un nodo, cada téxel es un puntero al hijo correspondiente.
-Los primeros 4 téxeles representan una subdivisión con valor de $z$ menor mientras que los últimos 4 representan una con valor de $z$ mayor.
-Dentro de cada grupo de 4, los primeros 2 son un valor menor de $y$ y los últimos uno mayor.
-Dentro de los grupos de 2, el primero es menor $x$ y el último mayor.
-Si un téxel tiene el valor $0$, entonces ese hijo del nodo no existe.
-Si un téxel tiene un valor $x \not = 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
+Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
+Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
+De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
+Por ultimo de cada uno de los 4 grupos de 2, el primer téxel representa al hijo con coordenada $x = 0$ y el último con coordenada $x = 1$.
+Si un téxel tiene el valor $0$, entonces ese hijo del nodo representa espacio vacio, y ese nodo no sera guardado en la \textit{node pool}.
+Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n * 8$ comienza ese nodo, que termina en en la posición de memoria $x * 8 + 7$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{bricks-memory-big-borders.png}
+    \caption{Ejemplo de brick pool, con indices de memoria}
+    \label{fig:brick_pool_example}
+\end{figure}
 
 Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \textit{brick pool}.
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
 En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
-Si otro valor quiere ser almacenado, por ejemplo la irradiancia, entonces se crea otra \textit{brick pool}.
+Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
 Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
+En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
 
-Cada nodo tiene asociado un brick, que es identificado únicamente por su índice.
-Dado que los bricks existen en una textura 3D, la manera de identificarlos es con un vector de $\mathbb{R}^3$.
-Para esto, se usa una función que convierte cada índice de $\mathbb{R}$ en un vector de $\mathbb{R}^3$.
+Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras TODO y TODO respectivamente.
+Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
+Para esto si se quiere encontrar el brick correspondiente a un nodo dado su identificador, y dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
+De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ minimales dentro del brick.
 
 \begin{figure}[h!]
     \centering
@@ -148,18 +157,22 @@ Para esto, se usa una función que convierte cada índice de $\mathbb{R}$ en un 
 \end{figure}
 
 En la figura \ref{fig:node_pool_example} se muestra un ejemplo de \textit{node pool} (rojo) y \textit{brick pool} (azul).
-Cada nodo de la \textit{node pool} está numerado en el margen izquierdo ($0, 1, 2$) y está formado por $8$ téxeles.
-Cada téxel está numerado arriba.
-Dentro de cada téxel se muestran los punteros a los nodos hijos.
+Cada nodo de la \textit{node pool} está identificado por un numero, los cuáles pueden ser vistos en el margen izquierdo ($0, 1, 2$) de la figura \ref{fig:node_pool_example}.
+Además cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
+
+Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío, siendo este el valor 0.
+Por lo tanto, cada téxel representa un puntero a un nodo y está numerado arriba con su posición en memoria en la figura previamente mencionada.
 
 Como se vió en \ref{sec:nodes_and_bricks}, cada nodo tiene un brick asociado.
 Se usa el índice del nodo para identificar su brick, el cual es parte de una textura 3D.
 Cada brick se muestra al costado de su nodo asociado, con sus coordenadas dentro de la textura en el margen derecho.
-Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node poool}.
+Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node pool}.
 
-Almacenar los valores de la escena, como el color o la irradiancia, en una textura 3D en lugar de en una textura lineal, trae beneficios de rendimiento.
-Al tomar una muestra dentro de una textura 3D, las GPUs ya proveen una interpolación trilineal acelerada por hardware.
-A la hora de tomar una muestra de un vóxel, se puede aprovechar esta interpolación para mejorar la calidad de la imagen con un buen rendimiento.
+Propiedades de la escena, ya sea color o irradiancia, se almacenan en los bricks.
+Hay un mapeo entre posiciones dentro del nodo, el cual representa una sección de la escena, y posiciones en su brick asociado.
+A la hora de tomar una muestra de una propiedad en un punto arbitrario del nodo, se aplica el mapeo y se toma el valor de el brick.
+Si el punto no es el centro de uno de los vóxels del brick, se debe interpolar el valor utliziando los vóxeles adyacentes.
+Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, por lo que la interpolación no se debe implementar y es además performante.
 
 \subsection{Menú}
 
