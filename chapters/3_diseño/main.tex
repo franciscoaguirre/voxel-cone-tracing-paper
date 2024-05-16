@@ -34,7 +34,7 @@ La información de un vóxel en cada nivel resume la información de los vóxele
 Se vió en la sección sobre trazado de conos (\ref{sec:ray-tracing}), que en su planteo original, se hallaban las intersecciones del cono con los objetos de la escena de manera analítica, lo que es costoso.
 Aquí, en lugar de hallar la intersección analiticamente, se aproxima el cono utilizando la estructura jerárquica de vóxeles lo cual permite acumular la información a lo largo del cono mas eficientemente, pero con cierta perdida de detalle.
 
-% Estaría bueno poner diagramas de cada etapa:
+% TODO: Estaría bueno poner diagramas de cada etapa:
 % - Voxelización: no se qué hacer
 % - Construcción y filtrado
 % - Inyección de fotones: puedo poner un dibujo de rayos saliendo de la fuente de luz
@@ -108,7 +108,6 @@ A su vez se generan fragmentos nuevos que resultan de sobreestimar la cobertura 
 Para evitar estos fragmentos tambien se genera una caja acotante alineada con los ejes, y se descartan fragmentos por fuera de la misma.
 Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 
-% TODO: Cambiar por una foto nuestra?
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{conservative_rasterization.png}
