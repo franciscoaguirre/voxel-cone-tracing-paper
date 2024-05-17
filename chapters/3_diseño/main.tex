@@ -19,13 +19,12 @@
 \chapter{Voxel cone tracing}\label{chap:design}
 
 En este capítulo se detalla el diseño de \textit{voxel cone tracing} \cite{voxel-cone-tracing}, un algoritmo de iluminación global en tiempo real, que utiliza conceptos presentes en el trazado de rayos (\ref{sec:ray-tracing}), trazado de conos (\ref{sec:historical-cone-tracing}) y \textit{photon mapping} (\ref{sec:photon-mapping}), 
-pero reduciendo los costos asociados a estos algoritmos clásicos usando una representación de la escena con vóxeles (\ref{sec:vóxeles}), almacenada en un \textit{octree} disperso (\ref{sec:octree}), para aproximar los conos.
+pero reduciendo los costos asociados a estos algoritmos clásicos usando una representación de la escena con vóxeles (\ref{sec:voxels}), almacenada en un \textit{octree} disperso (\ref{sec:octree}), para aproximar los conos.
 
 Otra forma de reducir costos y aumentar la velocidad del algoritmo es utilizando el ducto de rasterización \ref{sec:graphics-pipeline} y renderizado diferido \ref{sec:deferred-rendering}.
-Los cálculos de luz se realizan en el \textit{fragment shader} del ducto de raster, sobre los \textit{geometry buffers} para reducir la cantidad de fragmentos o hilos de la gpu sobre los que se corren calculos pesados, sin perder calidad de imagen.
+Los cálculos de luz se realizan en el \textit{fragment shader} del ducto de raster, sobre los \textit{geometry buffers} para reducir la cantidad de fragmentos o hilos de la GPU sobre los que se corren calculos pesados, sin perder calidad de imagen.
 Lo anteriormente explicado difiere del trazado de rayos clásico, que renderiza toda la escena puramente mediante intersecciones entre rayos y geometría.
 
-% TODO: Este párrafo es nuevo, así que hay que darle una pasada
 La principal aproximación que realiza este algoritmo es trabajar sobre una representación voxelizada pre-filtrada de la escena.
 Dadas las coordenadas de un punto de la escena, se recorre el árbol para hallar el vóxel que representa la región del espacio que incluye ese punto.
 Este vóxel contiene toda la información necesaria sobre oclusión, color e irradiancia debido a que la estructura es previamente filtrada.
@@ -56,13 +55,39 @@ En el resto del capítulo se explicará con mayor grado de detalle cada una de e
 
 La escena se divide en una grilla de vóxeles.
 La cantidad de vóxeles es configurable, siendo usualmente $512$ o $1024$ por dimensión, lo cual lleva a un total de $512^3$ o $1024^3$ vóxeles respectivamente.
+Un ejemplo de voxelización se muestra en la figura \ref{fig:voxelized-cow}, con dimensiones $64$, $128$ y $256$.
+
+\begin{figure}[ht]
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow.png}
+        \caption{No voxelizado}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-voxels-64.png}
+        \caption{Voxelizado ($64$)}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-voxels-128.png}
+        \caption{Voxelizado ($128$)}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-voxels-256.png}
+        \caption{Voxelizado ($256$)}
+    \end{subfigure}
+    \caption{Ejemplo de voxelización}
+    \label{fig:voxelized-cow}
+\end{figure}
 
 Para voxelizar la escena, se realiza el procedimiento detallado en ``OpenGL Insights, capítulo 22'' \cite{opengl-insights}, un aporte escrito por Crassin luego de haber publicado el artículo de \textit{voxel cone tracing}, aprovechando mejoras en las herramientas disponibles en el momento.
 Ese mismo proceso será explicado a continuación, para más información, consultar la referencia.
 
 Usando el ducto de rasterización de OpenGL, se procesan todos los triángulos de la geometría de la escena utilizando como resolución para el rasterizado la resolución de la grilla de vóxeles.
-Esto genera una lista de \textbf{vóxeles}, donde cada voxel es una posición dentro de la grilla y un color, el cual es el color de un triangulo que interseca con el espacio representado por el voxel.
-Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura. Dado lo anteriormente descrito, el mismo voxel, identificado por su posicion en la grilla, puede estar presente en al lista multiples veces con colores diferentes si mas de un triangulo interseca con el voxel. 
+Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, el cual es el color de un triangulo que interseca con el espacio representado por el vóxel.
+Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura. Dado lo anteriormente descrito, el mismo vóxel, identificado por su posicion en la grilla, puede estar presente en al lista multiples veces con colores diferentes si mas de un triangulo interseca con el vóxel. 
 
 La voxelización de un triángulo $B$ a un vóxel $V$ puede hacerse si:
 
@@ -88,7 +113,7 @@ Cada triángulo proyectado se rasteriza para conseguir fragmentos correspondient
 Se fija el tamaño del \textit{viewport} a coincidir con la cantidad de vóxeles, por ejemplo un \textit{viewport} de tamaño $512\times512$ para una grilla de $512^3$ vóxeles.
 % Mientras se hace esto, se mantienen las operaciones del framebuffer desactivadas, como el depth testing. % TODO: Habría que explicar por qué, no entendí del capítulo de OpenGL Insights. No se por que se desactiva el depth testing, si igual lo que se genera en el frame buffer no se usa, suena como algo de bajo nivel
 
-Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D. Estos fragmentos corresponderian n a 1 con los vóxeles de la grilla si esta fuese 2D, ya que varios triangulos pueden intersecar con el mismo voxel.
+Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D. Estos fragmentos corresponderian n a 1 con los vóxeles de la grilla si esta fuese 2D, ya que varios triangulos pueden intersecar con el mismo vóxel.
 Sin embargo al ser una grilla 3D es necesario calcular la intersección del plano del triangulo con los voxles para encontrar los valores de profundidad en la grilla.
 Debido a la elección de la dimensión dominante de la normal para la proyección, solo pueden intersecar con 3 vóxeles en profundidad, por lo que cada fragmento genera de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que mas me cuesta explicar
 Entonces, por cada fragmento 2D, los vóxeles que intersecaron con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas en espacio de pantalla. % TODO: Hacemos lo de las derivadas? Si!
@@ -119,7 +144,7 @@ Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 
 Para almacenar los vóxeles generados, se usa un \textit{octree} disperso, como los vistos en la sección \ref{sec:octree}.
 Un octree denso subdivide la escena en 8 cubos y cada cubo se subdivide en 8, y asi sucesivamente. Esta estructura puede escalar rápidamente, generando problemas importante de volumen y velocidad de acceso necesarios de memoria.
-Para alivianar este problema se crearon los octree dispersos, donde los nodos no se subdividen si no poseen geometría dentro.
+Para alivianar este problema se crearon los \textit{octrees} dispersos, donde los nodos no se subdividen si no poseen geometría dentro.
 
 Cada elemento del árbol es un \textbf{nodo}.
 Un nodo del árbol representa una sección de la escena.
@@ -129,7 +154,34 @@ El nivel $0$ tendría $1$ nodo, el nivel $1$ tendría $8$, el $2$ $64$ y así su
 El último nivel del árbol es el que llega a la resolución deseada de $512$ o $1024$ vóxeles.
 Valores más altos de resolución crean más niveles del \textit{octree} y hacen que se asemeje cada vez más la aproximación de vóxeles a la geometría real.
 
-% TODO: Podría agregar fotos de la visualización del octree a distintas resoluciones
+En la figura \ref{fig:octree-levels}, se muestra un modelo al que luego de ser voxelizado, se creó un \textit{octree} disperso.
+La dimensión utilizada fue $256$, con lo cual el último nivel del \textit{octree} es el 7.
+Se muestran los niveles 5, 6 y 7.
+
+\begin{figure}[ht]
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-other-angle.png}
+        \caption{Modelo}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-octree-5.png}
+        \caption{Octree nivel 5}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-octree-6.png}
+        \caption{Octree nivel 6}
+    \end{subfigure}
+    \begin{subfigure}{.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{cow-octree-7.png}
+        \caption{Octree nivel 7}
+    \end{subfigure}
+    \caption{Distintos niveles de un octree disperso}
+    \label{fig:octree-levels}
+\end{figure}
 
 Dado que la estructura tiene como máximo $512$ o $1024$ vóxeles de resolución, sin importar la geometría de la escena, los cálculos sobre ella son independientes de la complejidad de la geometría.
 
@@ -366,7 +418,7 @@ Sin embargo, se observa que la percepción de la pared es muy distinta si se la 
 Como se muestra en la figura \ref{fig:anisotropic-thin-wall}, la pared vista de frente es opaca, pero vista de costado su superficie visible es practicamente nula, lo cual se asemeja a una superficie transparente.
 
 La solución propuesta por Crassin \cite{voxel-cone-tracing} consiste en realizar el filtrado 6 veces por vóxel, uno por cada dirección alineada con los ejes: X, -X, Y, -Y, Z, -Z; y tener en cuenta la dirección a la hora de promediar los valores.
-Cada uno de los 6 valores representa el voxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una direccion arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones mas cercanas.
+Cada uno de los 6 valores representa el vóxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una direccion arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones mas cercanas.
 Este tipo de filtrado se denomina \textbf{anisotrópico}, dado que depende de la dirección con que se observe al vóxel.
 
 \begin{figure}
@@ -443,7 +495,7 @@ Dado un punto de origen, se lanza uno o varios conos con cierta dirección y ape
 Para cada cono, se parte desde su origen y se avanza en la dirección de su eje tomando pasos de cierto tamaño.
 Esto se conoce como \textit{ray marching}. % TODO: No se si está bueno poner el nombre sin haberlo mencionado antes
 Después de cada paso tomado, se calcula el diámetro del cono en ese punto $P$.
-Luego se encuentra el nivel del octree con el menor tamaño posible de voxel que cumpla la condición de ser mayor que el diámetro del cono.
+Luego se encuentra el nivel del octree con el menor tamaño posible de vóxel que cumpla la condición de ser mayor que el diámetro del cono.
 Dado ese nivel y la posición del punto $P$, se recorre el octree y se encuentra el nodo que correspondiente a ese nivel que incluye el punto.
 Ese nodo tiene un brick asociado, cuyos vóxeles tienen los valores prefiltrados, conseguidos en \ref{design:filtering}.
 Se usa el valor del vóxel que corresponde con la posición y se acumula. En caso de vóxeles anisotrópicos, también depende de la direccion del eje del cono.
