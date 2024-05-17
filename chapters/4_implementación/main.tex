@@ -122,7 +122,7 @@ El \textit{ConeTracer} reune todos los conceptos anteriores e implementa el algo
 
 La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
 Esta textura se llama \textit{node pool}.
-Cada téxel, píxel de textura, de esta textura es un puntero a otro nodo.
+Cada téxel (elemento de textura) de esta textura es un puntero a otro nodo.
 Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
 Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
 De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
@@ -141,8 +141,8 @@ Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \te
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
 En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
 Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
-Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
-En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
+Cada téxel dentro de un brick se llama vóxel, porque además de ser un elemento de textura, también es un elemento de volumen, a los efectos de la aplicación.
+En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel es identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
 
 Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras TODO y TODO respectivamente.
 Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
