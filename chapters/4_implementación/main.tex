@@ -122,7 +122,7 @@ El \textit{ConeTracer} reune todos los conceptos anteriores e implementa el algo
 
 La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
 Esta textura se llama \textit{node pool}.
-Cada téxel (elemento de textura) de esta textura es un puntero a otro nodo.
+Cada téxel, píxel de textura, de esta textura es un puntero a otro nodo.
 Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
 Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
 De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
@@ -141,8 +141,22 @@ Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \te
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
 En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
 Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
-Cada téxel dentro de un brick se llama vóxel, porque además de ser un elemento de textura, también es un elemento de volumen, a los efectos de la aplicación.
-En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel es identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
+Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
+En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{indexed-bricks.png}
+    \caption{Ejemplo de bricks, cada uno con un identificador único el cual lo asocia a un nodo}
+    \label{fig:indexed_bricks}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{indexed-nodes.png}
+    \caption{Ejemplo de nodos, cada uno con un identificador único}
+    \label{fig:indexed_nodes}
+\end{figure}
 
 Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras TODO y TODO respectivamente.
 Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
@@ -151,19 +165,17 @@ De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ minimales dent
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{node-pool-example.png}
+    \includegraphics[width=\textwidth]{nodes-n-bricks.png}
     \caption{Ejemplo node pool y brick pool}
-    \label{fig:node_pool_example}
+    \label{fig:nodes_n_bricks}
 \end{figure}
 
-En la figura \ref{fig:node_pool_example} se muestra un ejemplo de \textit{node pool} (rojo) y \textit{brick pool} (azul).
-Cada nodo de la \textit{node pool} está identificado por un numero, los cuáles pueden ser vistos en el margen izquierdo ($0, 1, 2$) de la figura \ref{fig:node_pool_example}.
+En la figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
 Además cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
 
 Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío, siendo este el valor 0.
 Por lo tanto, cada téxel representa un puntero a un nodo y está numerado arriba con su posición en memoria en la figura previamente mencionada.
 
-Como se vió en \ref{sec:nodes_and_bricks}, cada nodo tiene un brick asociado.
 Se usa el índice del nodo para identificar su brick, el cual es parte de una textura 3D.
 Cada brick se muestra al costado de su nodo asociado, con sus coordenadas dentro de la textura en el margen derecho.
 Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node pool}.
