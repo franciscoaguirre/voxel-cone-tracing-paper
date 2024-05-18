@@ -276,7 +276,6 @@ Para igualarlos, se promedian los valores de la frontera con la del brick vecino
 El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada brick con la de sus vecinos, en X, Y y Z.
 De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como máximo, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
 
-% TODO: Dibujos para explicar border transfer
 
 \subsection{Nodos frontera}
 
@@ -290,8 +289,22 @@ Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo
 Sus bricks no contienen valores, existen solo para interpolar los valores con 0 y así difuminar los bordes de la geometría para mejorar la interpolación.
 De esta forma los vóxeles compartidos entre espacio vacio y geometría tienen un promedio de ambas, similar al resto de los vóxeles compartidos entre nodos.
 El mismo problema no se genera entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos con el espacio vacio van a tener como valor la opacidad nula, por lo que se tiene una estructura consistente.
+Su necesidad se observa en la figura \ref{fig:nodos_frontera}
 
-% TODO: Dibujos para explicar nodos frontera
+\begin{figure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{sombra-interpolada.png}
+        \caption{Con nodos frontera}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{sombra-no-interpolada.png}
+        \caption{Sin nodos frontera}
+    \end{subfigure}
+    \caption{Diferencia causada por nodos frontera}
+    \label{fig:nodos_frontera}
+\end{figure}
 
 \subsection{Filtrado}\label{design:filtering}
 
