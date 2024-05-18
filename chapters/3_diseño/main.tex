@@ -33,12 +33,6 @@ La información de un vóxel en cada nivel resume la información de los vóxele
 Se vió en la sección sobre trazado de conos (\ref{sec:ray-tracing}), que en su planteo original, se hallaban las intersecciones del cono con los objetos de la escena de manera analítica, lo que es costoso.
 Aquí, en lugar de hallar la intersección analiticamente, se aproxima el cono utilizando la estructura jerárquica de vóxeles lo cual permite acumular la información a lo largo del cono mas eficientemente, pero con cierta perdida de detalle.
 
-% TODO: Estaría bueno poner diagramas de cada etapa:
-% - Voxelización: no se qué hacer
-% - Construcción y filtrado
-% - Inyección de fotones: puedo poner un dibujo de rayos saliendo de la fuente de luz
-% - Trazado de conos: poner un cono agarrando varios vóxeles
-
 El algoritmo se puede dividir en 4 grandes etapas:
 
 \begin{enumerate}
@@ -61,24 +55,24 @@ Un ejemplo de voxelización se muestra en la figura \ref{fig:voxelized-cow}, con
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow.png}
-        \caption{No voxelizado}
+        \caption{No voxelizado.}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-voxels-64.png}
-        \caption{Voxelizado ($64$)}
+        \caption{Voxelizado ($64$).}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-voxels-128.png}
-        \caption{Voxelizado ($128$)}
+        \caption{Voxelizado ($128$).}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-voxels-256.png}
-        \caption{Voxelizado ($256$)}
+        \caption{Voxelizado ($256$).}
     \end{subfigure}
-    \caption{Ejemplo de voxelización}
+    \caption{Ejemplo de voxelización.}
     \label{fig:voxelized-cow}
 \end{figure}
 
@@ -101,7 +95,7 @@ Basado en esta observación, se sigue la serie de pasos que se muestra en la fig
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{voxelization_pipeline.png}
-    \caption{Ducto de voxelización. Fuente: \cite{opengl-insights}}
+    \caption{Ducto de voxelización. Fuente: \cite{opengl-insights}.}
     \label{fig:voxelization_pipeline}
 \end{figure}
 
@@ -136,7 +130,7 @@ Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{conservative_rasterization.png}
-    \caption{Rasterización conservativa. Fuente: \cite{opengl-insights}}
+    \caption{Rasterización conservativa. Fuente: \cite{opengl-insights}.}
     \label{fig:conservative_rasterization}
 \end{figure}
 
@@ -162,24 +156,24 @@ Se muestran los niveles 5, 6 y 7.
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-other-angle.png}
-        \caption{Modelo}
+        \caption{Modelo.}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-octree-5.png}
-        \caption{Octree nivel 5}
+        \caption{Octree nivel 5.}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-octree-6.png}
-        \caption{Octree nivel 6}
+        \caption{Octree nivel 6.}
     \end{subfigure}
     \begin{subfigure}{.24\textwidth}
         \centering
         \includegraphics[width=\textwidth]{cow-octree-7.png}
-        \caption{Octree nivel 7}
+        \caption{Octree nivel 7.}
     \end{subfigure}
-    \caption{Distintos niveles de un octree disperso}
+    \caption{Distintos niveles de un octree disperso.}
     \label{fig:octree-levels}
 \end{figure}
 
@@ -203,14 +197,14 @@ Se explicará en la Sección \ref{sec:border_transfer}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.3\textwidth]{node-and-brick.png}
-    \caption{Nodo (en rojo) con su brick asociado (azul)}
+    \caption{Nodo (en rojo) con su brick asociado (azul).}
     \label{fig:node_and_brick}
 \end{figure}
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.5\textwidth]{brick-border-overlap.png}
-    \caption{Solapamiento entre vóxeles de bricks de nodos vecinos}
+    \caption{Solapamiento entre vóxeles de bricks de nodos vecinos.}
     \label{fig:brick_border_overlap}
 \end{figure}
 
@@ -220,97 +214,125 @@ Para generar el octree disperso se usa la lista de vóxeles generada durante la 
 Se empieza con un árbol con un solo nivel, con un solo nodo que ocupa toda la escena.
 Se ejecuta el algoritmo a continuación sobre cada nivel para generar el siguiente hasta completarlo.
 
-% TODO: Dibujos para explicar flag y allocate
-
 Dado un nivel $i$ del árbol, dos programas principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
 
 Se corre un hilo de \textit{flag\_nodes} por cada vóxel de la lista de vóxeles.
-Dado un vóxel, se recorre el árbol construido hasta el momento, hasta que se llega a una sección del nodo no subdividida y se marca para ser subdividida.
+Dado un vóxel, se recorre el árbol construido hasta el momento, hasta llegar al último nivel.
+En cada paso, se elije el hijo para descender usando la posición del vóxel.
+Si se llega a un nodo no subdividido antes de llegar al último nivel, se marca para ser subdividido.
 
-Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ las secciones marcadas para subdividir.
-Al encontrar una sección de un nodo marcada, crea un nuevo nodo en la estructura y cambia la marca por un puntero a ese nuevo nodo.
-
+Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los nodos marcados para subdividir.
+Al encontrar un nodo marcado, elimina la marca y en su lugar, agrega punteros a los hijos recien creados.
 Siempre y cuando haya geometria en la región de la escena representada por un nodo, la misma será subdividido nivel tras nivel hasta el maximo determinado por la resolución de la grilla de vóxeles.
 
+Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
+En la construcción de los primeros niveles del \textit{octree}, muchos hilos van a terminar en el mismo nodo.
+En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo.
+Realizar esta marca es un proceso atómico e idempotente.
+En la segunda etapa, es posible asegurar que un solo hilo subdivida cada nodo que fue marcado, resultando en ningún problema de concurrencia.
+
+Un paso de este algoritmo se puede observar en la figura \ref{fig:flag-and-allocate}.
+Corriendo el algoritmo para un vóxel $x$, este debe ser ubicado en el último nivel, en el nodo punteado.
+El nodo inmediatamente anterior se marca para subdividir y luego se subdivide.
+
+\begin{figure}[ht]
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{flag-and-allocate-start.png}
+        \caption{El vóxel debe ir en el nodo punteado.}
+    \end{subfigure}
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{flag-and-allocate-flag.png}
+        \caption{El nodo padre es marcado para ser subdividido.}
+    \end{subfigure}
+    \begin{subfigure}{.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{flag-and-allocate-allocate.png}
+        \caption{El nodo marcado es subdividido.}
+    \end{subfigure}
+    \caption{Un paso del algoritmo de \textit{flag} y \textit{allocate}.}
+    \label{fig:flag-and-allocate}
+\end{figure}
+
 Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de uno tiene la misma posición en la grilla de vóxeles.
-Mientras más triángulos tenga la escena original y menos resolución tiene la grilla de vóxeles, mas ocurre lo anteriormente mencionado.
+Mientras más triángulos tenga la escena original y menos resolución la grilla de vóxeles, más ocurre lo anteriormente mencionado.
 Las hojas no tienen hijos.
 
 % Esto creo que deberia ir en implementacion
-En \ref{sec:nodes_and_bricks}, se vió como los bricks ocupan una región más amplia del espacio que su nodo correspondiente.
+En \ref{sec:nodes_and_bricks}, se vió como los \textit{bricks} ocupan una región más amplia del espacio que su nodo correspondiente.
 % TODO: Habría que explicar que los vóxeles son un octavo de nodo del último nivel. Para que esto tenga sentido.
-Para consolidar esto con el tamaño de los vóxeles, estos se almacenan únicamente en las esquinas de los bricks. % TODO: Esto esta muy mal explicado
+Para consolidar esto con el tamaño de los vóxeles, estos se almacenan únicamente en las esquinas de los \textit{bricks}. % TODO: Esto esta muy mal explicado
 Se almacenan en la esquina más cercana a la posición del vóxel.
-Luego, se aplica un programa \textit{spread\_leaves}, para esparcir los valores de las esquinas a lo largo de todo el brick.
+Luego, se aplica un programa \textit{spread\_leaves}, para esparcir los valores de las esquinas a lo largo de todo el \textit{brick}.
 Su funcionamiento se muestra en 2D en la figura \ref{fig:spread-leaves}:
 \begin{itemize}
     \item El vóxel central almacena el promedio de todas las 8 esquinas
     \item El vóxel del medio de cada cara almacena el promedio de las 4 esquinas de su cara
     \item El vóxel del medio de cada arista almacena el promedio de las 2 esquinas de esa arista
 \end{itemize}
-Como resultado, se esparcen los valores de las esquinas a todo el brick.
-Lo anteriormente descrito es el algoritmo que expande los vóxeles generados poder llenar los bricks $3\times3\times3$.
-A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un brick, dado que ya se procesó la lista generada durante la voxelización.
+Como resultado, se esparcen los valores de las esquinas a todo el \textit{brick}.
+Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las \textit{bricks} $3\times3\times3$ subdivisiones.
+A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[width=.75\textwidth]{spread-leaves-edge.png}
-        \caption{En una arista}
+        \caption{En una arista.}
     \end{subfigure}
     \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[width=.75\textwidth]{spread-leaves-center.png}
-        \caption{En el centro}
+        \caption{En el centro.}
     \end{subfigure}
-    \caption{Funcionamiento de \textit{spread\_leaves} en 2D. Las flechas indican aporte al promedio}
+    \caption{Funcionamiento de \textit{spread\_leaves} en 2D. Las flechas indican aporte al promedio.}
     \label{fig:spread-leaves}
 \end{figure}
 
 \subsection{Border transfer}\label{sec:border_transfer}
 
-Como se mostro en la figura \ref{fig:brick_border_overlap}, los vóxel frontera entre bricks adyacentes corresponden al mismo espacio en la escena.
-Sin embargo, cada nodo tiene su propio brick, los cuales no comparten memoria entre sí, habiendo así vóxeles que pertenecen a bricks diferentes pero corresponden al mismo espacio en la escena.
-Por lo tanto los valores almacenados en esos vóxeles frontera deben tener el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
-Sin embargo, luego de aplicar \textit{spread\_leaves}, cada vóxeles frontera pueden tener valores distintos entre bricks vecinos.
-Para igualarlos, se promedian los valores de la frontera con la del brick vecino, asegurandose que el nivel sea coherente.
-El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada brick con la de sus vecinos, en los ejes X, Y y Z.
-De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como máximo para los vóxeles en las esquinas de los bricks, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
-En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado para el eje X, entre dos bricks vecinos con los vóxels que comparten enmarcados.
+Como se mostro en la figura \ref{fig:brick_border_overlap}, los vóxeles frontera entre \textit{bricks} adyacentes corresponden al mismo espacio en la escena.
+Sin embargo, cada nodo tiene su propio \textit{brick}, los cuales no comparten memoria entre sí, habiendo así vóxeles que pertenecen a \textit{bricks} diferentes pero corresponden al mismo espacio en la escena.
+Es necesario asegurarse que los valores almacenados en esos vóxeles frontera tengan el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
+Sin embargo, luego de aplicar \textit{spread\_leaves}, los vóxeles frontera pueden tener valores distintos entre \textit{bricks} vecinos.
+Para igualarlos, se promedian los valores de la frontera con la del \textit{brick} vecino.
+
+El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada \textit{brick} con la de sus vecinos, en los ejes X, Y y Z.
+De esta manera, aún cuando un vóxel puede estar en varios \textit{bricks}, en $8$ como máximo para los vóxeles en las esquinas de los \textit{bricks}, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
+En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado para el eje X, entre dos \textit{bricks} vecinos con los vóxels que comparten enmarcados.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\textwidth]{border-transfer.png}
-    \caption{Bricks vecinos, antes y después del border transfer}
+    \caption{\textit{Bricks} vecinos, antes y después del border transfer.}
     \label{fig:border_transfer}
 \end{figure}
 
 \subsection{Nodos frontera}
 
-Al usar un octree disperso, no existen nodos donde no hay geometría.
-Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
-Por lo tanto surge un problema, ya que en el límite entre la geometría y el espacio vacío existen nodos sin vecino, ya que al ser un árbol disperso no hay nodos donde hay exclusivamente espacio vacio.
-Los nodos sin vecino causan un problema, dado que no se puede promediar el valor de sus vóxeles con su vecino, lo que causa problemas de interpolación.
-Para que la interpolación continue y logre difuminar el sombreado, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, que representa el espacio vacío adyacente a la geometría.
+Al usar un \textit{octree} disperso, no existen nodos en donde no hay geometría.
+En el límite entre la geometría y el espacio vacío existen nodos sin vecinos.
+Estos nodos presentan un problema que impide una correcta interpolación, dado que no se puede promediar el valor de sus vóxeles con su vecino.
+Para una correcta interpolación, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, que representa el espacio vacío adyacente a la geometría.
 
 Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo.
-Sus bricks no contienen valores, existen solo para interpolar los valores con 0 y así difuminar los bordes de la geometría para mejorar la interpolación.
-De esta forma los vóxeles compartidos entre espacio vacio y geometría tienen un promedio de ambas, similar al resto de los vóxeles compartidos entre nodos.
-El mismo problema no se genera entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos con el espacio vacio tienen opacidad nula, por lo que se tiene una estructura consistente.
-Su necesidad se observa en la figura \ref{fig:nodos_frontera}.
+Sus \textit{bricks} no contienen valores, existen solo para asegurar una correcta interpolación en los extremos de la geometría.
+El mismo problema no se vuelve a generar entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos entre ellos tienen opacidad nula.
+El resultado de la introducción de los nodos frontera se observa en la figura \ref{fig:nodos_frontera}.
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
         \centering
-        \includegraphics[width=.75\textwidth]{sombra-interpolada.png}
-        \caption{Con nodos frontera}
+        \includegraphics[width=\textwidth]{sombra-no-interpolada.png}
+        \caption{Sin nodos frontera.}
     \end{subfigure}
     \begin{subfigure}{.5\textwidth}
         \centering
-        \includegraphics[width=.75\textwidth]{sombra-no-interpolada.png}
-        \caption{Sin nodos frontera}
+        \includegraphics[width=\textwidth]{sombra-interpolada.png}
+        \caption{Con nodos frontera.}
     \end{subfigure}
-    \caption{Diferencia causada por nodos frontera}
+    \caption{Diferencia causada por nodos frontera.}
     \label{fig:nodos_frontera}
 \end{figure}
 
@@ -322,13 +344,13 @@ El proceso se realiza en $n - 1$ pasos, siendo $n$ el nivel máximo del octree.
 En cada paso, se calcula el valor de cada vóxel del brick del padre, usando los bricks de los hijos.
 
 Consideremos un nodo en el penúltimo nivel, con su brick asociado y sus hijos, como muestra la figura \ref{fig:node_with_children}.
-En la figuran se muestran solo $4$ hijos porque se usa como ejemplo un cuadtree, la versión 2D del octree, ya que es mas facil de visualizar.
-Cada hijo tiene a su vez su propio brick asociado como se muestra en la figura \ref{fig:all_child_bricks}.
+En la figuran se muestran solo $4$ hijos porque se usa como ejemplo un \textit{quadtree}, la versión 2D del \textit{octree}, ya que es mas facil de visualizar.
+Cada hijo tiene a su vez su propio \textit{brick} asociado como se muestra en la figura \ref{fig:all_child_bricks}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=.3\textwidth]{node-with-children.png}
-    \caption{Nodo con su brick asociado y sus hijos}
+    \caption{Nodo con su \textit{brick} asociado y sus hijos.}
     \label{fig:node_with_children}
 \end{figure}
 
@@ -347,7 +369,7 @@ Cada hijo tiene a su vez su propio brick asociado como se muestra en la figura \
             \includegraphics[width=\textwidth]{fourth-child-brick.png}
         \end{subfigure}
     \end{center}
-    \caption{Bricks asociados a cada hijo del nodo}
+    \caption{Bricks asociados a cada hijo del nodo.}
     \label{fig:all_child_bricks}
 \end{figure}
 
@@ -361,7 +383,7 @@ Es parcial porque para los vóxeles limítrofes con otro nodo, este valor tiene 
 \begin{figure}
     \centering
     \includegraphics[width=.5\textwidth]{brick-voxel-naming.png}
-    \caption{Una posible forma de referirse a cada vóxel de un brick}
+    \caption{Una posible forma de referirse a cada vóxel de un brick.}
     \label{fig:brick-voxel-naming}
 \end{figure}
 
@@ -399,7 +421,7 @@ De la misma manera se calculan los vóxeles de los bordes y de las caras, solo q
             \includegraphics[width=\textwidth]{svo-filtering-edge-2.png}
         \end{subfigure}
     \end{center}
-    \caption{Filtrado para un vóxel borde}
+    \caption{Filtrado para un vóxel borde.}
     \label{fig:svo_filtering_edges}
 \end{figure}
 
@@ -418,7 +440,7 @@ De la misma manera se calculan los vóxeles de los bordes y de las caras, solo q
             \includegraphics[width=\textwidth]{svo-filtering-face-4.png}
         \end{subfigure}
     \end{center}
-    \caption{Filtrado para un vóxel cara}
+    \caption{Filtrado para un vóxel cara.}
     \label{fig:svo_filtering_faces}
 \end{figure}
 
@@ -475,7 +497,7 @@ Si el algoritmo llega a opacidad 1, termina y devuelve el valor direccional para
             \includegraphics[width=\textwidth]{anisotropic-filtering-y-neg.png}
         \end{subfigure}
     \end{center}
-    \caption{Filtrado anisotrópico en todas las direcciones}
+    \caption{Filtrado anisotrópico en todas las direcciones.}
     \label{fig:svo_filtering_anisotropic}
 \end{figure}
 
@@ -501,8 +523,10 @@ El filtrado funciona de la misma manera.
 La etapa de construcción debe realizarse solo una vez, mientras que, al soportar luces dinámicas, esta etapa debe ejecutarse cada vez que la luz se mueva.
 En esos casos, toda la irradiancia del árbol vuelve a cero y se vuelve a correr el programa que lanza los fotones, y lo llamaremos la actualización de la estructura.
 
-% TODO: Quedó extremadamente corta esta parte
-% Estaría bueno hablar de las optimizaciones? Te hacen perder un poco
+% TODO: Quedó extremadamente corta esta parte.
+% Estaría bueno hablar de las optimizaciones? Te hacen perder un poco.
+% Suena a que las optimizaciones irían mejor en implementación.
+% Un diagrama puede servir.
 
 \section{\textit{Cone tracing}}\label{sec:cone_tracing}
 
@@ -510,33 +534,65 @@ Como se comentó brevemente al inicio del capítulo, el trazado de conos se real
 La entrada al algoritmo de \textit{cone tracing} son los \textit{geometry buffers} que contienen los valores de la escena, ya habiendo descartado los vértices fuera de vista.
 El algoritmo de trazado de conos es ejecutado para cada píxel de los geometry buffers para calcular el color final.
 
-Dado un punto de origen, se lanza uno o varios conos con cierta dirección y apertura, dependiendo del efecto que se quiere lograr.
-% TODO: Tema de las normales todo considerando el hemisferio hacia el lado de la normal del punto.
-
-Para cada cono, se parte desde su origen y se avanza en la dirección de su eje tomando pasos de cierto tamaño.
+Dado un punto de origen $p$, se lanza uno o varios conos con cierta dirección y apertura, dependiendo del efecto que se quiera lograr.
+Para cada cono, se parte desde su origen y se avanza en la dirección de su eje tomando pasos de cierto tamaño variable.
 Esto se conoce como \textit{ray marching}. % TODO: No se si está bueno poner el nombre sin haberlo mencionado antes
-Después de cada paso tomado, se calcula el diámetro del cono en ese punto $P$.
-Luego se encuentra el nivel del octree con el menor tamaño posible de vóxel que cumpla la condición de ser mayor que el diámetro del cono.
-Dado ese nivel y la posición del punto $P$, se recorre el octree y se encuentra el nodo que correspondiente a ese nivel que incluye el punto.
-Ese nodo tiene un brick asociado, cuyos vóxeles tienen los valores prefiltrados, conseguidos en \ref{design:filtering}.
-Se usa el valor del vóxel que corresponde con la posición y se acumula. En caso de vóxeles anisotrópicos, también depende de la dirección del eje del cono.
-Se sigue avanzando paso a paso acumulando valores hasta satisfacer un criterio de parada.
-El algoritmo de \textit{cone tracing} en si es simple dados todos los pasos anteriores.
 
-Cada cono calcula un color $c$ y una opacidad $\alpha$.
-Si en cada paso consideramos $c$ y $\alpha$ como los valores hasta el momento, y $c_2$ y $\alpha_2$ como los valores nuevos encontrados en el vóxel del paso, entonces en cada paso los valores de $c$ y $\alpha$ se calculan de la siguiente manera:
+Se toma un paso de tamaño $d$ a lo largo del eje del cono y se consigue un nuevo punto $p + d$.
+Se calcula el diámetro del cono en ese punto, $h$.
+Luego se encuentra el nivel del octree $i$ con el menor tamaño posible de vóxel que sea mayor al diámetro del cono $h$.
+Dado ese nivel $i$ y la posición del punto $p + d$, se recorre el octree y se encuentra el nodo correspondiente a ese nivel que incluye el punto.
+Ese nodo tiene un brick asociado, cuyos vóxeles tienen los valores prefiltrados, conseguidos en \ref{design:filtering}.
+Se usa el valor del vóxel que contiene al punto $p + d$, este valor es una muestra $m$.
+
+Este proceso se vuelve a repetir.
+Se toma un nuevo paso, con un largo potencialmente diferente, $d'$ y se llega a un nuevo punto $p + d + d'$.
+Se halla el diámetro del cono en ese punto, $h'$.
+Se halla el nivel del octree $i'$, el brick, el vóxel que contiene el punto y su valor es una segunda muestra $m'$.
+
+Estas muestras se acumulan a lo largo del cono.
+En caso de vóxeles anisotrópicos, también depende de la dirección del eje del cono.
+Se sigue avanzando paso a paso acumulando valores hasta satisfacer un criterio de parada,
+que puede ser llegar a un máximo valor acumulado, o haber recorrido una distancia máxima a lo largo del eje del cono.
+
+Este algoritmo se puede observar en la figura \ref{fig:cone-tracing-sampling}.
+
+\begin{figure}
+    \begin{subfigure}{.49\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{cone-tracing-first.png}
+        \caption{Toma de una primer muestra $m$.}
+    \end{subfigure}
+    \begin{subfigure}{.49\textwidth}
+        \centering
+        \includegraphics[width=.75\textwidth]{cone-tracing-second.png}
+        \caption{Toma de una segunda muestra $m'$.}
+    \end{subfigure}
+    \caption{Toma de muestras a lo largo del cono en \textit{cone tracing}.}
+    \label{fig:cone-tracing-sampling}
+\end{figure}
+
+Para calcular luz indirecta, las muestras son un color $c$ y una opacidad $\alpha$.
+Si en cada paso consideramos $c$ y $\alpha$ como los valores hasta el momento, y $c'$ y $\alpha'$ como los valores de la nueva muestra $m'$, entonces en cada paso los valores de $c$ y $\alpha$ se calculan de la siguiente manera:
 
 $$
 \begin{cases}
-    c = \alpha c + (1 - \alpha) \alpha_2 c_2 \\
-    \alpha = \alpha + (1 - \alpha) \alpha_2
+    c = \alpha c + (1 - \alpha) \alpha' c' \\
+    \alpha = \alpha + (1 - \alpha) \alpha'
 \end{cases}
 $$
 
-Para la luz indirecta difusa, se lanzan conos para cubrir el hemisferio centrado en la normal del punto.
+Para la luz indirecta difusa, se lanzan conos para cubrir el hemisferio centrado en la normal del punto, como se puede ver en la figura \ref{fig:cone-hemisphere}.
 En la mayoría de los casos, 5 conos anchos difusos dan un buen resultado.
-Cada cono acumula el color de los vóxeles con los que se encuentra multiplicado por la cantidad de fotones.
+Cada cono acumula el color de los vóxeles con los que se encuentra multiplicado por la cantidad de fotones, que fue almacenada en el paso de inyección de fotones (\ref{sec:photon-injection}).
 Esto logra un efecto de \textit{light bleed}, donde las superficies adquieren color de otras superficies cercanas que reciben y dispersan luz.
+
+\begin{figure}[hb]
+    \centering
+    \includegraphics[width=.25\textwidth]{cones-on-hemisphere.png}
+    \caption{Conos intentando cubrir el hemisferio en dirección de $n$, centrado en $p$.}
+    \label{fig:cone-hemisphere}
+\end{figure}
 
 Para la luz indirecta especular, se lanza un solo cono fino en la dirección de reflexión.
 El cono, al ser más fino, es rápidamente ocluido por nodos de niveles más bajos, con lo que el reflejo tiene mejor definición.
@@ -555,8 +611,8 @@ Se define una distancia máxima y el criterio de parada es cuando el punto a lo 
 
 \section{Conos de sombra}
 
-De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, mientras que en cone tracing se logran lanzando un cono hacia la fuente de luz.
+De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, \textit{cone tracing} lo logra lanzando un cono hacia la fuente de luz.
 El cono toma en cuenta únicamente la opacidad y su criterio de parada es alcanzar la luz o 1 de opacidad antes.
-El beneficio de que sea un cono en lugar de un rayo, y de tener la estructura jerárquica del \textit{octree}, es que se logran sombras suaves, sin necesidad de tener que tomar muchas muestras y promediarlas.
+El beneficio de que sea un cono en lugar de un rayo, y de tener la estructura jerárquica del \textit{octree}, es que se logran sombras suaves, sin necesidad de lanzar varios y promediar sus resultados.
 
 % END.
