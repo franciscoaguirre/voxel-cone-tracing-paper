@@ -269,27 +269,35 @@ A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones
 
 \subsection{Border transfer}\label{sec:border_transfer}
 
-Como se mostro en la figura \ref{fig:brick_border_overlap}, las fronteras entre bricks son compartidas, correspondiendo al mismo espacio en la escena.
-Por lo tanto, los valores almacenados en esos vóxeles deben ser los mismos garantizando una correcta interpolación a la hora de generar la imagen final.
-Sin embargo, luego de aplicar \textit{spread\_leaves}, cada frontera tiene valores distintas en cada par bricks vecinos.
+Como se mostro en la figura \ref{fig:brick_border_overlap}, los vóxel frontera entre bricks adyacentes corresponden al mismo espacio en la escena.
+Sin embargo, cada nodo tiene su propio brick, los cuales no comparten memoria entre sí, habiendo así vóxeles que pertenecen a bricks diferentes pero corresponden al mismo espacio en la escena.
+Por lo tanto los valores almacenados en esos vóxeles frontera deben tener el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
+Sin embargo, luego de aplicar \textit{spread\_leaves}, cada vóxeles frontera pueden tener valores distintos entre bricks vecinos.
 Para igualarlos, se promedian los valores de la frontera con la del brick vecino, asegurandose que el nivel sea coherente.
-El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada brick con la de sus vecinos, en X, Y y Z.
-De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como máximo, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
+El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada brick con la de sus vecinos, en los ejes X, Y y Z.
+De esta manera, aún cuando un vóxel puede estar en varios bricks, en $8$ como máximo para los vóxeles en las esquinas de los bricks, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
+En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado para el eje X, entre dos bricks vecinos con los vóxels que comparten enmarcados.
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{border-transfer.png}
+    \caption{Bricks vecinos, antes y después del border transfer}
+    \label{fig:border_transfer}
+\end{figure}
 
 \subsection{Nodos frontera}
 
 Al usar un octree disperso, no existen nodos donde no hay geometría.
-\textit{Border transfer} asume que todo nodo tiene un vecino en su mismo nivel en el árbol, lo cual no siempre es verdad.
-Por ejemplo en el límite entre la geometría y el espacio vacío existen nodos sin vecino, ya que al ser un árbol disperso no hay nodos donde hay exclusivamente espacio vacio.
-Los nodos sin vecino causan un problema, dado que no se puede promediar el valor de sus vóxeles con el vecino, lo que causa problemas de interpolación.
+Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
+Por lo tanto surge un problema, ya que en el límite entre la geometría y el espacio vacío existen nodos sin vecino, ya que al ser un árbol disperso no hay nodos donde hay exclusivamente espacio vacio.
+Los nodos sin vecino causan un problema, dado que no se puede promediar el valor de sus vóxeles con su vecino, lo que causa problemas de interpolación.
 Para que la interpolación continue y logre difuminar el sombreado, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, que representa el espacio vacío adyacente a la geometría.
 
 Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo.
 Sus bricks no contienen valores, existen solo para interpolar los valores con 0 y así difuminar los bordes de la geometría para mejorar la interpolación.
 De esta forma los vóxeles compartidos entre espacio vacio y geometría tienen un promedio de ambas, similar al resto de los vóxeles compartidos entre nodos.
-El mismo problema no se genera entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos con el espacio vacio van a tener como valor la opacidad nula, por lo que se tiene una estructura consistente.
-Su necesidad se observa en la figura \ref{fig:nodos_frontera}
+El mismo problema no se genera entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos con el espacio vacio tienen opacidad nula, por lo que se tiene una estructura consistente.
+Su necesidad se observa en la figura \ref{fig:nodos_frontera}.
 
 \begin{figure}
     \begin{subfigure}{.5\textwidth}
@@ -431,7 +439,7 @@ Sin embargo, se observa que la percepción de la pared es muy distinta si se la 
 Como se muestra en la figura \ref{fig:anisotropic-thin-wall}, la pared vista de frente es opaca, pero vista de costado su superficie visible es practicamente nula, lo cual se asemeja a una superficie transparente.
 
 La solución propuesta por Crassin \cite{voxel-cone-tracing} consiste en realizar el filtrado 6 veces por vóxel, uno por cada dirección alineada con los ejes: X, -X, Y, -Y, Z, -Z; y tener en cuenta la dirección a la hora de promediar los valores.
-Cada uno de los 6 valores representa el vóxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una direccion arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones mas cercanas.
+Cada uno de los 6 valores representa el vóxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una dirección arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones mas cercanas.
 Este tipo de filtrado se denomina \textbf{anisotrópico}, dado que depende de la dirección con que se observe al vóxel.
 
 \begin{figure}
@@ -511,7 +519,7 @@ Después de cada paso tomado, se calcula el diámetro del cono en ese punto $P$.
 Luego se encuentra el nivel del octree con el menor tamaño posible de vóxel que cumpla la condición de ser mayor que el diámetro del cono.
 Dado ese nivel y la posición del punto $P$, se recorre el octree y se encuentra el nodo que correspondiente a ese nivel que incluye el punto.
 Ese nodo tiene un brick asociado, cuyos vóxeles tienen los valores prefiltrados, conseguidos en \ref{design:filtering}.
-Se usa el valor del vóxel que corresponde con la posición y se acumula. En caso de vóxeles anisotrópicos, también depende de la direccion del eje del cono.
+Se usa el valor del vóxel que corresponde con la posición y se acumula. En caso de vóxeles anisotrópicos, también depende de la dirección del eje del cono.
 Se sigue avanzando paso a paso acumulando valores hasta satisfacer un criterio de parada.
 El algoritmo de \textit{cone tracing} en si es simple dados todos los pasos anteriores.
 
