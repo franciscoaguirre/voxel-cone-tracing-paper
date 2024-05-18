@@ -122,7 +122,7 @@ El \textit{ConeTracer} reune todos los conceptos anteriores e implementa el algo
 
 La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
 Esta textura se llama \textit{node pool}.
-Cada téxel, píxel de textura, de esta textura es un puntero a otro nodo.
+Cada téxel (elemento de textura) de esta textura es un puntero a otro nodo.
 Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
 Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
 De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
@@ -158,10 +158,10 @@ En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, co
     \label{fig:indexed_nodes}
 \end{figure}
 
-Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras TODO y TODO respectivamente.
+Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras \ref{fig:indexed_bricks} y \ref{fig:indexed_nodes} respectivamente.
 Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
-Para esto si se quiere encontrar el brick correspondiente a un nodo dado su identificador, y dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
-De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ minimales dentro del brick.
+Para esto, si se quiere encontrar el brick correspondiente a un nodo dado su identificador, dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
+De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ dentro del brick.
 
 \begin{figure}[h!]
     \centering
@@ -173,18 +173,20 @@ De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ minimales dent
 En la figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
 Además cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
 
-Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío, siendo este el valor 0.
-Por lo tanto, cada téxel representa un puntero a un nodo y está numerado arriba con su posición en memoria en la figura previamente mencionada.
+Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío.
+Se usa el valor 0.
+Cada téxel apunta a un nodo mediante su índice en la \textit{node pool}.
+En la figura se muestran estos índices dentro de cada téxel.
 
 Se usa el índice del nodo para identificar su brick, el cual es parte de una textura 3D.
 Cada brick se muestra al costado de su nodo asociado, con sus coordenadas dentro de la textura en el margen derecho.
 Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node pool}.
 
-Propiedades de la escena, ya sea color o irradiancia, se almacenan en los bricks.
-Hay un mapeo entre posiciones dentro del nodo, el cual representa una sección de la escena, y posiciones en su brick asociado.
-A la hora de tomar una muestra de una propiedad en un punto arbitrario del nodo, se aplica el mapeo y se toma el valor de el brick.
-Si el punto no es el centro de uno de los vóxels del brick, se debe interpolar el valor utliziando los vóxeles adyacentes.
-Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, por lo que la interpolación no se debe implementar y es además performante.
+Propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
+Existe una función que lleva posiciones dentro del nodo, el cual representa una sección de la escena, a posiciones dentro de su brick asociado.
+A la hora de tomar una muestra de una propiedad en un punto de la escena, se úbica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
+Si el punto no es el centro de uno de los vóxeles del brick, se debe interpolar el valor utliziando los vóxeles adyacentes.
+Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.
 
 \subsection{Menú}
 
