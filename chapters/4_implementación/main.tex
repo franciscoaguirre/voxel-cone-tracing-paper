@@ -161,7 +161,8 @@ En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, co
 Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras \ref{fig:indexed_bricks} y \ref{fig:indexed_nodes} respectivamente.
 Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
 Para esto, si se quiere encontrar el brick correspondiente a un nodo dado su identificador, dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
-De esta manera se encuentra el vóxel con coordenadas $(n, m, s)$ dentro del brick.
+El vector de $\mathbb{N}^3$ $(n, m, s)$ es el índice del primer vóxel del brick buscado.
+El resto del \textit{brick} se encuentra en las posiciones desde $(n, m, s)$ hasta $(n + 2, m + 2, s + 2)$.
 
 \begin{figure}[h!]
     \centering
