@@ -184,6 +184,7 @@ Cada téxel individual de un brick tiene sus propias coordenadas, como es el cas
 
 Propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
 Existe una función que lleva posiciones dentro del nodo, el cual representa una sección de la escena, a posiciones dentro de su brick asociado.
+En la figura \ref{fig:node_and_brick} se vé porque es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
 A la hora de tomar una muestra de una propiedad en un punto de la escena, se úbica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
 Si el punto no es el centro de uno de los vóxeles del brick, se debe interpolar el valor utliziando los vóxeles adyacentes.
 Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.

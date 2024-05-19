@@ -52,25 +52,37 @@ La cantidad de vóxeles es configurable, siendo usualmente $512$ o $1024$ por di
 Un ejemplo de voxelización se muestra en la figura \ref{fig:voxelized-cow}, con dimensiones $64$, $128$ y $256$.
 
 \begin{figure}[ht]
-    \begin{subfigure}{.24\textwidth}
+    \begin{subfigure}{.50\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{cow.png}
-        \caption{No voxelizado.}
+        \begin{subfigure}{.60\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{cow.png}
+            \caption{No voxelizado.}
+        \end{subfigure}
     \end{subfigure}
-    \begin{subfigure}{.24\textwidth}
+    \begin{subfigure}{.50\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{cow-voxels-64.png}
-        \caption{Voxelizado ($64$).}
+        \begin{subfigure}{.60\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{cow-voxels-64.png}
+            \caption{Voxelizado ($64$).}
+        \end{subfigure}
     \end{subfigure}
-    \begin{subfigure}{.24\textwidth}
+    \begin{subfigure}{.50\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{cow-voxels-128.png}
-        \caption{Voxelizado ($128$).}
+        \begin{subfigure}{.60\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{cow-voxels-128.png}
+            \caption{Voxelizado ($128$).}
+        \end{subfigure}
     \end{subfigure}
-    \begin{subfigure}{.24\textwidth}
+    \begin{subfigure}{.50\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{cow-voxels-256.png}
-        \caption{Voxelizado ($256$).}
+        \begin{subfigure}{.60\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{cow-voxels-256.png}
+            \caption{Voxelizado ($256$).}
+        \end{subfigure}
     \end{subfigure}
     \caption{Ejemplo de voxelización.}
     \label{fig:voxelized-cow}
@@ -81,7 +93,7 @@ Ese mismo proceso será explicado a continuación, para más información, consu
 
 Usando el ducto de rasterización de OpenGL, se procesan todos los triángulos de la geometría de la escena utilizando como resolución para el rasterizado la resolución de la grilla de vóxeles.
 Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, el cual es el color de un triangulo que interseca con el espacio representado por el vóxel.
-Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura. Dado lo anteriormente descrito, el mismo vóxel, identificado por su posicion en la grilla, puede estar presente en al lista multiples veces con colores diferentes si mas de un triangulo interseca con el vóxel. 
+Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura. Dado lo anteriormente descrito, el mismo vóxel, identificado por su posición en la grilla, puede estar presente en al lista multiples veces con colores diferentes si mas de un triangulo interseca con el vóxel. 
 
 La voxelización de un triángulo $B$ a un vóxel $V$ puede hacerse si:
 
@@ -107,24 +119,28 @@ Cada triángulo proyectado se rasteriza para conseguir fragmentos correspondient
 Se fija el tamaño del \textit{viewport} a coincidir con la cantidad de vóxeles, por ejemplo un \textit{viewport} de tamaño $512\times512$ para una grilla de $512^3$ vóxeles.
 % Mientras se hace esto, se mantienen las operaciones del framebuffer desactivadas, como el depth testing. % TODO: Habría que explicar por qué, no entendí del capítulo de OpenGL Insights. No se por que se desactiva el depth testing, si igual lo que se genera en el frame buffer no se usa, suena como algo de bajo nivel
 
-Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D. Estos fragmentos corresponderian n a 1 con los vóxeles de la grilla si esta fuese 2D, ya que varios triangulos pueden intersecar con el mismo vóxel.
-Sin embargo al ser una grilla 3D es necesario calcular la intersección del plano del triangulo con los voxles para encontrar los valores de profundidad en la grilla.
-Debido a la elección de la dimensión dominante de la normal para la proyección, solo pueden intersecar con 3 vóxeles en profundidad, por lo que cada fragmento genera de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que mas me cuesta explicar
-Entonces, por cada fragmento 2D, los vóxeles que intersecaron con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas en espacio de pantalla. % TODO: Hacemos lo de las derivadas? Si!
+Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D.
+Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D, sin embargo al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con mas de un vóxel en la dirección de proyección(profundidad).
 
-Luego de realizada la voxelización, se obtiene la lista de vóxeles necesaria para crear el árbol, con su posicion y color.
-Cada uno tiene una coordenada que lo identifica dentro de la grilla 3D de la escena, así como color y posición en el espacio de la escena.
+Es necesario calcular la intersección del plano del triangulo con los vóxles para encontrar los valores de profundidad en la grilla, ya que el triángulo fue proyectado perdiendo sus valores de profundidad.
+Debido a la elección de la dimensión dominante de la normal para la proyección del triangulo, cada fragmento puede generar de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$, fuese $z$ la dirección dominante. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que mas me cuesta explicar
+Entonces, por cada fragmento 2D, los vóxeles que intersecan con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas de la profundiad en espacio de pantalla. % Hacemos lo de las derivadas? Si!
+Se necesitan la derivadas para calcular la orientación del plano del triángulo, ya que los fragmentos no tiene información global del triangulo que los genero, solo datos del punto responsable de la generación del mismo.
+
+Luego de realizada la voxelización, se obtiene la lista de vóxeles necesaria para crear el árbol, con su posición y color.
+Cada uno tiene sus coordenadas en $\mathbb{N}^3$ que lo identifica dentro de la grilla 3D de la escena, así como color.
+Su posición en el espacio de la escena se pude calcular a partir de su posición en la grilla.
 
 \subsection{Rasterización conservativa}
 
-El método descrito anteriormente a veces no crea vóxeles para elementos muy finos, como un asta de bandera ya que en el rasterizado solo se prueba el centro del píxel contra los triángulos para generar fragmentos. % TODO: Revisar en el código
+El método descrito anteriormente a veces no crea vóxeles para elementos muy finos, como un asta de bandera, ya que en el rasterizado solo se prueba el centro del píxel contra los triángulos para generar fragmentos.
 Se necesita una manera de generar fragmentos para cada píxel tocado por un triángulo, no necesariamente en el centro.
 Un algoritmo así se detalla en \cite{conservative-rasterization}.
 
 La idea es generar, por cada triángulo, un polígono acotante ligeramente más grande, para asegurarse que cualquier triángulo proyectado que interseca con cualquier punto del píxel también interseque con su centro.
 Se logra trasladando las aristas del triángulo hacia afuera, la mitad de la diagonal de un píxel, y extendiendolas para generar un triangulo semejante.
 A su vez se generan fragmentos nuevos que resultan de sobreestimar la cobertura de este triángulo, dado que este nuevo triangulo puede intersecar con el centro de píxeles que antes no intersecaban en ningun punto.
-Para evitar estos fragmentos tambien se genera una caja acotante alineada con los ejes, y se descartan fragmentos por fuera de la misma.
+Para evitar estos fragmentos también se genera una caja acotante alineada con los ejes, y se descartan fragmentos por fuera de la misma.
 Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 
 \begin{figure}[h!]
@@ -137,20 +153,20 @@ Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 \section{\textit{Octree} disperso}
 
 Para almacenar los vóxeles generados, se usa un \textit{octree} disperso, como los vistos en la sección \ref{sec:octree}.
-Un octree denso subdivide la escena en 8 cubos y cada cubo se subdivide en 8, y asi sucesivamente. Esta estructura puede escalar rápidamente, generando problemas importante de volumen y velocidad de acceso necesarios de memoria.
+Un octree denso subdivide la escena en 8 cubos y cada cubo se subdivide en 8, y asi sucesivamente. Esta estructura escala rápidamente, generando problemas importante de volumen y velocidad de acceso necesarios a memoria.
 Para alivianar este problema se crearon los \textit{octrees} dispersos, donde los nodos no se subdividen si no poseen geometría dentro.
 
 Cada elemento del árbol es un \textbf{nodo}.
 Un nodo del árbol representa una sección de la escena.
 Cada nivel tiene una cierta cantidad de nodos.
-Si el árbol fuera denso, cada nivel $n$ tendría $8^n$ nodos.
+En un árbol denso, cada nodo no hoja tiene exactamente 8 hijos, por lo que cada nivel $n$ tendría $8^n$ nodos.
 El nivel $0$ tendría $1$ nodo, el nivel $1$ tendría $8$, el $2$ $64$ y así sucesivamente. % Esto se desprende de lo anterior, pero me parece una simplificacion posiblemente util
 El último nivel del árbol es el que llega a la resolución deseada de $512$ o $1024$ vóxeles.
-Valores más altos de resolución crean más niveles del \textit{octree} y hacen que se asemeje cada vez más la aproximación de vóxeles a la geometría real.
+Valores más altos de resolución crean más niveles del \textit{octree} y hacen que la aproximación de vóxeles se asemeje cada vez más a la malla de triángulos original.
 
 En la figura \ref{fig:octree-levels}, se muestra un modelo al que luego de ser voxelizado, se creó un \textit{octree} disperso.
 La dimensión utilizada fue $256$, con lo cual el último nivel del \textit{octree} es el 7.
-Se muestran los niveles 5, 6 y 7.
+En la figura se muestran los niveles 5, 6 y 7.
 
 \begin{figure}[ht]
     \begin{subfigure}{.24\textwidth}
@@ -189,7 +205,7 @@ Cada brick está dividido en 27 vóxeles, distribuidos en una estructura de $3\t
 Son estos vóxeles los que almacenan los valores de la escena.
 En la figura \ref{fig:node_and_brick} se puede observar un nodo con su brick asociado de la manera en la que se disponen en el espacio.
 Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices del nodo.
-Lo cual es necesario para que los bricks puedan obtener valores de sus vecinos, lo que garantiza que la interpolación dentro de un solo brick toma en cuenta los valores de sus vecinos resultando en una frontera compartida entre vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
+Esto es necesario para que los bricks puedan obtener valores de sus vecinos, lo que garantiza que la interpolación dentro de un solo brick toma en cuenta los valores de sus vecinos resultando en una frontera compartida entre vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
 La frontera entre dos nodos adyacentes del mismo nivel son los 9 vóxeles de la cara compartida entre los nodos, los cuales estan presentes en los bricks de ambos nodos, lo cual es necesario para que la interpolación a la hora de generar la imagen final funcione.
 Un \textit{shader} llamado \textit{border\_transfer}, es el que se encarga de lograr la coherencia en la frontera entre dos \textit{bricks}.
 Se explicará en la Sección \ref{sec:border_transfer}.
@@ -212,24 +228,27 @@ Se explicará en la Sección \ref{sec:border_transfer}.
 
 Para generar el octree disperso se usa la lista de vóxeles generada durante la voxelización.
 Se empieza con un árbol con un solo nivel, con un solo nodo que ocupa toda la escena.
-Se ejecuta el algoritmo a continuación sobre cada nivel para generar el siguiente hasta completarlo.
+Se ejecuta el algoritmo especificado a continuación sobre cada nivel, para de esta forma generar el siguiente, hasta completarlo.
 
 Dado un nivel $i$ del árbol, dos programas principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
 
 Se corre un hilo de \textit{flag\_nodes} por cada vóxel de la lista de vóxeles.
-Dado un vóxel, se recorre el árbol construido hasta el momento, hasta llegar al último nivel.
-En cada paso, se elije el hijo para descender usando la posición del vóxel.
-Si se llega a un nodo no subdividido antes de llegar al último nivel, se marca para ser subdividido.
+Dado un vóxel, se recorre el árbol construido hasta el momento, hasta llegar al último nivel actual.
+Para reccorer el árbol, cada hilo comienza en el primer nodo del árbol que representa la escena.
+Luego, en cada paso, se elige un hijo para descender utilizando la posición del vóxel, iterativamente.
+Al llegar a un nodo en el último nivel, dependendiendo de la posición del vóxel, se marca uno de los $8$ punteros a los hijos.
+Realizar esta marca es un proceso atómico e idempotente, ya que se limita a cambiar el bit mas significativo del puntero a 1.
 
-Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los nodos marcados para subdividir.
-Al encontrar un nodo marcado, elimina la marca y en su lugar, agrega punteros a los hijos recien creados.
+Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los punteros marcados. 
+Se corre un hilo por cada posible nodo hijo que puede ser creado en esta etapa, $8$ por la cantidad de nodos del nivel $i$.
+A cada hilo se le asigna uno de los punteros de los nodos del nivel $i$, confirma si fue marcado en el paso anterior, elimina la marca, crea el nodo hijo y agrega al puntero el indice del hijo recien creado.
 Siempre y cuando haya geometria en la región de la escena representada por un nodo, la misma será subdividido nivel tras nivel hasta el maximo determinado por la resolución de la grilla de vóxeles.
 
 Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
-En la construcción de los primeros niveles del \textit{octree}, muchos hilos van a terminar en el mismo nodo.
-En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo.
-Realizar esta marca es un proceso atómico e idempotente.
-En la segunda etapa, es posible asegurar que un solo hilo subdivida cada nodo que fue marcado, resultando en ningún problema de concurrencia.
+Durante la construcción de un nivel interno del \textit{octree}, es probable que muchos hilos marquen la creación de un mismo nodo hijo.
+Si el mismo hilo que se encarga de crear la marca también crease el nodo, se tendrian nodos duplicados perdidos dentro de la memoria.
+En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo de manera idempotente, evitando así utilizar locks entre hilos.
+En la segunda etapa se corre un solo hilo para cada posible hijo que se debe crear, asegurando que no se creen nodos duplicados, resolviendo así el problema de concurrencia.
 
 Un paso de este algoritmo se puede observar en la figura \ref{fig:flag-and-allocate}.
 Corriendo el algoritmo para un vóxel $x$, este debe ser ubicado en el último nivel, en el nodo punteado.
@@ -312,6 +331,7 @@ En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado
 \subsection{Nodos frontera}
 
 Al usar un \textit{octree} disperso, no existen nodos en donde no hay geometría.
+Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
 En el límite entre la geometría y el espacio vacío existen nodos sin vecinos.
 Estos nodos presentan un problema que impide una correcta interpolación, dado que no se puede promediar el valor de sus vóxeles con su vecino.
 Para una correcta interpolación, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, que representa el espacio vacío adyacente a la geometría.
