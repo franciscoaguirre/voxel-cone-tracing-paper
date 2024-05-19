@@ -205,8 +205,10 @@ Cada brick está dividido en 27 vóxeles, distribuidos en una estructura de $3\t
 Son estos vóxeles los que almacenan los valores de la escena.
 En la figura \ref{fig:node_and_brick} se puede observar un nodo con su brick asociado de la manera en la que se disponen en el espacio.
 Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices del nodo.
-Esto es necesario para que los bricks puedan obtener valores de sus vecinos, lo que garantiza que la interpolación dentro de un solo brick toma en cuenta los valores de sus vecinos resultando en una frontera compartida entre vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
-La frontera entre dos nodos adyacentes del mismo nivel son los 9 vóxeles de la cara compartida entre los nodos, los cuales estan presentes en los bricks de ambos nodos, lo cual es necesario para que la interpolación a la hora de generar la imagen final funcione.
+Esto es necesario para que los bricks información con bricks de nodos vecinos, lo que garantiza que la interpolación dentro de un solo nodo tome en cuenta los valores de sus vecinos.
+Colocar los vóxeles en las esquinas de los nodos genera una frontera compartida entre bricks de nodos vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
+La frontera entre dos nodos adyacentes del mismo nivel son los 9 vóxeles de la cara compartida entre los nodos, 3 en el caso 2D apreciable en las figuras, los cuales estan presentes en los bricks de ambos nodos. 
+Como consecuencia la estructura tiene información repetida, lo cual es necesario para la interpolación a la hora de generar la imagen final funcione.
 Un \textit{shader} llamado \textit{border\_transfer}, es el que se encarga de lograr la coherencia en la frontera entre dos \textit{bricks}.
 Se explicará en la Sección \ref{sec:border_transfer}.
 
@@ -227,28 +229,28 @@ Se explicará en la Sección \ref{sec:border_transfer}.
 \subsection{Construcción}\label{design:svo_construction}
 
 Para generar el octree disperso se usa la lista de vóxeles generada durante la voxelización.
-Se empieza con un árbol con un solo nivel, con un solo nodo que ocupa toda la escena.
+Se empieza con un árbol con un solo nivel, con un solo nodo que representa toda la escena.
 Se ejecuta el algoritmo especificado a continuación sobre cada nivel, para de esta forma generar el siguiente, hasta completarlo.
 
 Dado un nivel $i$ del árbol, dos programas principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
 
 Se corre un hilo de \textit{flag\_nodes} por cada vóxel de la lista de vóxeles.
 Dado un vóxel, se recorre el árbol construido hasta el momento, hasta llegar al último nivel actual.
-Para reccorer el árbol, cada hilo comienza en el primer nodo del árbol que representa la escena.
-Luego, en cada paso, se elige un hijo para descender utilizando la posición del vóxel, iterativamente.
-Al llegar a un nodo en el último nivel, dependendiendo de la posición del vóxel, se marca uno de los $8$ punteros a los hijos.
+Para reccorer el árbol, cada hilo comienza en el primer nodo del árbol.
+Luego, en cada paso, se elige un hijo para descender utilizando la posición del vóxel en la grilla, iterativamente.
+Al llegar a un nodo en el último nivel, dependendiendo de la posición del vóxel, se marca uno de los $8$ punteros a sus hijos.
 Realizar esta marca es un proceso atómico e idempotente, ya que se limita a cambiar el bit mas significativo del puntero a 1.
 
 Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los punteros marcados. 
-Se corre un hilo por cada posible nodo hijo que puede ser creado en esta etapa, $8$ por la cantidad de nodos del nivel $i$.
+Se corre un hilo por cada posible nodo hijo que puede ser creado en esta etapa, $8$ por cada nodo del nivel $i$.
 A cada hilo se le asigna uno de los punteros de los nodos del nivel $i$, confirma si fue marcado en el paso anterior, elimina la marca, crea el nodo hijo y agrega al puntero el indice del hijo recien creado.
-Siempre y cuando haya geometria en la región de la escena representada por un nodo, la misma será subdividido nivel tras nivel hasta el maximo determinado por la resolución de la grilla de vóxeles.
+Siempre y cuando haya geometria en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el maximo determinado por la resolución de la grilla de vóxeles.
 
 Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
 Durante la construcción de un nivel interno del \textit{octree}, es probable que muchos hilos marquen la creación de un mismo nodo hijo.
-Si el mismo hilo que se encarga de crear la marca también crease el nodo, se tendrian nodos duplicados perdidos dentro de la memoria.
+Si el mismo hilo que se encarga de crear la marca, también crease el nodo, se tendrian nodos duplicados perdidos dentro de la memoria.
 En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo de manera idempotente, evitando así utilizar locks entre hilos.
-En la segunda etapa se corre un solo hilo para cada posible hijo que se debe crear, asegurando que no se creen nodos duplicados, resolviendo así el problema de concurrencia.
+Correr un solo hilo para cada posible hijo que se debe crear asegura que no se creen nodos duplicados, resolviendo así el problema de concurrencia.
 
 Un paso de este algoritmo se puede observar en la figura \ref{fig:flag-and-allocate}.
 Corriendo el algoritmo para un vóxel $x$, este debe ser ubicado en el último nivel, en el nodo punteado.
@@ -274,15 +276,24 @@ El nodo inmediatamente anterior se marca para subdividir y luego se subdivide.
     \label{fig:flag-and-allocate}
 \end{figure}
 
-Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de uno tiene la misma posición en la grilla de vóxeles.
+Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de un vóxel tiene la misma posición en la grilla de vóxeles.
 Mientras más triángulos tenga la escena original y menos resolución la grilla de vóxeles, más ocurre lo anteriormente mencionado.
-Las hojas no tienen hijos.
+% Dar la definicion de hoja aca me parece raro
 
 % Esto creo que deberia ir en implementacion
 En \ref{sec:nodes_and_bricks}, se vió como los \textit{bricks} ocupan una región más amplia del espacio que su nodo correspondiente.
-% TODO: Habría que explicar que los vóxeles son un octavo de nodo del último nivel. Para que esto tenga sentido.
-Para consolidar esto con el tamaño de los vóxeles, estos se almacenan únicamente en las esquinas de los \textit{bricks}. % TODO: Esto esta muy mal explicado
-Se almacenan en la esquina más cercana a la posición del vóxel.
+Además los vóxeles conseguidos en la voxelización no estan alineados con los vóxeles de los bricks.
+En la figura \ref{fig:voxels-to-bricks} se puede observar un brick, cuyos vóxeles estan numerados, solapado con 4 vóxeles generados en el paso de voxelización, cada uno con su color.
+Estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel mas bajo, pero llegando a un nivel mayor de resolución.
+En la figura el vóxel 0 esta una cuarta parte cubierto por el color violeta, por lo que se le asigna este valor. De forma similar se le asigna un color a las otras esquinas del brick. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.5\textwidth]{voxels-to-bricks.png}
+    \caption{Solapamiento entre vóxeles de la voxelización y un brick}
+    \label{fig:voxels-to-bricks}
+\end{figure}
+
 Luego, se aplica un programa \textit{spread\_leaves}, para esparcir los valores de las esquinas a lo largo de todo el \textit{brick}.
 Su funcionamiento se muestra en 2D en la figura \ref{fig:spread-leaves}:
 \begin{itemize}
@@ -291,6 +302,8 @@ Su funcionamiento se muestra en 2D en la figura \ref{fig:spread-leaves}:
     \item El vóxel del medio de cada arista almacena el promedio de las 2 esquinas de esa arista
 \end{itemize}
 Como resultado, se esparcen los valores de las esquinas a todo el \textit{brick}.
+La lógica detras del \textit{spread\_leaves} se desprende de la figura \ref{fig:voxels-to-bricks}, al ver las regiones de los vóxeles del brick que intersecan con los de la voxelización.
+De esta figura también se desprende la necesidad del border transfer \ref{sec:border_transfer}, ya que los espacios blancos de los vóxeles del brick deben ser rellenados con información de nodos vecinos.
 Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las \textit{bricks} $3\times3\times3$ subdivisiones.
 A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
