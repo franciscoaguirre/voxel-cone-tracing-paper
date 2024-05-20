@@ -3,76 +3,110 @@
 \chapter{Experimentación}\label{chap:experiments}
 
 Para analizar el rendimiento de la implementación, se realizaron experimentos en distintas tarjetas gráficas.
-La escena utilizada se muestra en la figura \ref{fig:cornell-box-full}.
-Esta escena presenta luz indirecta difusa, luz indirecta especular y sombras suaves.
+Las escenas utilizadas se muestran en las figuras \ref{fig:cornell-box-full} y \ref{fig:complex-meshes}, las llamaremos $S1$ y $S2$ respectivamente.
+Se pueden observar la luz indirecta difusa, luz indirecta especular y sombras suaves.
 
-\begin{figure}
+\begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{cornell-box-full.png}
-	\caption{Escena con iluminación indirecta mediante \textit{voxel cone tracing}}
+	\caption{Escena de prueba con geometría simple}
 	\label{fig:cornell-box-full}
 \end{figure}
 
-Los experimentos varian la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS) y el tiempo de construcción del \textit{octree} en segundos.
-Para conseguir los FPS se corrió el programa por un minuto, tomando una muestra de este valor cada segundo, luego se promediaron.
-Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se promedió el tiempo.
-Para que el cache no afectara estas ejecuciones en serie, se realizaron en procesos separados.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{complex-meshes.png}
+	\caption{Escena de prueba con geometría más compleja}
+	\label{fig:complex-meshes}
+\end{figure}
+
+Los experimentos varían la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS, por sus siglas en inglés) y el tiempo de construcción del \textit{octree} en segundos.
+Para conseguir los FPS se ejecutó el programa durante un minuto, tomando una muestra cada segundo, luego se promediaron.
+Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedió.
+Cada ejecución se realizó independientemente, para evitar posibles mejoras debido al uso del cache.
 
 En las tablas \ref{tab:cisco-laptop}, \ref{tab:pizzo-laptop} y \ref{tab:pizzo-desktop} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070 respectivamente.
-Una observacion es la falta de optimización, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
-Los valores de estas métricas son mucho menores que en las del artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
+En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2$.
 
-Otra observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
-Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
-En la construcción, probablemente lo que más este beneficiando a la segunda tarjeta es la cercanía física entre CPU y GPU, que implica una comunicación más rápida.
-
-\begin{table}
+\begin{table}[ht]
 \centering
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 	\hline
-	\textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
+	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
-	$256$ & $14.470$ & $1.451$ \\
+	$256$ & $S1$ & $14.47$ & $4.62$ \\
+	 & $S2$ & $17.05$ & $3.82$ \\
 	\hline
-	$512$ & $11.301$ & $1.490$ \\
+	$512$ & $S1$ & $11.30$ & $5.04$ \\
+	 & $S2$ & $14.08$ & $3.66$ \\
 	\hline
-	$1024$ & $9.215$ & $1.656$ \\
+	$1024$ & $S1$ & $9.22$ & $4.40$ \\
+	 & $S2$ & $12.57$ & $3.78$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una Intel Mesa ADL GT2}
+\caption{Experimentos: Intel Mesa ADL GT2, 96 cores, 1.45GHz}
 \label{tab:cisco-laptop}
 \end{table}
 
-\begin{table}
+\begin{table}[hb]
 \centering
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 	\hline
-	\textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
+	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
-	$256$ & $12.632$ & $2.461$ \\
+	$256$ & $S1$ & $13.70$ & $2.46$ \\
+	 & $S2$ & $13.79$ & $2.48$ \\
 	\hline
-	$512$ & $10.363$ & $2.780$ \\
+	$512$ & $S1$ & $11.87$ & $2.63$ \\
+	 & $S2$ & $11.92$ & $2.57$ \\
 	\hline
-	$1024$ & $8.825$ & $3.245$ \\
+	$1024$ & $S1$ & $10.58$ & $2.96$ \\
+	 & $S2$ & $10.65$ & $2.92$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una Nvidia GTX 1660 Ti de laptop}
+\caption{Experimentos para una Nvidia GTX 1660 Ti mobile, 1536 nucleos, 1.45 GHz, 6GB VRAM}
 \label{tab:pizzo-laptop}
 \end{table}
 
-\begin{table}
+\begin{table}[hb]
 \centering
-\begin{tabular}{|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 	\hline
-	\textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
+	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
-	$256$ & $141.570$ & $1.949$ \\
+	$256$ & $S1$ & $141.57$ & $1.88$ \\
+	 & $S2$ & 141.59 & 1.90 \\
 	\hline
-	$512$ & $141.496$ & $1.936$ \\
+	$512$ & $S1$ & $141.47$ & $1.90$ \\
+	 & $S2$ & $141.51$ & $1.91$ \\
 	\hline
-	$1024$ & $141.406$ & $1.950$ \\
+	$1024$ & $S1$ & $140.88$ & $1.89$ \\
+	 & $S2$ & $141.21$ & $1.99$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una RTX 4070}
+\caption{Experimentos: Nvidia Geforce RTX 4070, 5888 nucleos, 1.92 GHz, 12GB VRAM}
 \label{tab:pizzo-desktop}
 \end{table}
+
+\section{Análisis de resultados}
+
+Una observación es la falta de rendimiento, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
+Los valores de estas métricas son mucho mejores en el artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
+
+Una observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
+Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
+
+Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
+En una tarjeta de última generación se lograron aproximadamente 140 FPS.
+Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
+
+% TODO: Agregar tabla comparando con los resultados del algoritmo original.
+% \begin{table}[hb]
+% 	\centering
+% 	\begin{tabular}
+% 		\hline
+% 		\textbf{Etapa} & \textbf{Ras} & \textbf{Dir} & \textbf{}
+% 	\end{tabular}
+% 	\caption{Tiempos por cuadro del artículo original}
+% 	\label{tab:original-times}
+% \end{table}

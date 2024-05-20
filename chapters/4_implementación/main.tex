@@ -1,49 +1,47 @@
-\graphicspath{{chapters/4_implementación/figures/}}
+\graphicspath{{chapters/4_implementación/figures}}
 
 \chapter{Implementación}\label{chap:implementation}
 
 La primera decisión de relvancia en el proceso de desarrollo fue implementar el algoritmo en la GPU.
 La principal razón para esto es el alto grado de paralelismo que la misma ofrece.
-A su vez, el ducto raster, ampliamente implementado y optimizado en las GPUs, puede ser reutilizado.
-Esto reduce los cálculos necesarios a la hora de generar una imagen.  
+A su vez, el ducto de rasterización, ampliamente implementado y optimizado en las GPUs, puede ser reutilizado lo cual reduce los cálculos necesarios a la hora de generar una imagen.
 
-La programación en GPU precisa un lenguaje \textbf{motor}, una API de gráficos y un lenguaje de \textbf{sombreado}.
-El lenguaje motor ejecuta en la CPU y es el que realiza y coordina las llamadas a funcionalidades de la GPU.
-La API de gráficos es la que provee la interfaz que utiliza el lenguaje motor para comunicarse con la GPU.
+La programación en GPU precisa un lenguaje para la \textbf{CPU}, una \textbf{API de gráficos} y un lenguaje de \textbf{sombreado}.
+El lenguaje de CPU es el que realiza y coordina las llamadas a funcionalidades de la GPU.
+La API de gráficos es la que provee la interfaz que utiliza el lenguaje de CPU para comunicarse con la GPU.
 La misma es una especificación que los fabricantes de las tarjetas de video deben implementar si deciden soportarla.
-El lenguaje de sombreado es el que se utiliza para escribir los shaders, programas que ejecutan directo en la GPU y hacen uso del paralelismo que esta ofrece.
+El lenguaje de sombreado es el que se utiliza para escribir los \textit{shaders}, programas que ejecutan directo en la GPU y hacen uso del paralelismo de la misma.
 
-Como lenguaje motor se eligió \textbf{Rust}, un lenguaje de sistemas moderno multiparadigma.
-Fue escogido debido a su gran comunidad, su amplia documentación y a su poderoso manejador de paquetes cargo.  
-Se caracteriza por ser eficiente al permitir un acceso a primitivas de bajo nivel.
-Además, provee abstracciones de costo cero lo cual mejora la experiencia de desarrollo.
-Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución.
+Como lenguaje de CPU se eligió \textbf{Rust}, un lenguaje de sistemas moderno multiparadigma.
+Fue escogido debido a su gran comunidad, su amplia documentación y a su poderoso manejador de paquetes \textit{cargo}.  
+Se caracteriza por ser eficiente, al permitir un acceso a primitivas de bajo nivel, pero manteniendo una buena experiencia de desarrollo, debido a las abstracciones de costo cero que provee.
+Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución como punteros nulos en situaciones que se espera un valor, o accesos a espacios de memoria no inizialidos o liberados.
 
 Se consideró a su vez C++ dado que es el lenguaje más popular para aplicaciones gráficas.  
 Si bien ambos lenguajes presentan una eficiencia similar, el factor que más pesó en la decisión fue la presencia de un manejador de paquetes.
-El mismo permitió instalar varias dependencias más rápido y cambiarlas a lo largo del ciclo de desarrollo cuando esto fue necesario.
-En este caso, dada la implementación en la GPU, la eficiencia y el manejo de memoria es secundario. 
+El mismo permitió instalar varias dependencias más rápido y cambiarlas a lo largo del ciclo de desarrollo cuando fue necesario.
+Dada la implementación en la GPU, la eficiencia y el manejo de memoria fue secundario. 
 
-Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque este soporte otros lenguajes.
+Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque soporte otros lenguajes.
 También fueron consideradas CUDA y Vulkan, pero se terminó por escoger OpenGL debido a la facilidad de desarrollo, el conocimiento previo del equipo y la facilidad de trabajo con \textit{compute shaders}.
 Si bien Vulkan es una API más moderna, es conocida por ser más compleja que OpenGL y el equipo del trabajo no contaba con la suficiente experiencia para utilizarlo adecuadamente.
-Esto hubiera llevado a mayores tiempos de desarrollo y no necesariamente a una implementación más eficiente.
-CUDA suele usarse para cómputo de propósito general en la GPU, el cual hubo mucho, sin embargo, también fue utilizado el ducto raster, algo que CUDA no tiene.
-Por esto se optó por utilizar los compute shaders de OpenGL para el cómputo de propósito general necesario.
+Su uso hubiera llevado a mayores tiempos de desarrollo y no necesariamente a una implementación más eficiente.
+CUDA suele usarse para cómputo de propósito general en la GPU, el cual fue ampliamente utilizado, sin embargo, también fue utilizado el ducto de rasterización, algo que CUDA no tiene.
+Se optó por utilizar los \textit{compute shaders} de OpenGL para el cómputo de propósito general necesario.
 
 El desarrolló se realizó en el sistema operativo \textbf{Linux} debido a los ambientes de desarrollo utilizados.
 De igual manera, tanto Rust como OpenGL son multiplataforma, con lo que la aplicación es facilmente portable a otros sistemas operativos.
 
 La arquitectura de la aplicación consta de tres paquetes: \textit{CLI}, \textit{Core} y \textit{Engine}.
-\textit{Engine} contiene todas las abstracciones sobre OpenGL utilizadas, provee tipos como \textit{Transform}, \textit{Light}, \textit{Camera} que permiten manipular objetos en el espacio 3D.
+\textit{Engine} contiene todas las abstracciones sobre OpenGL utilizadas, provee tipos como \textit{Transform}, \textit{Light}, \textit{Camera}, comunes en aplicaciones interactivas, que permiten manipular objetos en el espacio 3D.
 \textit{Core} contiene todas las etapas y programas del algoritmo que han sido mencionados: voxelización, construcción del \textit{octree}, filtrado, actualización y el trazado de conos en si.
-El paquete \textit{CLI} es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
-Estos tres paquetes se muestran en la figura \ref{fig:overall_architecture}.
+El paquete \textit{CLI} (\textit{Command-Line Interface}, interfaz por línea de comandos) es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
+La arquitectura se muestra en la figura \ref{fig:overall_architecture}.
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{arquitectura_vct.png}
-    \caption{Arquitectura de la aplicación}
+    \includegraphics[width=.5\textwidth]{arquitectura_vct.png}
+    \caption{Arquitectura alto nivel de la aplicación}
     \label{fig:overall_architecture}
 \end{figure}
 
@@ -51,17 +49,35 @@ En las siguientes secciones se verán más a detalle cada uno de estos paquetes.
 
 \section{\textit{Engine}}
 
-En este paquete, se implementaron las abstracciones usuales al trabajar con APIs de gráficos.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{diagram_engine.png}
+    \caption{Arquitectura de \textit{Engine}}
+    \label{fig:engine_architecture}
+\end{figure}
+
+El paquete \textit{Engine} es en el que se implementaron las abstracciones usuales al trabajar con APIs de gráficos, que son utilizadas por el resto de la aplicación.
+Se pueden ver con sus relaciones en la Figura \ref{fig:engine_architecture}.
+
+La abstracción principal es la escena (\textit{Scene}).
+Una escena consta de una luz (\textit{Light}) y de muchos objetos (\textit{Object}).
+Es la representación del mundo tridimensional en el que se encuentra todo lo visible de la aplicación.
+
+Cada objeto de la escena tiene un material (\textit{Material}), un modelo (\textit{Model}) y un \textit{Transform}.
 
 \textit{Transform} es un tipo que contiene la posición, rotación y escala de un objeto en la escena.
-Esto simplifica el lidiar con matrices de traslación, rotación y escala por todo el programa, todo se maneja en el \textit{Transform}.
+Esto simplifica el lidiar con matrices de traslación, rotación y escala a lo largo de todo el programa.
+
+Tanto los modelos como los materiales son cargados una vez al inicio de la aplicación en el \textit{AssetRegistry} para no duplicarlos en el caso que sean utilizados por más de un objeto.
+Los objetos solo necesitan almacenar referencias a estos.
+
+Se representan los modelos como mallas poligonales, distinto al trazado de rayos en el que se usan ecuaciones geométricas.
+Para cargar estos modelos, se utilizó la librería \textit{tobj} \cite{tobj-crate}, que permite cargar archivos con extensión \textit{obj}.
+Cada \textit{Model} contiene muchos \textit{Mesh} y tiene un \textit{Aabb}, un Axis-Aligned Bounding Box, que se calcula a partir de cada uno de los vértices del mismo.
+Este volumen acotante se calcula en el momento que se carga el modelo y se expone para ser utilizado por el resto de la aplicación.
 
 \textit{Camera} es el punto de vista del cual se renderiza toda la escena.
 Se soportan tanto cámaras en perspectiva como ortogonales.
-
-Debido al uso del ducto raster, la aplicación representa los modelos como mallas poligonales, distinto al trazado de rayos en el que se usan ecuaciones geométricas.
-Para cargar estos modelos, se utilizó la librería \textit{tobj} \cite{tobj-crate}, que permite cargar archivos con extensión \textit{obj}.
-Se usa una abstracción \textit{Model}, que contiene muchos \textit{Mesh}.
 
 Para las luces, se soportan tanto luces direccionales como puntuales.
 Estas luces tienen toda la lógica necesaria para que luego \textit{core} realice la inyección de fotones.
@@ -69,51 +85,111 @@ Estas luces tienen toda la lógica necesaria para que luego \textit{core} realic
 La estructura de árbol, los bricks, y todas las estructuras auxiliares, se almacenan en la memoria de la GPU.
 Para esto, se ofrecen abstracciones sobre los distintos tipos de memorias y texturas de la GPU.
 \textit{TextureBuffer}, \textit{Texture2D} y \textit{Texture3D} son ejemplos de estas, que manejan memoria lineal, bidimensional y tridimensional respectivamente.
+Se provee la abstracción \textit{Shader} para interactuar con la GPU mediante programas escritos en GLSL.
 
 Finalmente, se exponen las primitivas necesarias para crear una interfaz de usuario.
 Luego, estas son usadas por \textit{core} para modificar parámetros del algoritmo.
 
 \section{Core}
 
-Este paquete es el corazón de la implementación, dado que es aquí donde se implementa el algoritmo.
-Contiene la lógica de la voxelización, los tipos de datos del \textit{octree}, el trazado de conos y un menú para poder ajustar parámetros en tiempo de ejecución.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{diagram_core.png}
+    \caption{Arquitectura de \textit{Core}}
+    \label{fig:core_architecture}
+\end{figure}
+
+\textit{Core} es el corazón de la implementación, donde se implementa el algoritmo.
+Contiene la lógica de la voxelización, toda la implementación del \textit{octree}, el trazado de conos y un menú para poder ajustar parámetros en tiempo de ejecución.
+Debido a que el algoritmo está implementado en la GPU, este paquete hace mucho uso de los \textit{Shaders}.
+Sus componentes se pueden ver en la Figura \ref{fig:core_architecture}.
+
+\subsection{Etapas del algoritmo}
+
+En la Figura \ref{fig:core_architecture} se pueden ver los componentes encargados de cada etapa del algoritmo.
+
+La voxelización tiene su propio módulo que hace uso del ducto de rasterización como se vió en \ref{sec:voxelization}.
+Para voxelizar la escena, esta primero debe ser normalizada usando el \textit{Aabb} expuesto por \textit{Engine}.
+Se crea un \textit{Aabb} para la escena, y se le aplican transformaciones de escalado y translación de manera que sea lo mas grande posible pero quede incluida dentro de la grilla de vóxeles.
+Las mismas transformaciones luego se aplican a los modelos al momento de voxelizar, asegurando asi que todo objeto quede dentro de la grilla, y que se mantengan las proporciones.
+
+La abstracción de \textit{Octree} realiza tanto construcción como el filtrado de los valores de la escena a lo largo de él.
+Guarda referencias a todas las texturas utilizadas y a todos los \textit{Shaders} que operan sobre esas texturas.
+También guarda una referencia a la lista de vóxeles generada por el módulo anterior.
+
+El \textit{ConeTracer} reune todos los conceptos anteriores e implementa el algoritmo de trazado de conos en el ducto de rasterizado, donde se genera la imagen final.
 
 \subsection{Representación del \textit{octree}}
 
-La forma de representar el árbol en GPU es con una textura lineal.
-Esta textura que contiene los nodos toma el nombre de \textit{node pool}.
-Cada téxel (píxel de textura) de esta textura es un puntero a otro nodo.
-Se toma la convención de que cada grupo de 8 téxeles es un nodo, cada téxel es un puntero al hijo correspondiente.
-Los primeros 4 téxeles representan una subdivisión con valor de $z$ menor mientras que los últimos 4 representan una con valor de $z$ mayor.
-Dentro de cada grupo de 4, los primeros 2 son un valor menor de $y$ y los últimos uno mayor.
-Dentro de los grupos de 2, el primero es menor $x$ y el último mayor.
-Si un téxel tiene el valor $0$, entonces ese hijo del nodo no existe.
-Si un téxel tiene un valor $x \not = 0$, entonces en la posición $x * 8$ comienza un nuevo nodo, que termina en $x * 8 + 7$.
+La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
+Esta textura se llama \textit{node pool}.
+Cada téxel (elemento de textura) de esta textura es un puntero a otro nodo.
+Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
+Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
+De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
+Por ultimo de cada uno de los 4 grupos de 2, el primer téxel representa al hijo con coordenada $x = 0$ y el último con coordenada $x = 1$.
+Si un téxel tiene el valor $0$, entonces ese hijo del nodo representa espacio vacio, y ese nodo no sera guardado en la \textit{node pool}.
+Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n * 8$ comienza ese nodo, que termina en en la posición de memoria $x * 8 + 7$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{bricks-memory-big-borders.png}
+    \caption{Ejemplo de brick pool, con indices de memoria}
+    \label{fig:brick_pool_example}
+\end{figure}
 
 Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \textit{brick pool}.
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
 En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
-Si otro valor quiere ser almacenado, por ejemplo la irradiancia, entonces se crea otra \textit{brick pool}.
-Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen.
-
-Cada nodo tiene asociado un brick, que es identificado únicamente por su índice.
-Dado que los bricks existen en una textura 3D, la manera de identificarlos es con un vector de $\mathbb{R}^3$.
-Para esto, se usa una función que convierte cada índice de $\mathbb{R}$ en un vector de $\mathbb{R}^3$.
+Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
+Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
+En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\textwidth]{node-pool-example.png}
-    \caption{Ejemplo node pool y brick pool}
-    \label{fig:node_pool_example}
+    \includegraphics[width=0.5\textwidth]{indexed-bricks.png}
+    \caption{Ejemplo de bricks, cada uno con un identificador único el cual lo asocia a un nodo}
+    \label{fig:indexed_bricks}
 \end{figure}
 
-En la figura \ref{fig:node_pool_example} se muestra un ejemplo de \textit{node pool} y \textit{brick pool}.
-En este ejemplo, vemos que la \textit{node pool} está pintada de rojo, mientras que la \textit{brick pool} está pintada de azul.
-Cada nodo de la \textit{node pool} está numerado en el margen izquierdo ($0, 1, 2$), está formado por $8$ téxeles, los pequeños números arriba de cada caja.
-Los números dentro de cada téxel de un nodo son los índices del nodo hijo, que debe ser multiplicado por $8$ para conseguir el téxel correspondiente.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{indexed-nodes.png}
+    \caption{Ejemplo de nodos, cada uno con un identificador único}
+    \label{fig:indexed_nodes}
+\end{figure}
 
-Al almacenar los valores en una textura 3D, conseguimos interpolación trilineal acelerada por el hardware de la GPU a la hora de tomar una muestra dentro de un brick.
-Esto mejora la calidad de imagen.
+Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras \ref{fig:indexed_bricks} y \ref{fig:indexed_nodes} respectivamente.
+Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
+Para esto, si se quiere encontrar el brick correspondiente a un nodo dado su identificador, dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
+El vector de $\mathbb{N}^3$ $(n, m, s)$ es el índice del primer vóxel del brick buscado.
+El resto del \textit{brick} se encuentra en las posiciones desde $(n, m, s)$ hasta $(n + 2, m + 2, s + 2)$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{nodes-n-bricks.png}
+    \caption{Ejemplo node pool y brick pool}
+    \label{fig:nodes_n_bricks}
+\end{figure}
+
+En la figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
+Además cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
+
+Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío.
+Se usa el valor 0.
+Cada téxel apunta a un nodo mediante su índice en la \textit{node pool}.
+En la figura se muestran estos índices dentro de cada téxel.
+
+Se usa el índice del nodo para identificar su brick, el cual es parte de una textura 3D.
+Cada brick se muestra al costado de su nodo asociado, con sus coordenadas dentro de la textura en el margen derecho.
+Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node pool}.
+
+Propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
+Existe una función que lleva posiciones dentro del nodo, el cual representa una sección de la escena, a posiciones dentro de su brick asociado.
+En la figura \ref{fig:node_and_brick} se vé porque es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
+A la hora de tomar una muestra de una propiedad en un punto de la escena, se úbica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
+Si el punto no es el centro de uno de los vóxeles del brick, se debe interpolar el valor utliziando los vóxeles adyacentes.
+Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.
 
 \subsection{Menú}
 
@@ -125,10 +201,10 @@ Se desarrolló este menú utilizando un paquete del ecosistema de Rust llamado \
 Es muy sencillo conectar valores del código a etiquetas en el menú y botónes en el menú a acciones.
 
 El menú de la aplicación cuenta con varias ventanas, o submenúes, para ver valores, ajustar parámetros, y renderizar distintas imágenes.
-Uno de submenúes más útiles para depurar es uno que muestra todos los nodos de la \textit{node pool}, permite buscarlos por índice y coordenadas, y visualizarlos en el espacio.
+Uno de submenúes para depurar muestra todos los nodos de la \textit{node pool}, permite buscarlos por índice y coordenadas, y visualizarlos en el espacio.
 
 Esta se puede ver en la figura \ref{fig:node-positions-menu}.
-En el menú se muestran todos los nodos de la node pool con su indice (0, 1, 2, ...) y sus coordenadas dentro de la escena (entre 0 y 255).
+En el menú se muestran todos los nodos con su indice en el buffer y sus coordenadas dentro de la escena, entre $0$ y la cantidad de vóxeles por dimensión, $512$ o $1024$.
 Al apretar cualquier nodo, se muestra en la escena un cubo delimitando la región de la escena representada por ese nodo.
 Se pueden mostrar muchos nodos a la vez.
 
@@ -138,8 +214,6 @@ Se pueden mostrar muchos nodos a la vez.
     \caption{Menú de nodos}
     \label{fig:node-positions-menu}
 \end{figure}
-
-Este menú se puede filtrar, tanto por índice como por coordenadas, y se pueden mostrar los vecinos de cada nodo.
 
 También se usó la interfaz gráfica para reportar los FPS que fueron usados en el capítulo \ref{chap:experiments}.
 
@@ -167,10 +241,13 @@ Estos recursos son cargados primero y los objetos pueden reutilizarlos sin neces
 
 Utilizando estos archivos, se pueden definir muchas escenas distintas para probar la implementación.
 
-\subsection{Archivos de predeterminados}
+\subsection{Archivos de valores predeterminados}
 
-Para poder iterar más rápido, se crearon archivos de predeterminados.
+Para poder iterar más rápido, se crearon archivos de valores predeterminados.
 Estos archivos contienen valores predeterminados de opciones que cambian con el transcurso de la ejecución.
 Por ejemplo, la posición de la cámara, qué tipo de imagen se está renderizando, qué nodos están siendo visualizados.
 Estos archivos también pueden guardarse a partir del menú.
-Son muy útiles cuando se está viendo algo en específico, y es necesario cambiar el código y recompilar, porque inmediatamente se vuelve al mismo lugar.
+
+Al iniciar el programa, se puede especificar un archivo de valores predeterminados, que altera el estado inicial de la escena.
+Son muy útiles cuando se está investigando algo en específico o viendo una imagen desde un punto de vista particular.
+Es posible guardar los valores utilizados, cambiar algo en el código, recompilar y observar cómo ese cambio afectó lo que se estaba observando.
