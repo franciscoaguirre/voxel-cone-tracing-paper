@@ -110,7 +110,8 @@ En la Figura \ref{fig:core_architecture} se pueden ver los componentes encargado
 
 La voxelización tiene su propio módulo que hace uso del ducto de rasterización como se vió en \ref{sec:voxelization}.
 Para voxelizar la escena, esta primero debe ser normalizada usando el \textit{Aabb} expuesto por \textit{Engine}.
-Se crea un \textit{Aabb} para la escena, que es la unión de todos los de los modelos, y se usa para normalizarla.
+Se crea un \textit{Aabb} para la escena, y se le aplican transformaciones de escalado y translación de manera que sea lo mas grande posible pero quede incluida dentro de la grilla de vóxeles.
+Las mismas transformaciones luego se aplican a los modelos al momento de voxelizar, asegurando asi que todo objeto quede dentro de la grilla, y que se mantengan las proporciones.
 
 La abstracción de \textit{Octree} realiza tanto construcción como el filtrado de los valores de la escena a lo largo de él.
 Guarda referencias a todas las texturas utilizadas y a todos los \textit{Shaders} que operan sobre esas texturas.
