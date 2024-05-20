@@ -122,7 +122,7 @@ Se fija el tamaño del \textit{viewport} a coincidir con la cantidad de vóxeles
 Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D.
 Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D, sin embargo al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con mas de un vóxel en la dirección de proyección(profundidad).
 
-Es necesario calcular la intersección del plano del triangulo con los vóxles para encontrar los valores de profundidad en la grilla, ya que el triángulo fue proyectado perdiendo sus valores de profundidad.
+Es necesario calcular la intersección del plano del triangulo con los vóxeles para encontrar los valores de profundidad en la grilla, ya que el triángulo fue proyectado perdiendo sus valores de profundidad.
 Debido a la elección de la dimensión dominante de la normal para la proyección del triangulo, cada fragmento puede generar de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$, fuese $z$ la dirección dominante. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que mas me cuesta explicar
 Entonces, por cada fragmento 2D, los vóxeles que intersecan con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas de la profundiad en espacio de pantalla. % Hacemos lo de las derivadas? Si!
 Se necesitan la derivadas para calcular la orientación del plano del triángulo, ya que los fragmentos no tiene información global del triangulo que los genero, solo datos del punto responsable de la generación del mismo.

@@ -57,7 +57,7 @@ Tratar a la luz como una partícula es el campo de la óptica geométrica, en co
 La óptica geométrica trata a la luz como rayos que se mueven en líneas rectas.
 La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrándose en fenómenos como la interferencia, la difracción y la polarización.
 Si asumimos que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite{rtr}.
-A su vez, se ignoraron otros fenómenos como la fluorescencia y la fosforescencia.
+A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
 
 % Esto asume varias otras cosas, como linealidad, conservación de la energía, falta de polarización, fluorescencia y fosforescencia, entre otros.
 
@@ -88,7 +88,7 @@ Por cada círculo pasa el mismo flujo radiante, dado que la energía y el tiempo
 
 Es útil también considerar el área por la cual pasa un flujo radiante.
 Podemos definir esto como $E = \frac{\Theta}{A}$.
-Esta cantidad se llama o \textbf{radiosidad} o \textbf{irradiancia} dependiendo de si el flujo está llegando o saliendo de una superficie.
+Esta cantidad se llama o \textbf{radiosidad} o \textbf{irradiancia} dependiendo de si el flujo está llegando o saliendo de una superficie respectivamente.
 Estas medidas tienen unidad watts por metro cuadrado.
 En la Figura \ref{fig:point-light-flux}, la irradiancia en el círculo externo es menor que en el interno, dado que el área aumenta cuadráticamente con la distancia.
 
@@ -180,12 +180,11 @@ En la Figura \ref{fig:sphere-blinn-phong} se puede observar este sombreado aplic
         \includegraphics[width=\textwidth]{sphere-diffuse.png}
         \caption{Con sombreado difuso.}
     \end{subfigure}
+    % TODO: Agregar una foto que mezcle difuso con especular.
     \captionof{figure}{Esfera iluminada mediante el módelo local de Blinn-Phong.}
     \label{fig:sphere-blinn-phong}
     \end{center}
 \end{figure}
-
-% TODO: Fotos, ambiente, difusa, especular y todo junto
 
 \subsection{Iluminación global}
 
@@ -221,7 +220,7 @@ Tiene en cuenta toda la escena para calcular la luz en un punto.
 La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se calculan soluciones numéricas para su resolución.
 A su vez, considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
 
-En cambio, la \textbf{ecuación de reflectancia}\ref{eq:reflectance-equation}, derivada de la de renderizado, se enfoca en el cálculo de la luz indirecta.
+En cambio, la \textbf{ecuación de reflectancia} (\ref{eq:reflectance-equation}), derivada de la de renderizado, se enfoca en el cálculo de la luz indirecta.
 
 \begin{equation}\label{eq:reflectance-equation}
     L_o(p, \omega_o) = \int_{\Omega}{f(p, \omega_i, \omega_o) L_i(p, \omega_i) n \cdot \omega_i d\omega_i}
@@ -275,7 +274,7 @@ Su primer uso como herramienta de computación gráfica para representar reflexi
 
 \textit{Ray tracing} lanza rayos desde la cámara a través de la grilla de píxeles hacia la pantalla.
 Por cada rayo, se busca la intersección con el objeto más próximo.
-El punto de intersección se prueba si está en sombra lanzando un nuevo rayo hacia todas las luces de la escena y comprobando si se intersecan con algún objeto.
+El punto de intersección se prueba si está en sombra lanzando un nuevo rayo hacia todas las luces de la escena y comprobando si intersecan con algún objeto.
 Pueden surgir otros rayos desde la intersección.
 Si la superficie es especular, se genera un rayo en la dirección simétrica a la dirección de vista.
 Si la superficie es transparente, se genera un rayo en la dirección de refracción, gobernada por la ley de Snell\footnote{$n_1 \sin{\theta_1} = n_2 \sin{\theta_2}$}.
@@ -304,8 +303,8 @@ Suele notarse al representar curvas (ver Figura \ref{fig:whitted-ray-tracing-ali
 
 Kajiya propuso en 1986\cite{rendering-equation}, junto con la ecuación de renderizado, un método llamado \textit{path tracing}, una extensión de \textit{ray tracing} que utiliza integración de Monte Carlo para simular la dispersión de la luz.
 En lugar de únicamente trazar los caminos de reflexión y refracción si corresponden, muestrea aleatoriamente todos los posibles caminos de la luz, esto incluye caminos en los que la luz se dispersa.
-Es imposible muestrear todos los caminos posibles de la luz, por lo que un parámetro importante en este tipo de algoritmos es la cantidad de muestras que se toman.
-Debido a la variancia del muestreo aleatorio, este método sufre de ruido, un granulado en la imagen final.
+Es imposible muestrear todos los caminos posibles de la luz, por lo que un parámetro importante en este tipo de algoritmos es la cantidad de muestras tomadas.
+Debido a la variancia del muestreo aleatorio, el método sufre de ruido, un granulado en la imagen final.
 El mismo disminuye a medida que se toman más muestras.
 
 % TODO: Imagen generada con path tracing y ruido
@@ -570,7 +569,7 @@ Se guarda toda la información necesaria para etapas posteriores en texturas lla
 Se saltean los cálculos para objetos fuera del campo de visión y detrás de otros objetos.
 
 El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
-En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no está justificada dado que el aumento de rendimiento es despreciable.
+En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
 A su vez, el \textit{forward rendering} soporta mejor la opacidad.
 Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumetentar el rendimiento.
 También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como bloom, HDR (High Dynamic Range), corrección gamma, y normalización, entre otras.
