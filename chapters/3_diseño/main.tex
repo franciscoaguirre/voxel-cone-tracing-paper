@@ -195,7 +195,7 @@ En la figura se muestran los niveles 5, 6 y 7.
 
 Dado que la estructura tiene como máximo $512$ o $1024$ vóxeles de resolución, sin importar la geometría de la escena, los cálculos sobre ella son independientes de la complejidad de la geometría.
 
-\subsection{Nodos y bricks}\label{sec:nodes_and_bricks}
+\subsection{Nodos, bricks y vóxeles}\label{sec:nodes_and_bricks}
 
 Los nodos del árbol no almacenan los vóxeles mencionados en \ref{sec:voxelization}.
 Cada nodo almacena únicamente un puntero a sus, como máximo, $8$ hijos.
@@ -203,6 +203,9 @@ Cada nodo almacena únicamente un puntero a sus, como máximo, $8$ hijos.
 Cada nodo tiene asociado un \textbf{brick}, otra estructura que también representa una región del espacio.
 Cada brick está dividido en 27 vóxeles, distribuidos en una estructura de $3\times3\times3$.
 Son estos vóxeles los que almacenan los valores de la escena.
+Los nodos solo contienen punteros a sus hijos, existen para obtener la estructura del árbol.
+Los nodos proveen la estructura mientras que los bricks y vóxeles los datos.
+
 En la figura \ref{fig:node_and_brick} se puede observar un nodo con su brick asociado de la manera en la que se disponen en el espacio.
 Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices del nodo.
 Esto es necesario para que los bricks información con bricks de nodos vecinos, lo que garantiza que la interpolación dentro de un solo nodo tome en cuenta los valores de sus vecinos.
@@ -230,23 +233,28 @@ Se explicará en la Sección \ref{sec:border_transfer}.
 
 Para generar el octree disperso se usa la lista de vóxeles generada durante la voxelización.
 Se empieza con un árbol con un solo nivel, con un solo nodo que representa toda la escena.
-Se ejecuta el algoritmo especificado a continuación sobre cada nivel, para de esta forma generar el siguiente, hasta completarlo.
+Empezando en el primer nivel del árbol y descendiendo a lo largo de los niveles, se subdividen los nodos que contienen geometría.
+Un nodo debe ser subdividido cuando existe un vóxel en la lista con coordenadas dentro del nodo y no se llegó a un cierto nivel deseado.
+El algoritmo utilizado se detalla a continuación.
 
 Dado un nivel $i$ del árbol, dos programas principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
 
 Se corre un hilo de \textit{flag\_nodes} por cada vóxel de la lista de vóxeles.
-Dado un vóxel, se recorre el árbol construido hasta el momento, hasta llegar al último nivel actual.
-Para reccorer el árbol, cada hilo comienza en el primer nodo del árbol.
-Luego, en cada paso, se elige un hijo para descender utilizando la posición del vóxel en la grilla, iterativamente.
-Al llegar a un nodo en el último nivel, dependendiendo de la posición del vóxel, se marca uno de los $8$ punteros a sus hijos.
-Realizar esta marca es un proceso atómico e idempotente, ya que se limita a cambiar el bit mas significativo del puntero a 1.
-Se utiliza una operación atómica de la GPU, por lo que dos hilos efectuando la operación al mismo tiempo sobre el mismo bit no interfieren entre ellos.
+Dado un vóxel, se recorre el árbol, hasta llegar a $i$, el último nivel creado hasta el momento.
+Para recorrer el árbol, cada hilo comienza en su primer nodo.
+Al llegar a un nodo en el nivel $i$, se marca uno de los $8$ punteros a sus hijos.
+Cada hijo del nodo representa un octante en el espacio dentro de él.
+Se usa la posición del vóxel para determinar a qué octante pertenece, el puntero a este hijo es marcado.
+
+Realizar esta marca es un proceso idempotente, ya que se limita a cambiar el bit mas significativo del puntero a 1.
 Es idempotente porque el resultado de la operación es el mismo sin importar la cantidad de hilos que lo realicen.
 
 Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los punteros marcados. 
 Se corre un hilo por cada posible nodo hijo que puede ser creado en esta etapa, $8$ por cada nodo del nivel $i$.
-A cada hilo se le asigna uno de los punteros de los nodos del nivel $i$, confirma si fue marcado en el paso anterior, elimina la marca, crea el nodo hijo y agrega al puntero el indice del hijo recien creado.
-Siempre y cuando haya geometria en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el maximo determinado por la resolución de la grilla de vóxeles.
+A cada hilo se le asigna uno de los punteros de los nodos del nivel, confirma si fue marcado en el paso anterior, elimina la marca, crea el nodo hijo y agrega al puntero el indice del hijo recien creado.
+El índice del nuevo hijo se crea usando un contador que es posteriormente incrementado.
+Para el incremento, se usa una operación atómica que permite que dos hilos puedan crear un nodo concurrentemente sin colisión de índices.
+Siempre y cuando haya geometria en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el máximo determinado por la resolución de la grilla de vóxeles.
 
 Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
 Durante la construcción de un nivel interno del \textit{octree}, es probable que muchos hilos marquen la creación de un mismo nodo hijo.
