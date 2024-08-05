@@ -2,22 +2,47 @@
 
 \chapter{Experimentación}\label{chap:experiments}
 
-Para analizar el rendimiento de la implementación, se realizaron experimentos en distintas tarjetas gráficas.
-Las escenas utilizadas se muestran en las figuras \ref{fig:cornell-box-full} y \ref{fig:complex-meshes}, las llamaremos $S1$ y $S2$ respectivamente.
-Se pueden observar la luz indirecta difusa, luz indirecta especular y sombras suaves.
+Para analizar el rendimiento de la implementación, se realizaron experimentos en distintas tarjetas gráficas, las cuales se ven en el cuadro \ref{tab:hardware-used}.
+Las escenas utilizadas se muestran en las figuras \ref{fig:cornell-box-full} y \ref{fig:sponza}, las llamaremos $S1$ y $S2$ respectivamente.
+Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta especular y sombras suaves.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		\textbf{Nombre} & \textbf{GPU} & \textbf{Núcleos} & \textbf{Clock (GHz)} & \textbf{VRAM (GB)} \\
+		\hline
+		$H1$ & Intel Mesa ADL GT2 & 96 & 1.45 & ??? \\
+		\hline
+		$H2$ & Nvidia GTX 1660 Ti mobile & 1536 & 1.45 & 6 \\
+		\hline
+		$H3$ & Nvidia Geforce RTX 4070 & 5888 & 1.92 & 12 \\
+		\hline
+	\end{tabular}
+	\caption{Hardware utilizado.}
+	\label{tab:hardware-used}
+\end{table}
 
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{cornell-box-full.png}
-	\caption{Escena de prueba con geometría simple}
+	\caption{Cornell box.}
 	\label{fig:cornell-box-full}
 \end{figure}
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[width=\textwidth]{complex-meshes.png}
-	\caption{Escena de prueba con geometría más compleja}
-	\label{fig:complex-meshes}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{sponza-direct.png}
+		\caption{Solo luz directa.}
+	\end{subfigure}
+	\begin{subfigure}{.49\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{sponza-all.png}
+		\caption{Luz directa e indirecta.}
+	\end{subfigure}
+	\caption{Sponza.}
+	\label{fig:sponza}
 \end{figure}
 
 Los experimentos varían la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS, por sus siglas en inglés) y el tiempo de construcción del \textit{octree} en segundos.
@@ -44,7 +69,7 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	 & $S2$ & $12.57$ & $3.78$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos: Intel Mesa ADL GT2, 96 cores, 1.45GHz}
+\caption{Experimentos usando $H1$.}
 \label{tab:cisco-laptop}
 \end{table}
 
@@ -64,7 +89,7 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	 & $S2$ & $10.65$ & $2.92$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos para una Nvidia GTX 1660 Ti mobile, 1536 nucleos, 1.45 GHz, 6GB VRAM}
+\caption{Experimentos usando $H2$.}
 \label{tab:pizzo-laptop}
 \end{table}
 
@@ -84,7 +109,7 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	 & $S2$ & $141.21$ & $1.99$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos: Nvidia Geforce RTX 4070, 5888 nucleos, 1.92 GHz, 12GB VRAM}
+\caption{Experimentos usando $H3$.}
 \label{tab:pizzo-desktop}
 \end{table}
 
@@ -99,14 +124,3 @@ Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por
 Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
 En una tarjeta de última generación se lograron aproximadamente 140 FPS.
 Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
-
-% TODO: Agregar tabla comparando con los resultados del algoritmo original.
-% \begin{table}[hb]
-% 	\centering
-% 	\begin{tabular}
-% 		\hline
-% 		\textbf{Etapa} & \textbf{Ras} & \textbf{Dir} & \textbf{}
-% 	\end{tabular}
-% 	\caption{Tiempos por cuadro del artículo original}
-% 	\label{tab:original-times}
-% \end{table}
