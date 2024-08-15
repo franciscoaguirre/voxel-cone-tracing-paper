@@ -12,14 +12,14 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 		\hline
 		\textbf{Nombre} & \textbf{GPU} & \textbf{Núcleos} & \textbf{Clock (GHz)} & \textbf{VRAM (GB)} \\
 		\hline
-		$H1$ & Intel Mesa ADL GT2 & 96 & 1.45 & ??? \\
+		$H1$ & Intel Mesa ADL GT2 & 96 & 1.45 & * \\
 		\hline
 		$H2$ & Nvidia GTX 1660 Ti mobile & 1536 & 1.45 & 6 \\
 		\hline
 		$H3$ & Nvidia Geforce RTX 4070 & 5888 & 1.92 & 12 \\
 		\hline
 	\end{tabular}
-	\caption{Hardware utilizado.}
+	\caption{Hardware utilizado. * al ser una tarjeta integrada, usa la memoria de la CPU.}
 	\label{tab:hardware-used}
 \end{table}
 
@@ -89,13 +89,13 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
 	$256$ & $S1$ & $13.70$ & $2.46$ \\
-	 & $S2$ & $13.79$ & $2.48$ \\
+	 & $S2$ & $38.78$ & $1.73$ \\
 	\hline
 	$512$ & $S1$ & $11.87$ & $2.63$ \\
-	 & $S2$ & $11.92$ & $2.57$ \\
+	 & $S2$ & $23.39$ & $1.74$ \\
 	\hline
 	$1024$ & $S1$ & $10.58$ & $2.96$ \\
-	 & $S2$ & $10.65$ & $2.92$ \\
+	 & $S2$ & $1.89$ & $1.82$ \\
 	\hline
 \end{tabular}
 \caption{Experimentos usando $H2$.}
@@ -109,7 +109,7 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
 	$256$ & $S1$ & $141.57$ & $1.88$ \\
-	 & $S2$ & 141.59 & 1.90 \\
+	 & $S2$ & $141.27$ & $1.70$ \\
 	\hline
 	$512$ & $S1$ & $141.47$ & $1.90$ \\
 	 & $S2$ & $141.51$ & $1.91$ \\
