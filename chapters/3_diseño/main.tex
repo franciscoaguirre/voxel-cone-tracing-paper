@@ -254,7 +254,7 @@ Se corre un hilo por cada posible nodo hijo que puede ser creado en esta etapa, 
 A cada hilo se le asigna uno de los punteros de los nodos del nivel, confirma si fue marcado en el paso anterior, elimina la marca, crea el nodo hijo y agrega al puntero el indice del hijo recien creado.
 El índice del nuevo hijo se crea usando un contador que es posteriormente incrementado.
 Para el incremento, se usa una operación atómica que permite que dos hilos puedan crear un nodo concurrentemente sin colisión de índices.
-Siempre y cuando haya geometria en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el máximo determinado por la resolución de la grilla de vóxeles.
+Siempre y cuando haya geometría en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el máximo determinado por la resolución de la grilla de vóxeles.
 
 Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
 Durante la construcción de un nivel interno del \textit{octree}, es probable que muchos hilos marquen la creación de un mismo nodo hijo.
@@ -293,44 +293,37 @@ Mientras más triángulos tenga la escena original y menos resolución la grilla
 % Esto creo que deberia ir en implementacion
 En \ref{sec:nodes_and_bricks}, se vió como los \textit{bricks} ocupan una región más amplia del espacio que su nodo correspondiente.
 Además los vóxeles conseguidos en la voxelización no estan alineados con los vóxeles de los bricks.
-En la figura \ref{fig:voxels-to-bricks} se puede observar un brick, cuyos vóxeles estan numerados, solapado con 4 vóxeles generados en el paso de voxelización, cada uno con su color.
-Estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel mas bajo, pero llegando a un nivel mayor de resolución.
-En la figura, el vóxel 0 está una cuarta parte cubierto por el color violeta, por lo que se le asigna este valor. De forma similar se le asigna un color a las otras esquinas del brick. 
+En la primer parte de la figura \ref{fig:voxels-to-bricks} se puede observar un brick, cuyos vóxeles estan numerados, solapado con 4 vóxeles generados en el paso de voxelización, cada uno con su color.
+En el espacio de la escena estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel mas bajo, pero llegando a un nivel mayor de resolución.
+Por lo que a cada nodo le corresponden a lo sumo 8 vóxeles del paso de voxelización, si consideramos que triangulos que se solapan en un vóxel de la grilla devuelven un unico vóxel con el promedio de sus colores.
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=.5\textwidth]{voxels-to-bricks.png}
-    \caption{Vóxeles en los que se ha subdividido la geometría y el brick donde van a terminar.}
+\begin{figure}[ht]
+    \begin{subfigure}{.49\textwidth}
+        \centering
+        \includegraphics[width=.5\textwidth]{voxels-to-bricks.png}
+        \caption{Solapamiento en el espacio de la escena entre el brick y los vóxeles}
+    \end{subfigure}
+    \begin{subfigure}{.49\textwidth}
+        \centering
+        \includegraphics[width=.5\textwidth]{voxels-to-bricks-b.png}
+        \caption{Brick con el valor de los vóxeles cargados}
+    \end{subfigure}
+    \caption{Vóxeles de la voxelización y su mapeo a un brick}
     \label{fig:voxels-to-bricks}
 \end{figure}
 
-Luego, se aplica un programa \textit{spread\_leaves}, para esparcir los valores de las esquinas a lo largo de todo el \textit{brick}.
-Su funcionamiento se muestra en 2D en la figura \ref{fig:spread-leaves}:
+Para la versión 2D a cada nodo le corresponden a lo sumo 4 vóxeles del paso de voxelización.
+Se le asignan valores a todos los vóxeles del brick, utilizando la figura \ref{fig:voxels-to-bricks} como ejemplo, como se detalla a continuación:
 \begin{itemize}
-    \item El vóxel central almacena el promedio de todas las 8 esquinas
-    \item El vóxel del medio de cada cara almacena el promedio de las 4 esquinas de su cara
-    \item El vóxel del medio de cada arista almacena el promedio de las 2 esquinas de esa arista
+    \item El vóxel 4 almacena el promedio de azul y rojo
+    \item El vóxel del medio de cada arista almacena el promedio de los 2 valores que le corresponden y espacio vacio, siendo el vóxel 3 un azul semi transparente con un alfa de 0.5
+    \item El vóxel de cada esquina almacena tres cuartas partes de espacio vacío, y el color correspondiente, siendo el vóxel 2 de color rojo con un alfa de 0.25
 \end{itemize}
-Como resultado, se esparcen los valores de las esquinas a todo el \textit{brick}.
-La lógica detras del \textit{spread\_leaves} se desprende de la figura \ref{fig:voxels-to-bricks}, al ver las regiones de los vóxeles del brick que intersecan con los de la voxelización.
-De esta figura también se desprende la necesidad del \textit{border transfer} \ref{sec:border_transfer}, ya que los espacios blancos de los vóxeles del brick deben ser rellenados con información de nodos vecinos.
-Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las \textit{bricks} $3\times3\times3$ subdivisiones.
-A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
-\begin{figure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=.75\textwidth]{spread-leaves-edge.png}
-        \caption{En una arista.}
-    \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
-        \centering
-        \includegraphics[width=.75\textwidth]{spread-leaves-center.png}
-        \caption{En el centro.}
-    \end{subfigure}
-    \caption{Funcionamiento de \textit{spread\_leaves} en 2D. Las flechas indican aporte al promedio.}
-    \label{fig:spread-leaves}
-\end{figure}
+Como resultado, se esparcen los valores de los vóxeles del paso de voxelización a los vóxeles del \textit{brick}.
+De esta figura también se desprende la necesidad del border transfer \ref{sec:border_transfer}, ya que los espacios vacios de los vóxeles del brick deben ser rellenados con información de nodos vecinos, aunque de forma transitória afectan el alfa del vóxel.
+Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las $3\times3\times3$ subdivisiones del \textit{brick} .
+A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
 \subsection{Border transfer}\label{sec:border_transfer}
 
@@ -339,6 +332,7 @@ Sin embargo, cada nodo tiene su propio \textit{brick}, pero esos \textit{bricks}
 Es necesario asegurarse que los valores almacenados en esos vóxeles frontera tengan el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
 Sin embargo, luego de aplicar \textit{spread\_leaves}, los vóxeles frontera pueden tener valores distintos entre \textit{bricks} vecinos.
 Para igualarlos, se promedian los valores de la frontera con la del \textit{brick} vecino.
+Además este paso es necesario para rellenar los espacios vacios vistos en la parte anterior.
 
 El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada \textit{brick} con la de sus vecinos, en los ejes X, Y y Z.
 De esta manera, aún cuando un vóxel puede estar en varios \textit{bricks}, en $8$ como máximo para los vóxeles en las esquinas de los \textit{bricks}, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
@@ -346,13 +340,23 @@ En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{border-transfer.png}
-    \caption{\textit{Bricks} vecinos, antes y después del border transfer.}
+    \begin{subfigure}{1.0\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{border-transfer.png}
+        \caption{\textit{Bricks} vecinos antes del border transfer.}
+    \end{subfigure}
+    \begin{subfigure}{1.0\textwidth}
+        \centering
+        \includegraphics[width=1.0\textwidth]{border-transfer-b.png}
+        \caption{\textit{Bricks} vecinos después del border transfer.}
+    \end{subfigure}
+    \caption{\textit{Bricks} vecinos en el \textit{eje X}.}
     \label{fig:border_transfer}
 \end{figure}
 
 \subsection{Nodos frontera}
 
+El paso anterior tiene un problema, asume que todos los nodos tienen vecinos.
 Al usar un \textit{octree} disperso, no existen nodos en donde no hay geometría.
 Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
 En el límite entre la geometría y el espacio vacío existen nodos sin vecinos.
@@ -360,18 +364,67 @@ Estos nodos presentan un problema que impide una correcta interpolación, dado q
 Para una correcta interpolación, es necesaria una capa de nodos extra, los que llamaremos \textbf{nodos frontera}, que representa el espacio vacío adyacente a la geometría.
 
 Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo.
-Sus \textit{bricks} tienen vóxeles con valor de opacidad $0$.
-Existen solo para asegurar una correcta interpolación en los extremos de la geometría.
-El mismo problema no se vuelve a generar entre estos nodos frontera y el espacio vacio, dado que los vóxeles compartidos entre ellos tienen opacidad nula.
+Sus \textit{bricks} en principio no contienen valores, existen para asegurar una correcta interpolación en los extremos de la geometría.
+Se realiza un border transfer extra entre los nodos frontera y sus vecinos, de manera que los vóxeles compartidos entre los dos tengan el mismo valor.
+El mismo problema no se vuelve a generar entre estos nodos frontera y el espacio vacío, dado que los vóxeles compartidos entre ellos tienen opacidad nula.
 El resultado de la introducción de los nodos frontera se observa en la figura \ref{fig:nodos_frontera}.
 
+En el cone tracing, se toma la intersección del cono con el nodo.
+Luego se toma una muestra del \textit{brick}, en el lugar donde interseca con el cono.
+Para mejor entender el problema que es solucionado por los nodos frontera, veamos un ejemplo
+y en vez de un cono usemos un rayo ya que eso se acerca mejor a lo que hace el algoritmo.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.5\textwidth]{sampling-interpolated.png}
+    \caption{Muestreo interpolado.}
+    \label{fig:muestreo-interpolado}
+\end{figure}
+
+Consideremos un nodo como el de la figura \ref*{fig:muestreo-interpolado}, cuyo \textit{brick} asociado tiene sus vóxeles numerados.
+Este nodo no tiene vecinos.
+Digamos que su vóxel 6 es de color azul y su vóxel 7 color rojo, ambos con alfa 1.
+Si se tiene un rayo que interseca en algun punto entre ambos vóxeles, como se puede ver representado con un punto rojo en la figura \ref{fig:muestreo-interpolado}, el valor muestreado sera violeta con un mayor componente azul, la interpolación lineal entre ambos.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.5\textwidth]{sampling-center-voxel.png}
+    \caption{Muestreo del centro de un vóxel.}
+    \label{fig:muestreo-centro-voxel}
+\end{figure}
+
+Si un rayo interseca con el centro del vóxel como en la figura \ref{fig:muestreo-centro-voxel}, el color muestreado sera azul con alfa 1.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.5\textwidth]{sampling-vacio.png}
+    \caption{Muestreo con resultado vacío.}
+    \label{fig:muestreo-vacio}
+\end{figure}
+
+¿Pero que ocurre cuando el rayo interseca como se ve en la figura \ref{fig:muestreo-vacio}?
+Siguiendo la misma lógica, debería ser una interpolación entre azul y vacio, el cual sería azul con un alfa menor a 1.
+Sin embargo, el rayo solo puede intersecar con nodos, no \textit{bricks}, por lo que la intersección es vacia.
+Pero eso es inconsistente, dado que ese vóxel tiene un valor, aunque no haya nodo ahí.
+Si el nodo tuviese un vecino en X, el rayo interseccionaria con el vecino, evitando el problema.
+Y esa es la solución a nuestro problema, agregar uno nodo en este espacio sin geometría.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=.5\textwidth]{sampling-frontera.png}
+    \caption{Muestreo con nodo frontera.}
+    \label{fig:muestreo-frontera}
+\end{figure}
+
+En la figura \ref{fig:muestreo-frontera} se tiene el nodo frontera y su brick con sus vóxeles numerados, al lado del nodo original que no tenia vecinos y el mismo rayo de la figura \ref{fig:muestreo-vacio}.
+El vóxel 8 va a tener color azul y alfa 1, dado que los vóxeles compartidos entre vecinos siempre deben tener el mismo valor, y la intersección del rayo con la estructura ya no va a ser vacía llevando al resultado deseado del muestreo.
+
 \begin{figure}
-    \begin{subfigure}{.5\textwidth}
+    \begin{subfigure}{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{sombra-no-interpolada.png}
         \caption{Sin nodos frontera.}
     \end{subfigure}
-    \begin{subfigure}{.5\textwidth}
+    \begin{subfigure}{.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{sombra-interpolada.png}
         \caption{Con nodos frontera.}
