@@ -12,14 +12,14 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 		\hline
 		\textbf{Nombre} & \textbf{GPU} & \textbf{Núcleos} & \textbf{Clock (GHz)} & \textbf{VRAM (GB)} \\
 		\hline
-		$H1$ & Intel Mesa ADL GT2 & 96 & 1.45 & ??? \\
+		$H1$ & Intel Mesa ADL GT2 & 96 & 1.45 & * \\
 		\hline
 		$H2$ & Nvidia GTX 1660 Ti mobile & 1536 & 1.45 & 6 \\
 		\hline
 		$H3$ & Nvidia Geforce RTX 4070 & 5888 & 1.92 & 12 \\
 		\hline
 	\end{tabular}
-	\caption{Hardware utilizado.}
+	\caption{Hardware utilizado. * al ser una tarjeta integrada, usa la memoria de la CPU.}
 	\label{tab:hardware-used}
 \end{table}
 
@@ -89,13 +89,13 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
 	$256$ & $S1$ & $13.70$ & $2.46$ \\
-	 & $S2$ & $13.79$ & $2.48$ \\
+	 & $S2$ & $38.78$ & $1.73$ \\
 	\hline
 	$512$ & $S1$ & $11.87$ & $2.63$ \\
-	 & $S2$ & $11.92$ & $2.57$ \\
+	 & $S2$ & $23.39$ & $1.74$ \\
 	\hline
 	$1024$ & $S1$ & $10.58$ & $2.96$ \\
-	 & $S2$ & $10.65$ & $2.92$ \\
+	 & $S2$ & $1.89$ & $1.82$ \\
 	\hline
 \end{tabular}
 \caption{Experimentos usando $H2$.}
@@ -109,7 +109,7 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
 	$256$ & $S1$ & $141.57$ & $1.88$ \\
-	 & $S2$ & 141.59 & 1.90 \\
+	 & $S2$ & $141.27$ & $1.70$ \\
 	\hline
 	$512$ & $S1$ & $141.47$ & $1.90$ \\
 	 & $S2$ & $141.51$ & $1.91$ \\
@@ -133,3 +133,37 @@ Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por
 Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
 En una tarjeta de última generación se lograron aproximadamente 140 FPS.
 Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
+
+\section{Limitaciones}
+
+El algoritmo presenta algunas limitaciones importantes para tener en cuenta.
+
+Debido al filtrado de colores que se realiza en la escena, los colores de una superficie pueden replicarse, aunque de manera más apagada, en nodos de niveles superiores que contienen dicha superficie, pero que se alejan progresivamente debido a su tamaño.
+Esta replicación de colores puede generar problemas, como los observados en la figura \ref{fig:indirect-grabs-direct}, donde se puede apreciar que la luz indirecta incluye parte de la luz directa.
+En condiciones ideales, la luz indirecta debería reflejar únicamente los rebotes de la luz, sin incluir las superficies iluminadas directamente.
+
+\begin{figure}[h]
+    \begin{center}
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{indirect-grabs-direct-1.png}
+        \caption{Solo luz directa.}
+    \end{subfigure}
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{indirect-grabs-direct-2.png}
+        \caption{Solo luz indirecta.}
+    \end{subfigure}
+    \caption{Luz indirecta tomando parte de la directa.}
+    \label{fig:indirect-grabs-direct}
+    \end{center}
+\end{figure}
+
+Otro problema se observa en la figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
+En un escenario real, la luz no debería rebotar detrás del estandarte, sino únicamente en el frente.
+Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y los vóxeles que la representan abarcan tanto el lado frontal como el posterior.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{indirect-behind-banner.png}
+	\caption{Luz indirecta detrás de un estandarte.}
+	\label{fig:indirect-behind-banner}
+\end{figure}
