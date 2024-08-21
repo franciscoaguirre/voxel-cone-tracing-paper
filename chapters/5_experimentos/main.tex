@@ -25,8 +25,17 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=\textwidth]{cornell-box-full.png}
-	\caption{Cornell box.}
+    \begin{subfigure}{1.0\textwidth}
+        \centering
+		\includegraphics[width=0.7\textwidth]{cornell-box-direct.png}
+        \caption{Solo luz directa.}
+    \end{subfigure}
+    \begin{subfigure}{1.0\textwidth}
+        \centering
+		\includegraphics[width=0.7\textwidth]{cornell-box-full.png}
+        \caption{Luz directa e indirecta.}
+    \end{subfigure}
+	\caption{Escena de prueba con geometría simple.}
 	\label{fig:cornell-box-full}
 \end{figure}
 
