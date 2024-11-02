@@ -23,7 +23,7 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 	\label{tab:hardware-used}
 \end{table}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	  \begin{subfigure}{0.49\textwidth}
 	      \centering
@@ -39,7 +39,7 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 	\label{fig:cornell-box-full}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\begin{subfigure}{0.49\textwidth}
 	  \centering
 	  \includegraphics[width=\textwidth]{sponza-direct.png}
@@ -59,14 +59,13 @@ Para conseguir los FPS se ejecutó el programa durante un minuto, tomando una mu
 Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedio.
 Cada ejecución se realizó independientemente, para evitar posibles mejoras debido al uso del cache.
 
-En la tabla \ref{tab:experiment-results} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070.
+En el cuadro \ref{tab:experiment-results} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070.
 En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2$.
 
 \begin{table}[ht]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 	\hline
-	% Escena, hardware, voxeles
 	\textbf{Escena} & \textbf{Hardware} & \textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
 	$S1$ & $H1$ & $256$ & $14.47$ & $4.62$ \\
@@ -75,11 +74,11 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\cline{3-5}
 	 & & $1024$ & $9.22$ & $4.40$ \\
 	\cline{2-5}
-	 & $H2$ & $256$ & $13.70$ & $2.46$ \\
+	 & $H2$ & $256$ & $136.57$ & $1.78$ \\
 	\cline{3-5}
-	 & & $512$ & $11.87$ & $2.63$ \\
+	 & & $512$ & $108.67$ & $1.80$ \\
 	\cline{3-5}
-	 & & $1024$ & $10.58$ & $2.96$ \\
+	 & & $1024$ & $60.24$ & $1.89$ \\
 	\cline{2-5}
 	 & $H3$ & $256$ & $141.57$ & $1.88$ \\
 	\cline{3-5}
@@ -93,11 +92,11 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\cline{3-5}
 	 & & $1024$ & $12.57$ & $3.78$ \\
 	\cline{2-5}
-	 & $H2$ & $256$ & $38.78$ & $1.73$ \\
+	 & $H2$ & $256$ & $59.68$ & $1.82$ \\
 	\cline{3-5}
-	 & & $512$ & $23.39$ & $1.74$ \\
+	 & & $512$ & $37.42$ & $1.94$ \\
 	\cline{3-5}
-	 & & $1024$ & $1.89$ & $1.82$ \\
+	 & & $1024$ & $9.83$ & $1.83$ \\
 	\cline{2-5}
 	 & $H3$ & $256$ & $141.27$ & $1.70$ \\
 	\cline{3-5}
@@ -106,8 +105,8 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	 & & $1024$ & $141.21$ & $1.99$ \\
 	\hline
 \end{tabular}
-\label{tab:experiment-results}
 \caption{FPS y tiempo de construcción del octree para cada escena.}
+\label{tab:experiment-results}
 \end{table}
 
 \section{Análisis de resultados}
