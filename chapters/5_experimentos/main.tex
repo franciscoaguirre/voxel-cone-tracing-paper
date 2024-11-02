@@ -25,30 +25,30 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 
 \begin{figure}[ht]
 	\centering
-    \begin{subfigure}{1.0\textwidth}
-        \centering
-		\includegraphics[width=0.7\textwidth]{cornell-box-direct.png}
-        \caption{Solo luz directa.}
-    \end{subfigure}
-    \begin{subfigure}{1.0\textwidth}
-        \centering
-		\includegraphics[width=0.7\textwidth]{cornell-box-full.png}
-        \caption{Luz directa e indirecta.}
-    \end{subfigure}
+	  \begin{subfigure}{0.49\textwidth}
+	      \centering
+	  \includegraphics[width=\textwidth]{cornell-box-direct.png}
+	      \caption{Solo luz directa.}
+	  \end{subfigure}
+	  \begin{subfigure}{0.49\textwidth}
+	      \centering
+	  \includegraphics[width=\textwidth]{cornell-box-full.png}
+	      \caption{Luz directa e indirecta.}
+	  \end{subfigure}
 	\caption{Escena de prueba con geometría simple.}
 	\label{fig:cornell-box-full}
 \end{figure}
 
 \begin{figure}[ht]
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{sponza-direct.png}
-		\caption{Solo luz directa.}
+	\begin{subfigure}{0.49\textwidth}
+	  \centering
+	  \includegraphics[width=\textwidth]{sponza-direct.png}
+	  \caption{Solo luz directa.}
 	\end{subfigure}
-	\begin{subfigure}{0.8\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{sponza-all.png}
-		\caption{Luz directa e indirecta.}
+	\begin{subfigure}{0.49\textwidth}
+	  \centering
+	  \includegraphics[width=\textwidth]{sponza-all.png}
+	  \caption{Luz directa e indirecta.}
 	\end{subfigure}
 	\caption{Sponza.}
 	\label{fig:sponza}
@@ -56,70 +56,58 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 
 Los experimentos varían la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS, por sus siglas en inglés) y el tiempo de construcción del \textit{octree} en segundos.
 Para conseguir los FPS se ejecutó el programa durante un minuto, tomando una muestra cada segundo, luego se promediaron.
-Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedió.
+Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedio.
 Cada ejecución se realizó independientemente, para evitar posibles mejoras debido al uso del cache.
 
-En las tablas \ref{tab:cisco-laptop}, \ref{tab:pizzo-laptop} y \ref{tab:pizzo-desktop} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070 respectivamente.
+En la tabla \ref{tab:experiment-results} se muestran los resultados de estos experimentos en tarjetas Intel Mesa ADL GT2 integrada de laptop, Nvidia GTX 1660 Ti de laptop y Nvidia RTX 4070.
 En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2$.
 
 \begin{table}[ht]
 \centering
-\begin{tabular}{|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 	\hline
-	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
+	% Escena, hardware, voxeles
+	\textbf{Escena} & \textbf{Hardware} & \textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
-	$256$ & $S1$ & $14.47$ & $4.62$ \\
-	 & $S2$ & $17.05$ & $3.82$ \\
+	$S1$ & $H1$ & $256$ & $14.47$ & $4.62$ \\
+	\cline{3-5}
+	 & & $512$ & $11.30$ & $5.04$ \\
+	\cline{3-5}
+	 & & $1024$ & $9.22$ & $4.40$ \\
+	\cline{2-5}
+	 & $H2$ & $256$ & $13.70$ & $2.46$ \\
+	\cline{3-5}
+	 & & $512$ & $11.87$ & $2.63$ \\
+	\cline{3-5}
+	 & & $1024$ & $10.58$ & $2.96$ \\
+	\cline{2-5}
+	 & $H3$ & $256$ & $141.57$ & $1.88$ \\
+	\cline{3-5}
+	 & & $512$ & $141.47$ & $1.90$ \\
+	\cline{3-5}
+	 & & $1024$ & $140.88$ & $1.89$ \\
 	\hline
-	$512$ & $S1$ & $11.30$ & $5.04$ \\
-	 & $S2$ & $14.08$ & $3.66$ \\
-	\hline
-	$1024$ & $S1$ & $9.22$ & $4.40$ \\
-	 & $S2$ & $12.57$ & $3.78$ \\
-	\hline
-\end{tabular}
-\caption{Experimentos usando $H1$.}
-\label{tab:cisco-laptop}
-\end{table}
-
-\begin{table}[hb]
-\centering
-\begin{tabular}{|c|c|c|c|}
-	\hline
-	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
-	\hline
-	$256$ & $S1$ & $13.70$ & $2.46$ \\
-	 & $S2$ & $38.78$ & $1.73$ \\
-	\hline
-	$512$ & $S1$ & $11.87$ & $2.63$ \\
-	 & $S2$ & $23.39$ & $1.74$ \\
-	\hline
-	$1024$ & $S1$ & $10.58$ & $2.96$ \\
-	 & $S2$ & $1.89$ & $1.82$ \\
-	\hline
-\end{tabular}
-\caption{Experimentos usando $H2$.}
-\label{tab:pizzo-laptop}
-\end{table}
-
-\begin{table}[hb]
-\centering
-\begin{tabular}{|c|c|c|c|}
-	\hline
-	\textbf{Vóxeles} & \textbf{Escena} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
-	\hline
-	$256$ & $S1$ & $141.57$ & $1.88$ \\
-	 & $S2$ & $141.27$ & $1.70$ \\
-	\hline
-	$512$ & $S1$ & $141.47$ & $1.90$ \\
-	 & $S2$ & $141.51$ & $1.91$ \\
-	\hline
-	$1024$ & $S1$ & $140.88$ & $1.89$ \\
-	 & $S2$ & $141.21$ & $1.99$ \\
+	$S2$ & $H1$ & $256$ & $17.05$ & $3.82$ \\
+	\cline{3-5}
+	 & & $512$ & $14.08$ & $3.66$ \\
+	\cline{3-5}
+	 & & $1024$ & $12.57$ & $3.78$ \\
+	\cline{2-5}
+	 & $H2$ & $256$ & $38.78$ & $1.73$ \\
+	\cline{3-5}
+	 & & $512$ & $23.39$ & $1.74$ \\
+	\cline{3-5}
+	 & & $1024$ & $1.89$ & $1.82$ \\
+	\cline{2-5}
+	 & $H3$ & $256$ & $141.27$ & $1.70$ \\
+	\cline{3-5}
+	 & & $512$ & $141.51$ & $1.91$ \\
+	\cline{3-5}
+	 & & $1024$ & $141.21$ & $1.99$ \\
 	\hline
 \end{tabular}
-\caption{Experimentos usando $H3$.}
-\label{tab:pizzo-desktop}
+\label{tab:experiment-results}
+\caption{FPS y tiempo de construcción del octree para cada escena.}
 \end{table}
 
 \section{Análisis de resultados}
