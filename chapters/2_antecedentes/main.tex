@@ -30,7 +30,7 @@ La percepción a partir de la luz es central para nuestra existencia.
 La incógnita de la naturaleza de la luz ha ocupado las mentes de grandes filósofos y físicos desde el comienzo de los tiempos.
 La antigua escuela filosófica hinduista de Vaisheshika (siglos VI a V antes de cristo) veía a la luz como una colección de pequeñas partículas viajando a través de rayos a una alta velocidad.
 Por otra parte, en el siglo V antes de cristo, el filósofo griego Empédocles postulaba que un fuego divino emergía de los ojos humanos y combinado con los rayos de luz del sol producía visión.
-Entre los siglos 18 y 19, eruditos como Isaac Newton, Thomas Young y Augustin-Jean Fresnel desarrollaron teorías conflictivas, donde algunas modelaban la luz como consecuencia de la propagación de ondas, y otras de partículas.
+Entre los siglos XVIII y XIX, eruditos como Isaac Newton, Thomas Young y Augustin-Jean Fresnel desarrollaron teorías conflictivas, donde algunas modelaban la luz como consecuencia de la propagación de ondas, y otras de partículas.
 Al mismo tiempo, André-Marie Ampère, Joseph-Louis Lagrange, Carl Friedrich Gauß y Michael Faraday investigaban las relaciones entre electricidad y magnetismo que culminaron en la repentina y dramática unificación de James Clerk Maxwell en una teoría combinada conocida como \textbf{electromagnetismo}, \cite{maxwell-equations}.
 
 La luz es una manifestación con propiedades de onda.
@@ -64,7 +64,7 @@ A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
 \section{Radiometría: Unidades de la luz}\label{sec:radiometry}
 
 La radiometría provee una serie de herramientas para describir la propagación de la luz.
-Para simular luz, es necesario un manejo de las unidades básicas involucradas.
+Para simular la luz, es necesario un manejo de las unidades básicas involucradas.
 Algunas de estas son la energía radiante, el flujo radiante, la radiosidad, la irradiancia, la intensidad radiante y la radiancia.
 La descripción de estas unidades surgen de \cite{rtr} y \cite{pbr}.
 
@@ -97,8 +97,8 @@ En 2D, un ángulo mide el tamaño de un conjunto continuo de direcciones en un p
 Para medir esto, se mide el largo del arco resultante de la intersección de este conjunto con un círculo de radio 1.
 El largo de este arco se mide en radianes.
 De igual manera, un ángulo sólido mide el tamaño de un conjunto de direcciones en el espacio.
-Para lograr esto, se mide el área de la intersección del conjunto de direcciones con una esfera de radio 1.
-La unidad de medida es el estereorradián, cuyo símbolo es sr.
+Para lograrlo, se mide el área de la intersección del conjunto de direcciones con una esfera de radio 1.
+La unidad de medida es el estereorradián, cuyo símbolo es \textit{sr}.
 El ángulo sólido se representa con el símbolo $\omega$.
 En la Figura \ref{fig:steradian} se puede ver un cono con un ángulo sólido de 1 sr.
 El ángulo sólido que abarca todas las direcciones posibles mide $4\pi$ sr.
@@ -119,9 +119,6 @@ Se denota como $L$ y se mide en watts por metro cuadrado por estereorradián ($W
 
 La radiancia es lo que miden los sensores, como los ojos o cámaras.
 El objetivo de evaluar una ecuación de sombreado es calcular la radiancia a lo largo de un rayo, desde el punto de vista de la cámara.
-
-Lo anteriormente expuesto son algunas unidades de la radiometria que trata unicamente con cantidades fisicas de la luz.
-En contraposicion, la fotometría (un campo relacionado) mide la luz en función de la percepción del ojo humano.
 
 La radiometría trata únicamente con cantidades físicas de la luz.
 En contraposición, un campo relacionado, la fotometría, mide la luz tal como es percibida por el ojo humano, teniendo en cuenta la sensibilidad de este a distintas longitudes de onda.
@@ -150,7 +147,8 @@ En la tabla \ref{table:light_units} se muestran algunas unidades equivalentes en
 
 \section{Iluminación local e iluminación global}\label{sec:local_vs_global}
 
-En computación gráfica, la iluminación es crucial para agregar realismo a una escena, sin embargo, es también uno de los aspectos más desafiantes desde el punto de vista computacional, debido a la complejidad de simular cómo la luz interactúa con los objetos y el entorno.
+En computación gráfica, la iluminación es crucial para agregar realismo a una escena.
+Sin embargo, es también uno de los aspectos más desafiantes desde el punto de vista computacional, debido a la complejidad de simular cómo la luz interactúa con los objetos y el entorno.
 
 \subsection{Iluminación local}
 
@@ -191,7 +189,8 @@ En la Figura \ref{fig:sphere-blinn-phong} se puede observar este sombreado aplic
 En contraposición a la iluminación local, la iluminación global calcula la interacción completa de la luz con los objetos de la escena.
 Se calcula la interacción de la luz entre distintos objetos al reflejarse, refractarse y dispersarse en el entorno.
 
-Su principal ventaja es la mejora en el realismo y coherencia de la escena, mientras que su principal desventaja es la exigencia computacional y complejidad al implementar y optimizar, que causa dificultades en alcanzar tiempos interactivos.
+Su principal ventaja es la mejora en el realismo y coherencia de la escena.
+Su principal desventaja es la exigencia computacional y complejidad al implementar y optimizar, que causa dificultades en alcanzar tiempos interactivos.
 
 Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad, el \textit{photon mapping}, y el \textit{path tracing}, que serán presentadas a continuación.
 
@@ -217,7 +216,7 @@ Los términos ``intensidad radiante'' e ``intensidad emitida'' tal y como son pl
 
 La Ecuación \ref{eq:rendering-equation} es la base de varios métodos de iluminación global \cite{rtr}.
 Tiene en cuenta toda la escena para calcular la luz en un punto.
-La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se calculan soluciones numéricas para su resolución.
+La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se precisan soluciones numéricas para su resolución.
 A su vez, considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
 
 En cambio, la \textbf{ecuación de reflectancia} (\ref{eq:reflectance-equation}), derivada de la de renderizado, se enfoca en el cálculo de la luz indirecta.
@@ -227,7 +226,7 @@ En cambio, la \textbf{ecuación de reflectancia} (\ref{eq:reflectance-equation})
 \end{equation}
 
 Calcula la radiancia saliente $L_o$ de un punto $p$ y un pequeño ángulo sólido $\omega_o$ como una integral sobre el hemisferio $\Omega$ centrado en el punto.
-Sus términos son muy parecidos a los de la \ref{eq:rendering-equation}.
+Sus términos son muy parecidos a los de la ecuación \ref{eq:rendering-equation}.
 Vemos que ya no están ni el término geométrico, dado que se trata de direcciones y no puntos, ni el término de emisión, dado que solo se considera luz indirecta.
 $f$ es la BRDF.
 $L_i(p, \omega_i)$ es la radiancia entrante hacia $p$ por otra dirección $\omega_i$.
@@ -257,18 +256,20 @@ Dos modelos teóricos e ideales comunmente utilizados son los siguientes:
 
 \begin{itemize}
     \item Reflexión especular: $f(x, \omega, \omega') = \rho$ cuando $\omega$ es simétrico a $\omega'$ respecto a la normal. $0$ en otro caso.
-    \item Reflexión difusa: $f(x, \omega, \omega') = \frac{\rho}{\pi}$ para todas las direcciones donde $\rho$ es la reflectividad de la superficie, es decir, la fracción de la energía reflejada con respecto a la energía incidente total.
+    \item Reflexión difusa: $f(x, \omega, \omega') = \frac{\rho}{\pi}$ para todas las direcciones.
 \end{itemize}
 
+$\rho$ es la reflectividad de la superficie, es decir, la fracción de la energía reflejada con respecto a la energía incidente total.
+
 La reflexión especular refleja un rayo solamente en un ángulo específico.
-La reflexión difusa refleja la luz igual en todas las direcciones, con un mismo valor de BRDF para cada una de ellas.
+La difusa refleja la luz en todas las direcciones de igual manera.
 
 Los modelos ideales simplifican mucho los calculos y son fisicamente posibles, aunque no existan materiales reales con estas características de reflectancia.
 
 \section{Trazado de rayos (\textit{ray tracing})}\label{sec:ray-tracing}
 
 Uno de los métodos más antiguos y populares para calcular la iluminación global es el de trazado de rayos.
-Se basa en tratar a la luz como una partícula, y trazar el camino que toman los rayos de luz a través de la escena, calculando reflección, refracción y absorción del rayo cuando interseca con un objeto.
+Se basa en tratar a la luz como una partícula, trazar el camino que toman los rayos de luz a través de la escena y calcular reflección, refracción y absorción del rayo cuando interseca con un objeto.
 La popularidad de este método surge debido a su simplicidad y al gran realismo que agrega a las imágenes generadas.
 Su primer uso como herramienta de computación gráfica para representar reflexión, refracción y sombras se atribuye a Turner Whitted, \cite{whitted-1980}.
 
@@ -296,7 +297,7 @@ Suele notarse al representar curvas (ver Figura \ref{fig:whitted-ray-tracing-ali
         \caption{\textit{Aliasing}}
         \label{fig:whitted-ray-tracing-aliasing}
     \end{subfigure}
-    \caption{Escena renderizada con el trazado de rayos de Whitted. Implementación propia.}
+    \caption{Escena renderizada con el trazado de rayos de Whitted. Implementación propia. \url{https://github.com/sncalvo/whittedrenderer}.}
     \label{fig:whitted-ray-tracing}
     \end{center}
 \end{figure}
@@ -304,13 +305,13 @@ Suele notarse al representar curvas (ver Figura \ref{fig:whitted-ray-tracing-ali
 Kajiya propuso en 1986\cite{rendering-equation}, junto con la ecuación de renderizado, un método llamado \textit{path tracing}, una extensión de \textit{ray tracing} que utiliza integración de Monte Carlo para simular la dispersión de la luz.
 En lugar de únicamente trazar los caminos de reflexión y refracción si corresponden, muestrea aleatoriamente todos los posibles caminos de la luz, esto incluye caminos en los que la luz se dispersa.
 Es imposible muestrear todos los caminos posibles de la luz, por lo que un parámetro importante en este tipo de algoritmos es la cantidad de muestras tomadas.
-Debido a la variancia del muestreo aleatorio, el método sufre de ruido, un granulado en la imagen final.
+Debido a la varianza del muestreo aleatorio, el método sufre de ruido, un granulado en la imagen final.
 El mismo disminuye a medida que se toman más muestras.
 
 % TODO: Imagen generada con path tracing y ruido
 
 Tanto el \textit{aliasing} como el ruido pueden mitigarse con una técnica llamada \textit{supersampling} \cite{whitted-1980}. % TODO: Buscar un artículo todo sobre aliasing o supersampling
-Consiste en tomar más de una muestra por píxel, que implica lanzar más de un rayo por píxel, y luego promediar los resultados.
+Consiste en tomar más de una muestra por píxel, lo que implica lanzar más de un rayo por píxel, y luego promediar los resultados.
 Promediar las muestras suaviza las curvas, mitigando el \textit{aliasing}, y provee más muestras aleatorias para la integración de Monte Carlo, lo que reduce el ruido.
 Es una técnica muy costosa dado que implica lanzar cantidades mucho mayores de rayos.
 Para imágenes complejas, pueden ser necesarios cientos de rayos por píxel para reducir el ruido a niveles aceptables, imposibilitando la generación de imágenes en tiempo real.
@@ -321,20 +322,20 @@ Varios métodos de iluminación global basados en el trazado de rayos han surgid
 
 \section{Trazado de conos}\label{sec:historical-cone-tracing}
 
-En su artículo de 1984 \cite{ray-tracing-with-cones}, Amanatides propone una extensión al trazado de rayos en la que redefine los rayos por conos.
+En su artículo de 1984 \cite{ray-tracing-with-cones}, Amanatides propone una extensión al trazado de rayos en la que sustituye los rayos por conos.
 Los rayos tienen un origen, una dirección y son infinitesimalmente finos.
-Los conos tienen a su vez un ángulo de apertura, lo que agrega un grosor no despreciable.
-Usando este grosor, los conos son capaces de no solo probar la existencia de intersecciones, sino también calcular el porcentaje de área de la intersección.
+Los conos, en cambio, tienen un ángulo de apertura, lo que agrega un grosor no despreciable.
+Usando este grosor, los conos son capaces de no solo probar la existencia de intersecciones, sino también de calcular el porcentaje de área de la intersección.
 El método fue propuesto para solucionar el \textit{aliasing} presente en el trazado de rayos, como alternativa al \textit{supersampling}.
 En lugar de lanzar muchos rayos por cada píxel, se lanza un solo cono que integra una mayor área de la escena.
 Dado que el cono tiene en cuenta la contribución de la luz de varias direcciones dentro de su volumen, reduce el \textit{aliasing} y el ruido al muestrear mayor parte de la escena y reducir la varianza del muestreo.
 
 Trazar conos en lugar de rayos no solo ayuda en el \textit{aliasing} y el ruido, también permite generar sombras suaves.
-En el trazado de rayos, al probar si un punto se encuentra en sombra o no, se lanza un rayo hacia la fuente de la luz.
+En el trazado de rayos, como se mencionó anteriormente, al probar si un punto se encuentra en sombra o no, se lanza un rayo hacia la fuente de la luz.
 Si este interseca con algún objeto antes de llegar a la luz, el punto está en sombra.
 La respuesta binaria, sí o no, a la pregunta de si el punto se encuentra en sombra, resulta en sombras duras.
 Al trazar un cono en lugar de un rayo hacia la fuente de luz, es posible responder el porcentaje de oclusión de ese punto, lo que produce una escala de grises y sombras suaves.
-En la Figura \ref{fig:shadow-rays-and-cones} se puede apreciar esta diferencia. % TODO: Agregar imágenes de sombra dura y suave
+En la Figura \ref{fig:shadow-rays-and-cones} se ve un diagrama mostrando este comportamiento.
 
 \begin{figure}
     \begin{center}
@@ -359,7 +360,7 @@ Se toman en cuenta los distintos tipos de objetos (esfera, plano, entre otros) y
 Para calcular la luz indirecta se halla la radiancia saliente de un punto $p$ en dirección a la cámara.
 En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
 Se toman varias muestras, rayos lanzados desde el punto $p$ en todas las direcciones $\omega_i$.
-En el caso del trazado de conos en lugar de rayos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
+En el caso del trazado de conos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
 
 % TODO: Estaría bueno hablar del método de radiosidad antes capaz.
 % TODO: Se iba a llamar "Otros métodos de iluminación global" pero por ahora es uno solo jeje.
@@ -368,7 +369,7 @@ En el caso del trazado de conos en lugar de rayos, se particiona el hemisferio e
 \textit{Photon Mapping}, propuesto por Henrik Wann Jensen en 2001 \cite{photon-mapping}, es un algoritmo basado en el trazado de rayos que es capaz de simular de manera más realista la refracción de la luz a través de sustancias transparentes como el vidrio o el agua. 
 Funciona ``emitiendo'' fotones de la fuente de luz y almacenando en un mapa de fotones la ubicación de cada interacción de estos con las superficies no especulares ni transparentes de la escena.
 
-Con \textit{photon mapping} se pueden generar cáusticas, que son los dibujos que se generan cuando una superficie especular o transparente concentra la luz en una superficie difusa.
+Con \textit{photon mapping} se pueden generar cáusticas, los dibujos que se generan cuando una superficie especular o transparente concentra la luz en una superficie difusa.
 En la Figura \ref{fig:caustics} se puede ver este efecto.
 
 % TODO: Estaría bueno poder usar imágenes generadas por nosotros en computación gráfica, pero no guardamos las imágenes en el repo como hicimos con whitted :c
@@ -388,7 +389,7 @@ En la Figura \ref{fig:caustics} se puede ver este efecto.
 \end{figure}
 
 El algoritmo comienza con una etapa en la que se lanzan fotones desde la fuente de luz hacia la escena.
-Estos se almacenan en las superficies difusas de la escena, creando un \textbf{mapa de fotones} y se usan en una segunda etapa cuando se está calculando el color de un píxel.
+Estos se almacenan en las superficies difusas de la escena, creando un \textbf{mapa de fotones} y se usan en una segunda etapa cuando se calcula el color de cada píxel.
 Además de los rayos de ray tracing de reflexión y refracción, se lanzan rayos adicionales en direcciones aleatorias que buscan en el mapa de fotones, simulando la reflexión difusa.
 Es una extensión a ray tracing, que utiliza el paso adicional de lanzado y evaluación de fotones.
 
@@ -425,7 +426,6 @@ Similar a como los píxeles se ubican en una grilla que divide una superficie 2D
 Tradicionalmente, se usan para guardar datos volumétricos y como primitiva para renderizar una variedad de objetos.
 Permiten representar volúmenes, en contraposición al triángulo, que se utiliza para representar únicamente superficies.
 Son un buen candidato para renderizar volúmenes y modelos 3D como el humo, la niebla, el fuego, los huesos y el terreno, entre otros.
-
 Algunos de estos elementos se ven en la Figura \ref{fig:voxels_for_rendering}. % TODO: Encontrar fotos más nuevas, estas se ven que son viejasas
 
 \begin{figure}
@@ -450,27 +450,31 @@ Algunos de estos elementos se ven en la Figura \ref{fig:voxels_for_rendering}. %
 
 % Además de primitiva de renderizado, los vóxeles se utilizan cada vez más para manipular datos espaciales, como en NST (\textit{Neural Style Transfer}) \cite{transport-based-neural-style-transfer}, que fue utilizado en la reciente película de Pixar \textit{Elemental} \cite{elemental-neural-style-transfer}.
 
-Cada vóxel marca si la zona del espacio que representa está ocupada o libre, y por ejemplo en contextos médicos se usan para indicar la opacidad y densidad de un hueso.
-Para el renderizado, se pueden utilizar para almacenar valores como el color o la irradiancia en cada vóxel.
-En general, no es necesario guardar la posición de un vóxel, ya que su lugar en la grilla es lo que indica su posición.
+Cada vóxel marca si la zona del espacio que representa está ocupada o libre.
+Pueden tener más información.
+Por ejemplo, en contextos médicos se usan para indicar la opacidad y densidad de un hueso.
+Para el renderizado, se pueden utilizar para almacenar valores como el color o la irradiancia.
+En general, no es necesario guardar la posición de un vóxel, ya que su lugar en la grilla ya lo indica.
 
-El proceso de convertir otra representación, por ejemplo una malla de polígonos, en una estructura de vóxeles se llama voxelización.
+El proceso de convertir otra representación, por ejemplo una malla de polígonos, en una estructura de vóxeles se llama \textbf{voxelización}.
 Involucra intersecar la representación poligonal con la grilla de vóxeles, y marcar los vóxeles que se solapen con esta.
 
 Algunos programas usan grillas completas de vóxeles.
 Sin embargo, en la mayoría de los casos no es necesario.
-Una observación útil es que en muchas aplicaciones es suficiente tener vóxeles en el límite entre un objeto y el espacio vacío, siendo innecesario el relleno.
+En muchas aplicaciones es suficiente tener vóxeles solo en los límites entre los objetos y el espacio vacío.
+Es innecesario el relleno.
 
-Otra observación útil es que, para obtener una buena representación, alcanza con tener mucho detalle en la frontera entre el espacio vacío y el lleno.
-Para lograr esto, se puede usar un \textit{octree} disperso, que será explicado a continuación.
+Si bien más vóxeles permiten representar más detalle, esto se vuelve muy costoso rápidamente.
+Es posible minimizar la cantidad de vóxeles, manteniendo el nivel de detalle, subdividiendo solo en las zonas con geometría más compleja.
+Estos vóxeles utilizan una estructura de datos conocida como un \textit{octree} disperso, que será explicado a continuación.
 
 \section{Octrees}\label{sec:octree}
 
 Un \textit{octree} es una estructura de datos de ``árbol'', en la que cada nodo interno (no hoja) tiene $8$ hijos \cite{rtr}.
 Suele usarse para representar datos espaciales \cite{octree-textures}.
-Se puede utilizar para dividir el espacio 3D de manera jerárquica, con varios niveles.
+Se puede utilizar para dividir el espacio 3D de manera jerárquica, en varios niveles.
 
-Se parte de un volumen original cúbico o paralelepípedo que se divide en dos partes iguales por dimensión, resultando en $8$ octantes iguales.
+Para construir uno, se parte de un volumen original cúbico o paralelepípedo que se divide en dos partes iguales por dimensión, resultando en $8$ octantes iguales.
 En la estructura de árbol, el nodo raíz representa el volumen original y cada uno de sus $8$ hijos representa a cada octante.
 Aplicando recursivamente, se divide el espacio en $8^{(n - 1)}$ secciones, donde $n$ es la cantidad de niveles del árbol, y el primer nivel tiene un solo nodo que representa toda la escena.
 
@@ -516,9 +520,9 @@ Este ducto parte de vértices de mallas poligonales, aplica transformaciones, re
 Cada paso de un ducto gráfico puede ser fijo o programable.
 En el caso de que sea fijo, el mismo ya está implementado en la tarjeta gráfica.
 En algunos casos, estos pasos fijos proveen parámetros para configurar su comportamiento, este es su mayor grado de libertad.
-En el caso de que sea programable, se puede escribir un \textit{shader}, un programa de sombreado que corre en la GPU, que implementa el paso en su totalidad, lo que aporta una gran libertad a la hora de renderizar escenas.
+En el caso de que sea programable, se puede escribir un \textit{shader}, un programa de sombreado que ejecuta en la GPU, que implementa el paso en su totalidad, aportando una gran libertad a la hora de renderizar escenas.
 
-Existen varias APIs, interfaces, con las que se puede interactuar con una tarjeta gráfica \cite{comparison-graphics-apis}, notablemente Vulkan, Direct3D, Metal, WebGPU y OpenGL.
+Existen varias APIs, o interfaces, con las que se puede interactuar con una tarjeta gráfica \cite{comparison-graphics-apis}, notablemente Vulkan, Direct3D, Metal, WebGPU y OpenGL.
 Todas estas permiten acceder al ducto de rasterización.
 
 En OpenGL, por ejemplo, este ducto posee las etapas que se ven en la Figura \ref{fig:raster-pipeline} \cite{rtr}.
@@ -542,7 +546,8 @@ En general es usado para pasar los vértices de espacio local de coordenadas a e
 Un hilo es ejecutado por cada vértice de las primitivas de entrada.
 
 El \textit{geometry shader} puede generar nuevos vértices, por lo que es útil para agregar complejidad extra a la geometría de la escena.
-Aquí se ejecuta un hilo por cada primitiva de salida del \textit{vertex shader}, pero estas primitivas pueden tener más de un vértice.
+Aquí se ejecuta un hilo por cada primitiva de salida del \textit{vertex shader}.
+Estas primitivas pueden tener más de un vértice.
 
 Finalmente, el \textit{fragment shader} (o \textit{pixel shader}) trabaja con píxeles y no con vértices.
 Es en este \textit{shader} donde se realizan los cálculos de iluminación para calcular el color de cada píxel.
@@ -571,8 +576,8 @@ Se saltean los cálculos para objetos fuera del campo de visión y detrás de ot
 El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
 En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
 A su vez, el \textit{forward rendering} soporta mejor la opacidad.
-Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumetentar el rendimiento.
-También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como bloom, HDR (High Dynamic Range), corrección gamma, y normalización, entre otras.
+Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumentar el rendimiento.
+También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como \textit{bloom}, \textit{HDR} (\textit{High Dynamic Range}), corrección gamma, y normalización, entre otras.
 
 % \section{Integral de rendering}
 
