@@ -21,17 +21,17 @@
 En este capítulo se detalla el diseño de \textit{voxel cone tracing} \cite{voxel-cone-tracing}, un algoritmo de iluminación global en tiempo real, que utiliza conceptos presentes en el trazado de rayos (\ref{sec:ray-tracing}), trazado de conos (\ref{sec:historical-cone-tracing}) y \textit{photon mapping} (\ref{sec:photon-mapping}), 
 pero reduciendo los costos asociados a estos algoritmos clásicos usando una representación de la escena con vóxeles (\ref{sec:voxels}), almacenada en un \textit{octree} disperso (\ref{sec:octree}), para aproximar los conos.
 
-Otra forma de reducir costos y aumentar la velocidad del algoritmo es utilizando el ducto de rasterización \ref{sec:graphics-pipeline} y renderizado diferido \ref{sec:deferred-rendering}.
+Otra forma de reducir costos y aumentar la velocidad del algoritmo es utilizando el ducto de rasterización (\ref{sec:graphics-pipeline}) y renderizado diferido (\ref{sec:deferred-rendering}).
 Los cálculos de luz se realizan en el \textit{fragment shader} del ducto de raster, sobre los \textit{geometry buffers} para reducir la cantidad de fragmentos o hilos de la GPU sobre los que se corren calculos pesados, sin perder calidad de imagen.
 Lo anteriormente explicado difiere del trazado de rayos clásico, que renderiza toda la escena puramente mediante intersecciones entre rayos y geometría.
 
-La principal aproximación que realiza este algoritmo es trabajar sobre una representación voxelizada pre-filtrada de la escena.
+La principal aproximación que realiza este algoritmo es trabajar sobre una representación voxelizada prefiltrada de la escena.
 Dadas las coordenadas de un punto de la escena, se recorre el árbol para hallar el vóxel que representa la región del espacio que incluye ese punto.
 Este vóxel contiene toda la información necesaria sobre oclusión, color e irradiancia debido a que la estructura es previamente filtrada.
 En el filtrado, la información en las hojas del árbol es promediada hacia niveles mayores hasta que cada nivel del árbol contiene información que aproxima las capas inferiores.
 La información de un vóxel en cada nivel resume la información de los vóxeles de los nodos hijos que comparten el mismo espacio en la escena.
 Se vió en la sección sobre trazado de conos (\ref{sec:ray-tracing}), que en su planteo original, se hallaban las intersecciones del cono con los objetos de la escena de manera analítica, lo que es costoso.
-Aquí, en lugar de hallar la intersección analiticamente, se aproxima el cono utilizando la estructura jerárquica de vóxeles, permitiendo acumular la información a lo largo del cono mas eficientemente, pero con cierta perdida de detalle.
+Aquí, en lugar de hallar la intersección analiticamente, se aproxima el cono utilizando la estructura jerárquica de vóxeles, permitiendo acumular la información a lo largo del cono más eficientemente, pero con cierta perdida de detalle.
 
 El algoritmo se puede dividir en 4 grandes etapas:
 
@@ -89,17 +89,21 @@ Un ejemplo de voxelización se muestra en la figura \ref{fig:voxelized-cow}, con
 \end{figure}
 
 Para voxelizar la escena, se realiza el procedimiento detallado en ``OpenGL Insights, capítulo 22'' \cite{opengl-insights}, un aporte escrito por Crassin luego de haber publicado el artículo de \textit{voxel cone tracing}, aprovechando mejoras en las herramientas disponibles en el momento.
-Ese mismo proceso será explicado a continuación, para más información, consultar la referencia.
+Ese mismo proceso será explicado a continuación.
+Consultar la referencia para más información.
 
 Usando el ducto de rasterización de OpenGL, se procesan todos los triángulos de la geometría de la escena utilizando como resolución para el rasterizado la resolución de la grilla de vóxeles.
-Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, que es el color de un triangulo que interseca con el espacio representado por el vóxel.
-Cada uno de estos vóxeles será usado para construir el árbol y terminará almacenado en la estructura. Dado lo anteriormente descrito, el mismo vóxel, identificado por su posición en la grilla, puede estar presente en al lista multiples veces con colores diferentes si mas de un triangulo interseca con el vóxel. 
+Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, el color de un triangulo que interseca con el espacio representado por el vóxel.
+Cada uno de estos vóxeles será utilizado para construir el árbol y terminará almacenado en la estructura.
+
+Dado lo anteriormente descrito, el mismo vóxel, identificado por su posición en la grilla, puede estar presente en la lista multiples veces con colores diferentes si más de un triangulo interseca con el vóxel.
+Estos se promedian.
 
 La voxelización de un triángulo $B$ a un vóxel $V$ puede hacerse si:
 
 \begin{enumerate}
     \item El plano de $B$ interseca $V$.
-    \item La proyección 2D del triángulo $B$ por la dimensión dominante de su normal (la que provee la mayor área proyectada) interseca la proyección 2D de $V$.
+    \item La proyección 2D del triángulo $B$ por la dimensión dominante de su normal, la que provee la mayor área proyectada, interseca la proyección 2D de $V$.
 \end{enumerate}
 
 Basado en esta observación, se sigue la serie de pasos que se muestra en la figura \ref{fig:voxelization_pipeline}.
@@ -116,14 +120,14 @@ La dimensión dominante se elige dinámicamente por triángulo en el \textit{geo
 maximizando el area del triangulo proyectado.
 
 Cada triángulo proyectado se rasteriza para conseguir fragmentos correspondientes a la resolución 2D de la grilla de vóxeles.
-Se fija el tamaño del \textit{viewport} a coincidir con la cantidad de vóxeles, por ejemplo un \textit{viewport} de tamaño $512\times512$ para una grilla de $512^3$ vóxeles.
+Se fija el tamaño del \textit{viewport} para coincidir con la cantidad de vóxeles, por ejemplo un \textit{viewport} de tamaño $512\times512$ para una grilla de $512^3$ vóxeles.
 % Mientras se hace esto, se mantienen las operaciones del framebuffer desactivadas, como el depth testing. % TODO: Habría que explicar por qué, no entendí del capítulo de OpenGL Insights. No se por que se desactiva el depth testing, si igual lo que se genera en el frame buffer no se usa, suena como algo de bajo nivel
 
 Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D.
-Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D, sin embargo al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con mas de un vóxel en la dirección de proyección(profundidad).
+Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D, sin embargo al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con más de un vóxel en la dirección de proyección, en la de profundidad.
 
 Es necesario calcular la intersección del plano del triangulo con los vóxeles para encontrar los valores de profundidad en la grilla, ya que el triángulo fue proyectado perdiendo sus valores de profundidad.
-Debido a la elección de la dimensión dominante de la normal para la proyección del triangulo, cada fragmento puede generar de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$, fuese $z$ la dirección dominante. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que mas me cuesta explicar
+Debido a la elección de la dimensión dominante de la normal para la proyección del triangulo, cada fragmento puede generar de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$, fuese $z$ la dirección dominante. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que más me cuesta explicar
 Entonces, por cada fragmento 2D, los vóxeles que intersecan con el triángulo se calculan en el \textit{fragment shader}, basándose en la posición, la profundidad y las derivadas de la profundiad en espacio de pantalla. % Hacemos lo de las derivadas? Si!
 Se necesitan la derivadas para calcular la orientación del plano del triángulo, ya que los fragmentos no tiene información global del triangulo que los genero, solo datos del punto responsable de la generación del mismo.
 
@@ -154,12 +158,12 @@ Este proceso se muestra en la figura \ref{fig:conservative_rasterization}.
 
 Para almacenar los vóxeles generados, se usa un \textit{octree} disperso, como los vistos en la sección \ref{sec:octree}.
 Un octree denso subdivide la escena en 8 cubos y cada cubo se subdivide en 8, y asi sucesivamente. Esta estructura escala rápidamente, generando problemas importante de volumen y velocidad de acceso necesarios a memoria.
-Para alivianar este problema se crearon los \textit{octrees} dispersos, donde los nodos no se subdividen si no poseen geometría dentro.
+Los \textit{octrees} dispersos alivianan este problema, donde los nodos no se subdividen si no poseen geometría dentro.
 
 Cada elemento del árbol es un \textbf{nodo}.
 Un nodo del árbol representa una sección de la escena.
 Cada nivel tiene una cierta cantidad de nodos.
-En un árbol denso, cada nodo no hoja tiene exactamente 8 hijos, por lo que cada nivel $n$ tendría $8^n$ nodos.
+En un árbol denso, cada nodo no hoja tiene exactamente 8 hijos, por lo que cada nivel $n$ tiene $8^n$ nodos.
 El nivel $0$ tiene $2^{(0\times 3)} = 1$ nodo, el nivel $1$ tiene $2^{(1\times 3)} = 8$, el $2$ tiene $2^{(2\times 3)} = 64$ y así sucesivamente. % Esto se desprende de lo anterior, pero me parece una simplificacion posiblemente util
 El último nivel del árbol es el que llega a la resolución deseada de $512$ o $1024$ vóxeles.
 Valores más altos de resolución crean más niveles del \textit{octree} y hacen que la aproximación de vóxeles se asemeje cada vez más a la malla de triángulos original.
@@ -167,6 +171,7 @@ Valores más altos de resolución crean más niveles del \textit{octree} y hacen
 En la figura \ref{fig:octree-levels}, se muestra un modelo al que luego de ser voxelizado, se creó un \textit{octree} disperso.
 La resolución utilizada fue de $128$ vóxeles por dimensión, por lo que el último nivel del \textit{octree} es el 7.
 En la figura se muestran los niveles 5, 6 y 7.
+Se puede observar como se asemejan cada vez más a la malla original.
 
 \begin{figure}[ht]
     \begin{subfigure}{.24\textwidth}
@@ -207,12 +212,13 @@ Los nodos solo contienen punteros a sus hijos, existen para obtener la estructur
 Los nodos proveen la estructura mientras que los bricks y vóxeles los datos.
 
 En la figura \ref{fig:node_and_brick} se puede observar un nodo con su brick asociado de la manera en la que se disponen en el espacio.
-Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices del nodo.
-Esto es necesario para que los bricks información con bricks de nodos vecinos, lo que garantiza que la interpolación dentro de un solo nodo tome en cuenta los valores de sus vecinos.
+Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices y centros del nodo.
+Esto es necesario para que los bricks compartan información con bricks de nodos vecinos, lo que garantiza que la interpolación dentro de un solo nodo tome en cuenta los valores de sus vecinos.
 Colocar los vóxeles en las esquinas de los nodos genera una frontera compartida entre bricks de nodos vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
-La frontera entre dos nodos adyacentes del mismo nivel son los 9 vóxeles de la cara compartida entre los nodos, 3 en el caso 2D apreciable en las figuras, que están presentes en los bricks de ambos nodos. 
+
+La frontera entre dos nodos adyacentes del mismo nivel son los 9 vóxeles de la cara compartida entre los bricks, 3 en el caso 2D apreciable en las figuras, que están presentes en los bricks de ambos nodos. 
 Como consecuencia, la estructura tiene información repetida, necesario para que funcione la interpolación cuando se quiera generar la imagen final.
-Un \textit{shader} llamado \textit{border\_transfer}, es el que se encarga de lograr la coherencia en la frontera entre dos \textit{bricks}.
+Un \textit{shader} llamado \textit{border\_transfer}, logra la coherencia en la frontera entre dos \textit{bricks}.
 Se explicará en la Sección \ref{sec:border_transfer}.
 
 \begin{figure}[h!]
@@ -234,19 +240,20 @@ Se explicará en la Sección \ref{sec:border_transfer}.
 Para generar el octree disperso se usa la lista de vóxeles generada durante la voxelización.
 Se empieza con un árbol con un solo nivel, con un solo nodo que representa toda la escena.
 Empezando en el primer nivel del árbol y descendiendo a lo largo de los niveles, se subdividen los nodos que contienen geometría.
-Un nodo debe ser subdividido cuando existe un vóxel en la lista con coordenadas dentro del nodo y no se llegó a un cierto nivel deseado.
+Un nodo debe ser subdividido cuando existe un vóxel en la lista con coordenadas dentro del nodo y no se llegó a un cierto nivel deseado del árbol.
 El algoritmo utilizado se detalla a continuación.
 
-Dado un nivel $i$ del árbol, dos programas principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
+Dado un nivel $i$ del árbol, dos \textit{shaders} principales son ejecutados en secuencia para generar el nivel $i + 1$: \textit{flag\_nodes} y \textit{allocate\_nodes}.
 
 Se corre un hilo de \textit{flag\_nodes} por cada vóxel de la lista de vóxeles.
-Dado un vóxel, se recorre el árbol, hasta llegar a $i$, el último nivel creado hasta el momento.
+Dado un vóxel, se recorre el árbol, hasta llegar al nivel $i$, el último creado hasta el momento.
 Para recorrer el árbol, cada hilo comienza en su primer nodo.
 Al llegar a un nodo en el nivel $i$, se marca uno de los $8$ punteros a sus hijos.
 Cada hijo del nodo representa un octante en el espacio dentro de él.
-Se usa la posición del vóxel para determinar a qué octante pertenece, el puntero a este hijo es marcado.
+Se usa la posición del vóxel para determinar a qué octante pertenece.
+El puntero a este hijo es marcado.
 
-Realizar esta marca es un proceso idempotente, ya que se limita a cambiar el bit mas significativo del puntero a 1.
+Realizar esta marca es un proceso idempotente, ya que se limita a cambiar el bit más significativo del puntero a 1.
 Es idempotente porque el resultado de la operación es el mismo sin importar la cantidad de hilos que lo realicen.
 
 Luego, se ejecuta \textit{allocate\_nodes}, que busca en el nivel $i$ los punteros marcados. 
@@ -256,10 +263,10 @@ El índice del nuevo hijo se crea usando un contador que es posteriormente incre
 Para el incremento, se usa una operación atómica que permite que dos hilos puedan crear un nodo concurrentemente sin colisión de índices.
 Siempre y cuando haya geometría en la región de la escena representada por un nodo, el mismo será subdividido nivel tras nivel hasta el máximo determinado por la resolución de la grilla de vóxeles.
 
-Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser esto ejecutado en múltiples hilos.
+Esta separación entre marcar y subdividir es necesaria para prevenir problemas de concurrencia, al ser este proceso ejecutado en múltiples hilos.
 Durante la construcción de un nivel interno del \textit{octree}, es probable que muchos hilos marquen la creación de un mismo nodo hijo.
 Si el mismo hilo que se encarga de crear la marca, también crease el nodo, se tendrian nodos duplicados perdidos dentro de la memoria.
-En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo de manera idempotente, evitando así utilizar locks entre hilos.
+En lugar de lidiar con que todos esos hilos intenten subdividirlo, se limitan a marcarlo de manera idempotente, evitando así utilizar \textit{locks} entre hilos.
 Correr un solo hilo para cada posible hijo que se debe crear asegura que no se creen nodos duplicados, resolviendo así el problema de concurrencia.
 
 Un paso de este algoritmo se puede observar en la figura \ref{fig:flag-and-allocate}.
@@ -287,14 +294,13 @@ El nodo inmediatamente anterior se marca para subdividir y luego se subdivide.
 \end{figure}
 
 Una vez alcanzado el último nivel, se escriben los atributos de los vóxeles en los bricks de las hojas del árbol, promediando cuando más de un vóxel tiene la misma posición en la grilla de vóxeles.
-Mientras más triángulos tenga la escena original y menos resolución la grilla de vóxeles, más ocurre lo anteriormente mencionado.
-% Dar la definicion de hoja aca me parece raro
+Mientras más triángulos tenga la escena original y menos resolución la grilla de vóxeles, más triángulos se promedian, perdiendose detalles.
 
 % Esto creo que deberia ir en implementacion
 En \ref{sec:nodes_and_bricks}, se vió como los \textit{bricks} ocupan una región más amplia del espacio que su nodo correspondiente.
-Además los vóxeles conseguidos en la voxelización no estan alineados con los vóxeles de los bricks.
+Además, los vóxeles conseguidos en la voxelización no están alineados espacialmente con los vóxeles de los bricks.
 En la primer parte de la figura \ref{fig:voxels-to-bricks} se puede observar un brick, cuyos vóxeles estan numerados, solapado con 4 vóxeles generados en el paso de voxelización, cada uno con su color.
-En el espacio de la escena estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel mas bajo, pero llegando a un nivel mayor de resolución.
+En el espacio de la escena estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel más bajo, pero llegando a un nivel mayor de resolución.
 Por lo que a cada nodo le corresponden a lo sumo 8 vóxeles del paso de voxelización, si consideramos que triangulos que se solapan en un vóxel de la grilla devuelven un unico vóxel con el promedio de sus colores.
 
 \begin{figure}[ht]
@@ -321,7 +327,7 @@ Se le asignan valores a todos los vóxeles del brick, utilizando la figura \ref{
 \end{itemize}
 
 Como resultado, se esparcen los valores de los vóxeles del paso de voxelización a los vóxeles del \textit{brick}.
-De esta figura también se desprende la necesidad del border transfer \ref{sec:border_transfer}, ya que los espacios vacios de los vóxeles del brick deben ser rellenados con información de nodos vecinos, aunque de forma transitória afectan la opacidad del vóxel.
+De esta figura también se desprende la necesidad del \textit{border\_transfer} \ref{sec:border_transfer}, ya que los vóxeles esquina y lado deben volver a opacidad 1.
 Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las $3\times3\times3$ subdivisiones del \textit{brick} .
 A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
@@ -329,10 +335,10 @@ A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones
 
 Como se mostro en la figura \ref{fig:brick_border_overlap}, los vóxeles frontera entre \textit{bricks} adyacentes corresponden al mismo espacio en la escena.
 Sin embargo, cada nodo tiene su propio \textit{brick}, pero esos \textit{bricks} no comparten memoria entre ellos, habiendo así vóxeles que pertenecen a \textit{bricks} diferentes pero corresponden al mismo espacio en la escena.
-Es necesario asegurarse que los valores almacenados en esos vóxeles frontera tengan el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
+Es necesario que los valores almacenados en esos vóxeles frontera tengan el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
 Sin embargo, luego de aplicar \textit{spread\_leaves}, los vóxeles frontera pueden tener valores distintos entre \textit{bricks} vecinos.
 Para igualarlos, se promedian los valores de la frontera con la del \textit{brick} vecino.
-Además este paso es necesario para rellenar los espacios vacios vistos en la sección anterior.
+A su vez, aumenta la opacidad de los vóxeles para volver a 1.
 
 El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada \textit{brick} con la de sus vecinos, en los ejes X, Y y Z.
 De esta manera, aún cuando un vóxel puede estar en varios \textit{bricks}, en $8$ como máximo para los vóxeles en las esquinas de los \textit{bricks}, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
@@ -356,7 +362,7 @@ En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado
 
 \subsection{Nodos frontera}
 
-El paso anterior tiene un problema, asume que todos los nodos tienen vecinos.
+El paso anterior, asume que todos los nodos tienen vecinos.
 Al usar un \textit{octree} disperso, no existen nodos en donde no hay geometría.
 Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
 En el límite entre la geometría y el espacio vacío existen nodos sin vecinos.
@@ -365,14 +371,13 @@ Para una correcta interpolación, es necesaria una capa de nodos extra, los que 
 
 Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo.
 Sus \textit{bricks} en principio no contienen valores, existen para asegurar una correcta interpolación en los extremos de la geometría.
-Se realiza un border transfer extra entre los nodos frontera y sus vecinos, de manera que los vóxeles compartidos entre los dos tengan el mismo valor.
+Se realiza un \textit{border\_transfer} extra entre los nodos frontera y sus vecinos, de manera que los vóxeles compartidos entre los dos tengan el mismo valor.
 El mismo problema no se vuelve a generar entre estos nodos frontera y el espacio vacío, dado que los vóxeles compartidos entre ellos tienen opacidad nula.
-El resultado de la introducción de los nodos frontera se observa en la figura \ref{fig:nodos_frontera}.
+La diferencia causada por los nodos frontera se puede ver en la figura \ref{fig:nodos_frontera}.
 
 En el algoritmo de \textit{cone tracing}, se toma la intersección del cono con el nodo.
 Luego se toma una muestra del \textit{brick}, en el lugar donde interseca con el cono.
-Para mejor entender el problema solucionado por los nodos frontera, veamos un ejemplo
-usando un rayo en lugar de un cono, ya que el algoritmo toma muestras en puntos especificos del nodo y usa el nivel del árbol como aproximación del cono.
+Para mejor entender el problema solucionado por los nodos frontera, veamos un ejemplo usando un rayo en lugar de un cono.
 
 \begin{figure}[h!]
     \centering
@@ -383,7 +388,7 @@ usando un rayo en lugar de un cono, ya que el algoritmo toma muestras en puntos 
 
 Consideremos un nodo como el de la figura \ref*{fig:muestreo-interpolado}, cuyo \textit{brick} asociado tiene sus vóxeles numerados.
 Este nodo no tiene vecinos.
-Digamos que su vóxel 6 es de color azul y su vóxel 7 color rojo, ambos con opacidad 1.
+Su vóxel 6 es de color azul y su vóxel 7 color rojo, ambos con opacidad 1.
 Si se tiene un rayo que interseca en algun punto entre ambos vóxeles, como se puede ver representado con un punto rojo en la figura \ref{fig:muestreo-interpolado}, el valor muestreado sera violeta con un mayor componente azul, la interpolación lineal entre ambos.
 
 \begin{figure}[h!]
@@ -401,12 +406,13 @@ Si un rayo interseca con el centro del vóxel como en la figura \ref{fig:muestre
     \label{fig:muestreo-vacio}
 \end{figure}
 
+% TODO: Reescribiría esto.
 ¿Pero que ocurre cuando el rayo interseca como se ve en la figura \ref{fig:muestreo-vacio}?
 Siguiendo la misma lógica, debería ser una interpolación entre azul y vacio, el cual sería azul con una opacidad menor a 1.
 Sin embargo, el rayo solo puede intersecar con nodos, no \textit{bricks}, por lo que la intersección es vacia.
 Pero eso es inconsistente, dado que ese vóxel tiene un valor, aunque no haya nodo ahí.
 Si el nodo tuviese un vecino en X, el rayo intersecaría con el vecino, evitando el problema.
-Y esa es la solución al problema, agregar uno nodo en este espacio sin geometría.
+Es así que los nodos frontera solucionan este problema.
 
 \begin{figure}[h!]
     \centering
@@ -416,7 +422,7 @@ Y esa es la solución al problema, agregar uno nodo en este espacio sin geometr�
 \end{figure}
 
 En la figura \ref{fig:muestreo-frontera} se tiene el nodo frontera y su brick con sus vóxeles numerados, al lado del nodo original que no tenia vecinos y el mismo rayo de la figura \ref{fig:muestreo-vacio}.
-El vóxel 8 va a tener color azul y opacidad 1, dado que los vóxeles compartidos entre vecinos siempre deben tener el mismo valor, y la intersección del rayo con la estructura ya no va a ser vacía llevando al resultado deseado del muestreo.
+El vóxel 8 tiene color azul y opacidad 1, dado que los vóxeles compartidos entre vecinos siempre deben tener el mismo valor, y la intersección del rayo con la estructura ya no va a ser vacía llevando al resultado deseado del muestreo.
 
 \begin{figure}
     \begin{subfigure}{.49\textwidth}
@@ -441,7 +447,7 @@ El proceso se realiza en $n - 1$ pasos, siendo $n$ el nivel máximo del octree.
 En cada paso, se calcula el valor de cada vóxel del brick del padre, usando los bricks de los hijos.
 
 Consideremos un nodo en el penúltimo nivel, con su brick asociado y sus hijos, como muestra la figura \ref{fig:node_with_children}.
-En la figuran se muestran solo $4$ hijos porque se usa como ejemplo un \textit{quadtree}, la versión 2D del \textit{octree}, ya que es mas facil de visualizar.
+En la figuran se muestran solo $4$ hijos porque se usa como ejemplo un \textit{quadtree}, la versión 2D del \textit{octree}, ya que es más facil de visualizar.
 Cada hijo tiene a su vez su propio \textit{brick} asociado como se muestra en la figura \ref{fig:all_child_bricks}.
 
 \begin{figure}[h!]
@@ -470,7 +476,7 @@ Cada hijo tiene a su vez su propio \textit{brick} asociado como se muestra en la
     \label{fig:all_child_bricks}
 \end{figure}
 
-Los valores de los vóxeles del brick padre se calculan en 4 etapas distintas, dependiendo de dónde se ubican en el \textit{brick}: Esquinas, bordes, caras, centro.
+Los valores de los vóxeles del brick padre se calculan en 4 etapas distintas, dependiendo de dónde se ubican en el \textit{brick}: esquinas, bordes, caras, centro.
 Cada una de las etapas calcula un valor parcial para un tipo de vóxel.
 Es parcial porque para los vóxeles limítrofes con otro nodo, este valor tiene que luego ser agregado con el de los vecinos, con un tipo de \textit{border\_transfer}.
 
@@ -486,7 +492,7 @@ Es parcial porque para los vóxeles limítrofes con otro nodo, este valor tiene 
 
 Dado el vóxel superior izquierdo de la figura \ref{fig:svo_filtering_corners}, se considera solo el brick del hijo superior izquierdo del nodo.
 De ese brick, se consideran los vóxeles amarillos en la figura.
-El valor final del vóxel del padre se calcula promediando los valores de los vóxeles del hijo, pesados por el porcentaje de solapamiento.
+El valor final del vóxel del padre se calcula promediando los valores de los vóxeles del hijo, pesados por su porcentaje de solapamiento.
 Si nombramos los vóxeles del brick hijo $a, \cdots, i$ y los del brick padre $a', \cdots, i'$, como en la figura \ref{fig:brick-voxel-naming}, entonces el valor del vóxel del padre se calcula como:
 
 $$
@@ -547,7 +553,7 @@ De la misma manera se calculan los vóxeles de los bordes y de las caras, solo q
 \subsection{Filtrado anisotrópico}
 
 El filtrado descrito en la sección anterior resulta en vóxeles con valores independientes del punto de vista, o isotrópicos.
-Una característica deseable es que los valores de oclusión y opacidad dependan del punto de vista del observador, lo que se logra en este caso guardando mas de un valor por vóxel para estas propiedades.
+Una característica deseable es que los valores de oclusión y opacidad dependan del punto de vista del observador, lo que se logra en este caso guardando más de un valor por vóxel para estas propiedades.
 Es muy útil a la hora de representar un atributo en una escena 3D.
 
 Para ilustrar el punto anterior, consideremos una escena compuesta únicamente por una pared fina.
@@ -558,7 +564,7 @@ Sin embargo, se observa que la percepción de la pared es muy distinta si se la 
 Como se muestra en la figura \ref{fig:anisotropic-thin-wall}, la pared vista de frente es opaca, pero vista de costado su superficie visible es practicamente nula, asemejandose a una superficie transparente.
 
 La solución propuesta por Crassin \cite{voxel-cone-tracing} consiste en realizar el filtrado 6 veces por vóxel, uno por cada dirección alineada con los ejes: X, -X, Y, -Y, Z, -Z; y tener en cuenta la dirección a la hora de promediar los valores.
-Cada uno de los 6 valores representa el vóxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una dirección arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones mas cercanas.
+Cada uno de los 6 valores representa el vóxel visto desde una de las 6 direcciones previamente mencionadas. Por lo tanto si se observa el vóxel desde una dirección arbitraria, se calcula su oclusión y color a través de la interpolación de las tres direcciones más cercanas.
 Este tipo de filtrado se denomina \textbf{anisotrópico}, dado que depende de la dirección con que se observe al vóxel.
 
 \begin{figure}
@@ -605,7 +611,8 @@ Para el caso de la pared fina, el vóxel que contiene la pared es opaco en la di
 
 Hasta ahora tenemos la estructura de datos creada, conteniendo el color y opacidad de toda la escena en las hojas y un promedio de los niveles inferiores en todos los nodos interiores.
 El objetivo del algoritmo es la iluminación global de una escena, por lo que necesitamos información de la luz.
-En este paso, lanzamos fotones a partir de la fuente de luz de la escena, similar a como se hace en \textit{photon mapping}, pero utilizando el ducto de rasterización.
+En este paso, lanzamos fotones desde la fuente de luz de la escena, similar a como se hace en \textit{photon mapping}.
+Se utiliza el ducto de rasterización.
 
 Se rasteriza la escena desde el punto de vista de la luz para generar una textura 2D.
 En lugar de tener colores en cada téxel de la textura, se almacenan las posiciones de los objetos de la escena.
@@ -618,7 +625,8 @@ El \textit{border\_transfer} suma en lugar de promediar en este caso, dado que a
 El filtrado funciona de la misma manera.
 
 La etapa de construcción debe realizarse solo una vez, mientras que, al soportar luces dinámicas, esta etapa debe ejecutarse cada vez que la luz se mueva.
-En esos casos, toda la irradiancia del árbol vuelve a cero y se vuelve a correr el programa que lanza los fotones, y lo llamaremos la actualización de la estructura.
+En esos casos, toda la irradiancia del árbol vuelve a cero y se vuelve a correr el programa que lanza los fotones.
+Lo llamaremos la actualización de la estructura.
 
 % TODO: Quedó extremadamente corta esta parte.
 % Estaría bueno hablar de las optimizaciones? Te hacen perder un poco.
@@ -652,7 +660,7 @@ En caso de vóxeles anisotrópicos, también depende de la dirección del eje de
 Se sigue avanzando paso a paso acumulando valores hasta satisfacer un criterio de parada,
 que puede ser llegar a un máximo valor acumulado, o haber recorrido una distancia máxima a lo largo del eje del cono.
 
-Este algoritmo se puede observar en la figura \ref{fig:cone-tracing-sampling}.
+Este proceso de toma de muestras a lo largo del cono se puede observar en la figura \ref{fig:cone-tracing-sampling}.
 
 \begin{figure}
     \begin{subfigure}{.49\textwidth}
@@ -710,6 +718,6 @@ Se define una distancia máxima y el criterio de parada es cuando el punto a lo 
 
 De la misma manera que el trazado de rayos logra sombras lanzando un rayo hacia la fuente de luz, \textit{cone tracing} lo logra lanzando un cono hacia la fuente de luz.
 El cono toma en cuenta únicamente la opacidad y su criterio de parada es alcanzar la luz o 1 de opacidad antes.
-El beneficio de que sea un cono en lugar de un rayo, y de tener la estructura jerárquica del \textit{octree}, es que se logran sombras suaves, sin necesidad de lanzar varios y promediar sus resultados.
+El beneficio de que sea un cono en lugar de un rayo, como se vió en la sección \ref{sec:historical-cone-tracing}, es que se logran sombras suaves, sin necesidad de lanzar varios y promediar sus resultados.
 
 % END.
