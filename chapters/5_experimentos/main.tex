@@ -19,7 +19,7 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 		$H3$ & Nvidia Geforce RTX 4070 & 5888 & 1.92 & 12 \\
 		\hline
 	\end{tabular}
-	\caption{Hardware utilizado. * al ser una tarjeta integrada, usa la memoria de la CPU.}
+	\caption{Hardware utilizado. * al ser una tarjeta integrada, no tiene memoria gráfica dedicada.}
 	\label{tab:hardware-used}
 \end{table}
 
@@ -68,11 +68,11 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\hline
 	\textbf{Escena} & \textbf{Hardware} & \textbf{Vóxeles} & \textbf{FPS} & \textbf{Construcción del \textit{octree} (s)} \\
 	\hline
-	$S1$ & $H1$ & $256$ & $14.47$ & $4.62$ \\
+	$S1$ & $H1$ & $256$ & $18.22$ & $1.76$ \\
 	\cline{3-5}
-	 & & $512$ & $11.30$ & $5.04$ \\
+	 & & $512$ & $14.77$ & $1.82$ \\
 	\cline{3-5}
-	 & & $1024$ & $9.22$ & $4.40$ \\
+	 & & $1024$ & $12.13$ & $2.01$ \\
 	\cline{2-5}
 	 & $H2$ & $256$ & $136.57$ & $1.78$ \\
 	\cline{3-5}
@@ -86,11 +86,11 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 	\cline{3-5}
 	 & & $1024$ & $140.88$ & $1.89$ \\
 	\hline
-	$S2$ & $H1$ & $256$ & $17.05$ & $3.82$ \\
+	$S2$ & $H1$ & $256$ & $7.30$ & $1.84$ \\
 	\cline{3-5}
-	 & & $512$ & $14.08$ & $3.66$ \\
+	 & & $512$ & $4.29$ & $1.86$ \\
 	\cline{3-5}
-	 & & $1024$ & $12.57$ & $3.78$ \\
+	 & & $1024$ & $2.84$ & $2.07$ \\
 	\cline{2-5}
 	 & $H2$ & $256$ & $59.68$ & $1.82$ \\
 	\cline{3-5}
@@ -112,11 +112,6 @@ En cada tabla se muestran los resultados para cada una de las escenas $S1$ y $S2
 \section{Análisis de resultados}
 
 Una observación es la falta de rendimiento, dado que en las tarjetas gráficas de laptops en las que se ejecutó, se consiguieron muy pocos cuadros por segundo y en todas las tarjetas los tiempos de construcción del octree fueron muy altos.
-Los valores de estas métricas son mucho mejores en el artículo original del algoritmo, en el que se mostraron entre 20 y 30 cuadros por segundo y 280 milisegundos de construcción del \textit{octree}, en lugar de segundos.
 
 Una observación es que la tarjeta Nvidia RTX 4070 trae excelentes resultados en terminos de cuadros por segundo, pero sorprendentemente es más lenta que la Intel Mesa ADL GT2 en construír el \textit{octree}.
 Esto puede deberse a que la primer tarjeta posee mucho más paralelización, por lo que puede realizar todos los trazados de conos sin problemas, pero este no es el cuello de botella para la construcción del \textit{octree}, sino la comunicación entre CPU y GPU.
-
-Fingxels logró correr escenas a aproximadamente 15 FPS en tarjetas gráficas de laptops, mientras que el artículo original logró aproximadamente 30 FPS.
-En una tarjeta de última generación se lograron aproximadamente 140 FPS.
-Sin embargo, el tiempo de construcción de la estructura de datos fue mucho más lento que en el trabajo original para todas las tarjetas probadas.
