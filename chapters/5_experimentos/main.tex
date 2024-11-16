@@ -116,5 +116,8 @@ Una primera observación es que los cuadros por segundo se encuentran cerca del 
 Se nota que en $H1$ los FPSs nunca superan los 20, mientras que en $H3$ nunca bajan de 140.
 $H2$ representa un término medio, logrando más de 60 FPS en la escena simple ($S1$) y mostrando una gran variedad de valores en la escena compleja ($S2$) para cada resolución utilizada ($256$, $512$, $1024$).
 
+Se observa que, como es de esperarse, a mayor resolución (vóxeles por dimensión), los cuadros por segundo disminuyen.
+Esto se debe a que una resolución más alta mejora la aproximación y genera imágenes de mayor calidad, pero a costa de mayor carga computacional.
+
 Un aspecto que destaca especialmente es el tiempo de construcción del octree, que permanece alrededor de los 2 segundos, cuando idealmente debería estar en el rango de los milisegundos.
 Dado que este tiempo es prácticamente igual tanto en $H1$ como en $H3$, parece evidente que el cuello de botella no es la GPU en si, si no la comunicación entre GPU y CPU.
