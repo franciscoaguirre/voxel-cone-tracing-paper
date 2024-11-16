@@ -216,7 +216,7 @@ Los términos ``intensidad radiante'' e ``intensidad emitida'' tal y como son pl
 
 La Ecuación \ref{eq:rendering-equation} es la base de varios métodos de iluminación global \cite{rtr}.
 Tiene en cuenta toda la escena para calcular la luz en un punto.
-La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se precisan soluciones numéricas para su resolución.
+La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se deben calcular soluciones numéricas para su resolución.
 A su vez, considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
 
 En cambio, la \textbf{ecuación de reflectancia} (\ref{eq:reflectance-equation}), derivada de la de renderizado, se enfoca en el cálculo de la luz indirecta.
@@ -261,8 +261,8 @@ Dos modelos teóricos e ideales comunmente utilizados son los siguientes:
 
 $\rho$ es la reflectividad de la superficie, es decir, la fracción de la energía reflejada con respecto a la energía incidente total.
 
-La reflexión especular refleja un rayo solamente en un ángulo específico.
-La difusa refleja la luz en todas las direcciones de igual manera.
+La reflexión especular refleja un rayo solamente en un ángulo específico,
+mientras que la difusa refleja la luz en todas las direcciones de igual manera.
 
 Los modelos ideales simplifican mucho los calculos y son fisicamente posibles, aunque no existan materiales reales con estas características de reflectancia.
 
@@ -324,7 +324,8 @@ Varios métodos de iluminación global basados en el trazado de rayos han surgid
 
 En su artículo de 1984 \cite{ray-tracing-with-cones}, Amanatides propone una extensión al trazado de rayos en la que sustituye los rayos por conos.
 Los rayos tienen un origen, una dirección y son infinitesimalmente finos.
-Los conos, en cambio, tienen un ángulo de apertura, lo que agrega un grosor no despreciable.
+Los conos tienen un origen y una dirección al igual que los rayos.
+Su principal diferencia es que tienen un ángulo de apertura, lo que les agrega un grosor no despreciable.
 Usando este grosor, los conos son capaces de no solo probar la existencia de intersecciones, sino también de calcular el porcentaje de área de la intersección.
 El método fue propuesto para solucionar el \textit{aliasing} presente en el trazado de rayos, como alternativa al \textit{supersampling}.
 En lugar de lanzar muchos rayos por cada píxel, se lanza un solo cono que integra una mayor área de la escena.

@@ -93,11 +93,11 @@ Ese mismo proceso será explicado a continuación.
 Consultar la referencia para más información.
 
 Usando el ducto de rasterización de OpenGL, se procesan todos los triángulos de la geometría de la escena utilizando como resolución para el rasterizado la resolución de la grilla de vóxeles.
-Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, el color de un triangulo que interseca con el espacio representado por el vóxel.
+Esto genera una lista de \textbf{vóxeles}, donde cada vóxel es una posición dentro de la grilla y un color, siendo este el color de un triangulo que interseca con el espacio representado por el vóxel.
 Cada uno de estos vóxeles será utilizado para construir el árbol y terminará almacenado en la estructura.
 
-Dado lo anteriormente descrito, el mismo vóxel, identificado por su posición en la grilla, puede estar presente en la lista multiples veces con colores diferentes si más de un triangulo interseca con el vóxel.
-Estos se promedian.
+Dado lo anteriormente descrito, el mismo vóxel, identificado por su posición en la grilla, puede estar presente en la lista multiples veces con colores diferentes si más de un triangulo interseca con él.
+Estos se promedian para culminar en el color final del vóxel.
 
 La voxelización de un triángulo $B$ a un vóxel $V$ puede hacerse si:
 
@@ -124,7 +124,8 @@ Se fija el tamaño del \textit{viewport} para coincidir con la cantidad de vóxe
 % Mientras se hace esto, se mantienen las operaciones del framebuffer desactivadas, como el depth testing. % TODO: Habría que explicar por qué, no entendí del capítulo de OpenGL Insights. No se por que se desactiva el depth testing, si igual lo que se genera en el frame buffer no se usa, suena como algo de bajo nivel
 
 Durante la rasterización, cada triángulo genera un conjunto de fragmentos 2D.
-Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D, sin embargo al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con más de un vóxel en la dirección de proyección, en la de profundidad.
+Estos fragmentos generarian solo un vóxel en la grilla si esta fuese 2D.
+Sin embargo, al ser una grilla 3D, un triangulo cuyo plano no es perpendicular a su dirección dominante puede intersecar con más de un vóxel en la dirección de proyección, la tercer dimensión, la de la profundidad.
 
 Es necesario calcular la intersección del plano del triangulo con los vóxeles para encontrar los valores de profundidad en la grilla, ya que el triángulo fue proyectado perdiendo sus valores de profundidad.
 Debido a la elección de la dimensión dominante de la normal para la proyección del triangulo, cada fragmento puede generar de 1 a 3 vóxeles con mismos valores de $x$ e $y$ pero diferentes valores de $z$, fuese $z$ la dirección dominante. % TODO: Por qué? No se explicarlo sin algun dibujo :sweat-smile: Yo tampoco, asi que voy a agregar dibujitos o dejarlo para que nos pregunten porque creo que es de lo que más me cuesta explicar
@@ -212,7 +213,7 @@ Los nodos solo contienen punteros a sus hijos, existen para obtener la estructur
 Los nodos proveen la estructura mientras que los bricks y vóxeles los datos.
 
 En la figura \ref{fig:node_and_brick} se puede observar un nodo con su brick asociado de la manera en la que se disponen en el espacio.
-Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices y centros del nodo.
+Los bricks ocupan más espacio que sus nodos, ya que los vóxeles se centran en los vértices, aristas, caras y el centro del nodo.
 Esto es necesario para que los bricks compartan información con bricks de nodos vecinos, lo que garantiza que la interpolación dentro de un solo nodo tome en cuenta los valores de sus vecinos.
 Colocar los vóxeles en las esquinas de los nodos genera una frontera compartida entre bricks de nodos vecinos, como se puede ver en la figura \ref{fig:brick_border_overlap}.
 
@@ -299,6 +300,7 @@ Mientras más triángulos tenga la escena original y menos resolución la grilla
 % Esto creo que deberia ir en implementacion
 En \ref{sec:nodes_and_bricks}, se vió como los \textit{bricks} ocupan una región más amplia del espacio que su nodo correspondiente.
 Además, los vóxeles conseguidos en la voxelización no están alineados espacialmente con los vóxeles de los bricks.
+Esto genera que un vóxel proveniente de la voxelización comparta el mismo espacio con varios vóxeles de los bricks, y viceversa.
 En la primer parte de la figura \ref{fig:voxels-to-bricks} se puede observar un brick, cuyos vóxeles estan numerados, solapado con 4 vóxeles generados en el paso de voxelización, cada uno con su color.
 En el espacio de la escena estos coinciden con el nodo del brick, ya que la grilla utilizada para la voxelización es la misma que la determinada por los nodos del nivel más bajo, pero llegando a un nivel mayor de resolución.
 Por lo que a cada nodo le corresponden a lo sumo 8 vóxeles del paso de voxelización, si consideramos que triangulos que se solapan en un vóxel de la grilla devuelven un unico vóxel con el promedio de sus colores.
@@ -327,7 +329,7 @@ Se le asignan valores a todos los vóxeles del brick, utilizando la figura \ref{
 \end{itemize}
 
 Como resultado, se esparcen los valores de los vóxeles del paso de voxelización a los vóxeles del \textit{brick}.
-De esta figura también se desprende la necesidad del \textit{border\_transfer} \ref{sec:border_transfer}, ya que los vóxeles esquina y lado deben volver a opacidad 1.
+De esta figura también se desprende la necesidad del \textit{border\_transfer} (\ref{sec:border_transfer}), ya que los vóxeles contienen valores parciales y deben completarse con información de los nodos vecinos.
 Lo anteriormente descrito es el algoritmo que expande los vóxeles para poder llenar las $3\times3\times3$ subdivisiones del \textit{brick} .
 A partir de aquí, el termino ``vóxel'' refiere a una de las $27$ subdivisiones de un \textit{brick}, dado que ya se procesó la lista generada durante la voxelización.
 
@@ -338,7 +340,7 @@ Sin embargo, cada nodo tiene su propio \textit{brick}, pero esos \textit{bricks}
 Es necesario que los valores almacenados en esos vóxeles frontera tengan el mismo valor para asegurar coherencia y una correcta interpolación a la hora de generar la imagen final.
 Sin embargo, luego de aplicar \textit{spread\_leaves}, los vóxeles frontera pueden tener valores distintos entre \textit{bricks} vecinos.
 Para igualarlos, se promedian los valores de la frontera con la del \textit{brick} vecino.
-A su vez, aumenta la opacidad de los vóxeles para volver a 1.
+A su vez, este paso es necesario para completar los valores parciales vistos en la sección anterior.
 
 El shader \textit{border\_transfer} se encarga de promediar los valores en la frontera de cada \textit{brick} con la de sus vecinos, en los ejes X, Y y Z.
 De esta manera, aún cuando un vóxel puede estar en varios \textit{bricks}, en $8$ como máximo para los vóxeles en las esquinas de los \textit{bricks}, su valor va a ser siempre el mismo en cada uno de ellos. % Creo que tiene razon Eduardo, pero no hay ganas de cambiarlo
@@ -362,7 +364,7 @@ En la figura \ref{fig:border_transfer} se puede apreciar este proceso, realizado
 
 \subsection{Nodos frontera}
 
-El paso anterior, asume que todos los nodos tienen vecinos.
+El paso anterior, asume, incorrectamente, que todos los nodos tienen vecinos.
 Al usar un \textit{octree} disperso, no existen nodos en donde no hay geometría.
 Como se vio en la sección \ref{sec:border_transfer}, para mantener coherencia dentro de la estructura todo par de bricks vecinos deben tener valores iguales en sus vóxeles frontera.
 En el límite entre la geometría y el espacio vacío existen nodos sin vecinos.
@@ -373,7 +375,7 @@ Los nodos frontera se añaden en cada nivel del árbol a la hora de construírlo
 Sus \textit{bricks} en principio no contienen valores, existen para asegurar una correcta interpolación en los extremos de la geometría.
 Se realiza un \textit{border\_transfer} extra entre los nodos frontera y sus vecinos, de manera que los vóxeles compartidos entre los dos tengan el mismo valor.
 El mismo problema no se vuelve a generar entre estos nodos frontera y el espacio vacío, dado que los vóxeles compartidos entre ellos tienen opacidad nula.
-La diferencia causada por los nodos frontera se puede ver en la figura \ref{fig:nodos_frontera}.
+La diferencia causada por los nodos frontera al generar la imagen final se puede ver en la figura \ref{fig:nodos_frontera}.
 
 En el algoritmo de \textit{cone tracing}, se toma la intersección del cono con el nodo.
 Luego se toma una muestra del \textit{brick}, en el lugar donde interseca con el cono.
@@ -412,7 +414,7 @@ Siguiendo la misma lógica, debería ser una interpolación entre azul y vacio, 
 Sin embargo, el rayo solo puede intersecar con nodos, no \textit{bricks}, por lo que la intersección es vacia.
 Pero eso es inconsistente, dado que ese vóxel tiene un valor, aunque no haya nodo ahí.
 Si el nodo tuviese un vecino en X, el rayo intersecaría con el vecino, evitando el problema.
-Es así que los nodos frontera solucionan este problema.
+Agregando un nodo en este espacio sin geometría resuelve el problema.
 
 \begin{figure}[h!]
     \centering
