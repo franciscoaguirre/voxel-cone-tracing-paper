@@ -2,7 +2,7 @@
 
 \chapter{Implementación}\label{chap:implementation}
 
-La primera decisión importante en el proceso de desarrollo fue implementar el algoritmo en GPU.
+La primera decisión importante en el proceso de desarrollo fue implementar el algoritmo en la GPU.
 La principal razón para esto es el alto grado de paralelismo que la misma ofrece.
 A su vez, el ducto de rasterización, ampliamente implementado y optimizado en las GPUs, puede ser utilizado, aprovechando así algoritmos y cálculos optimizados a la hora de generar una imagen.
 
@@ -13,7 +13,7 @@ La misma es una especificación que los fabricantes de las tarjetas de video deb
 El lenguaje de sombreado es el que se utiliza para escribir los \textit{shaders}, programas que ejecutan directo en la GPU y hacen uso del paralelismo de la misma.
 
 Como lenguaje de CPU se eligió \textbf{Rust}, un lenguaje de sistemas moderno multiparadigma.
-Fue escogido debido a su gran comunidad, su amplia documentación y a su poderoso manejador de paquetes \textit{cargo}.  
+Fue escogido debido a su gran comunidad, su amplia documentación y su poderoso manejador de paquetes \textit{cargo}.  
 Se caracteriza por ser eficiente, al permitir un acceso a primitivas de bajo nivel, pero manteniendo una buena experiencia de desarrollo, debido a las abstracciones de costo cero que provee.
 Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución como punteros nulos en situaciones que se espera un valor, o accesos a espacios de memoria no inizialidos o liberados.
 
@@ -25,8 +25,7 @@ Dada la implementación en la GPU, la eficiencia y el manejo de memoria fue secu
 Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque soporte otros lenguajes.
 También fueron consideradas CUDA y Vulkan, pero se terminó por escoger OpenGL debido a la facilidad de desarrollo, el conocimiento previo del equipo y la facilidad de trabajo con \textit{compute shaders}.
 Si bien Vulkan es una API más moderna, es conocida por ser más compleja que OpenGL y el equipo del trabajo no contaba con la suficiente experiencia para utilizarlo adecuadamente.
-Su uso hubiera llevado a mayores tiempos de desarrollo y no necesariamente a una implementación más eficiente.
-CUDA suele usarse para cómputo de propósito general en la GPU, sin embargo, no posee ducto de rasterización que fue ampliamente utilizado.
+CUDA suele usarse para cómputo de propósito general en la GPU, sin embargo, no posee ducto de rasterización, el cual fue ampliamente utilizado.
 Por lo tanto, se optó por utilizar los \textit{compute shaders} de OpenGL para el cómputo de propósito general necesario.
 
 El desarrolló se realizó en el sistema operativo \textbf{Linux} debido a los ambientes de desarrollo utilizados.
@@ -129,7 +128,7 @@ Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que 
 De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
 Por ultimo de cada uno de los 4 grupos de 2, el primer téxel representa al hijo con coordenada $x = 0$ y el último con coordenada $x = 1$.
 Si un téxel tiene el valor $0$, entonces ese hijo del nodo representa espacio vacio, y ese nodo no sera guardado en la \textit{node pool}.
-Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n * 8$ comienza ese nodo, que termina en en la posición de memoria $x * 8 + 7$.
+Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n * 8$ comienza ese nodo, que termina en la posición de memoria $x * 8 + 7$.
 
 \begin{figure}[h!]
     \centering
@@ -293,6 +292,7 @@ Aunque no reciba luz de ningun rebote, la luz indirecta sobre la pared acaba inc
 Otra limitación se observa en la figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
 En un escenario real, la luz no debería rebotar detrás del estandarte, sino únicamente en el frente.
 Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y los vóxeles que la representan abarcan tanto el lado frontal como el posterior.
+Esto se arregla con mayor resolución, más vóxeles.
 
 \begin{figure}
 	\centering

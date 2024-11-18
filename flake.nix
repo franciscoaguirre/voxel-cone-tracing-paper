@@ -22,8 +22,10 @@
             export PATH="${pkgs.lib.makeBinPath buildInputs}";
             mkdir -p .cache/texmf-var
             env TEXMFHOME=.cache TEXMFVAR=.cache/texmf-var \
+              SOURCE_DATE_EPOCH=$(date -d "2024-11-10" +%s) \
               latexmk -interaction=nonstopmode -pdf -lualatex \
-              main.tex
+              -pretex="\pdfvariable suppressoptionalinfo 512\relax" \
+              -usepretex main.tex
           '';
           installPhase = ''
             mkdir -p $out
