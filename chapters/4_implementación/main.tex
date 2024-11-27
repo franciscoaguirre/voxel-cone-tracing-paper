@@ -256,15 +256,15 @@ Es posible guardar los valores utilizados, cambiar algo en el código, recompila
 Al implementar el algoritmo, se pudieron observar algunas limitaciones propias de la aproximación.
 
 Debido a que el algoritmo simula únicamente un rebote de la luz, la luz indirecta debería estar presente únicamente en zonas cercanas a las iluminadas directamente.
-No debería haber luz indirecta en las mismas zonas donde hay luz directa.
+Excepto que le llegue el reflejo de alguno otra superficie, no debería haber luz indirecta en las mismas zonas donde hay luz directa.
 Sin embargo, existen situaciones en las que esto sucede, como por ejemplo en la de la figura \ref{fig:indirect-grabs-direct}.
-En esta, se puede observar que la zona iluminada directamente también presenta luz indirecta.
+En esta, se puede observar que la zona iluminada directamente también presenta un fuerte componente luz indirecta.
 
 La figura \ref{fig:indirect-grabs-direct-diagram} muestra un diagrama para ayudar a explicar este fenómeno.
 En la derecha de la imagen hay una pared roja, rodeada de espacio vacío.
 A la izquierda de la pared se muestran vóxeles de tamaños cada vez mayores y color cada vez más transparente.
 Al trazar un cono desde la pared para calcular la luz indirecta sobre la misma, este terminara muestreando varias veces el mismo color que la pared.
-Aunque no reciba luz de ningun rebote, la luz indirecta sobre la pared acaba incluyendo el mismo color como si estuviera iluminada directamente.
+Al no recibir luz que reboto de ninguna otra superficie, se puede observar como la luz indirecta sobre la pared acaba incluyendo el rebote de luz de la pared misma, por lo que la luz directa termina afectando dos veces.
 
 \begin{figure}[h]
     \begin{center}
@@ -291,12 +291,21 @@ Aunque no reciba luz de ningun rebote, la luz indirecta sobre la pared acaba inc
 
 Otra limitación se observa en la figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
 En un escenario real, la luz no debería rebotar detrás del estandarte, sino únicamente en el frente.
-Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y los vóxeles que la representan abarcan tanto el lado frontal como el posterior.
-Esto se arregla con mayor resolución, más vóxeles.
+Dado que no se maneja refracción, luz ubicada al frente del estandarte no debería ser tomada por la pared atrás del mismo.
+Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y la unica capa de vóxeles que lo representan abarcan tanto el lado frontal como el posterior.
+Este problema es resuelto agregando una mayor resolución, ya que esto genera dos capas de vóxeles para los estandartes, por lo que a la pared no le afecta la luz reflejada la cara frontal del estandarte.
 
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{indirect-behind-banner.png}
-	\caption{Luz indirecta detrás de un estandarte.}
+\begin{figure}[h]
+    \begin{center}
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{limitations-behind-banner-side.png}
+        \caption{Luz indirecta detrás de un estandarte (costado).}
+    \end{subfigure}
+    \begin{subfigure}{.49\textwidth}
+        \includegraphics[width=\textwidth]{limitations-behind-banner-front.png}
+        \caption{Luz indirecta detrás de un estandarte (frente).}
+    \end{subfigure}
+    \caption{Luz indirecta incluye la directa.}
 	\label{fig:indirect-behind-banner}
+    \end{center}
 \end{figure}
