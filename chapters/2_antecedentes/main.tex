@@ -25,13 +25,13 @@ En este capítulo se explican en detalle los conceptos teóricos y los anteceden
 Antes de definir el problema de la iluminación global en computación gráfica y hablar de diversos trabajos que se han realizado al respecto, conviene dar un paso atrás y preguntarnos, ¿qué es la luz?
 La pregunta es relevante porque, más allá de las variaciones, la gran mayoría de técnicas de iluminación global se basan en modelar físicamente la luz.
 
-En el libro \textit{Physically Based Rendering}, de Pharr, Jakob y Humphreys \cite{pbr}, se brinda una explicación clara y resumida de la historia de la interacción entre los humanos y la luz.
+En el libro \textit{Physically Based Rendering}, de Pharr, Jakob y Humphreys \cite[p.~177]{pbr}, se brinda una explicación clara y resumida de la historia de la interacción entre los humanos y la luz.
 La percepción a partir de la luz es central para nuestra existencia.
 La incógnita de la naturaleza de la luz ha ocupado las mentes de grandes filósofos y físicos desde el comienzo de los tiempos.
 La antigua escuela filosófica hinduista de Vaisheshika (siglos VI a V antes de cristo) veía a la luz como una colección de pequeñas partículas viajando a través de rayos a una alta velocidad.
 Por otra parte, en el siglo V antes de cristo, el filósofo griego Empédocles postulaba que un fuego divino emergía de los ojos humanos y combinado con los rayos de luz del sol producía visión.
 Entre los siglos XVIII y XIX, eruditos como Isaac Newton, Thomas Young y Augustin-Jean Fresnel desarrollaron teorías conflictivas, donde algunas modelaban la luz como consecuencia de la propagación de ondas, y otras de partículas.
-Al mismo tiempo, André-Marie Ampère, Joseph-Louis Lagrange, Carl Friedrich Gauß y Michael Faraday investigaban las relaciones entre electricidad y magnetismo que culminaron en la repentina y dramática unificación de James Clerk Maxwell en una teoría combinada conocida como \textbf{electromagnetismo}, \cite{maxwell-equations}.
+Al mismo tiempo, André-Marie Ampère, Joseph-Louis Lagrange, Carl Friedrich Gauß y Michael Faraday investigaban las relaciones entre electricidad y magnetismo que culminaron en la repentina y dramática unificación de James Clerk Maxwell en una teoría combinada conocida como \textbf{electromagnetismo} \cite{maxwell-equations}.
 
 La luz es una manifestación con propiedades de onda.
 El movimiento de partículas eléctricamente cargadas, como electrones dentro del filamento de una bombilla, produce un disturbio en un campo eléctrico circundante que se propaga hacia fuera de la fuente.
@@ -51,12 +51,12 @@ A nivel microscópico, las propiedades elementales como energía y momento solo 
 En el caso de las oscilaciones electromagnéticas, este cuanto se conoce como \textbf{fotón}.
 La luz existe tanto como onda y como partícula \cite{quantum-light}.
 
-Afortunadamente, el complejo comportamiento de onda de la luz aparece en escalas muy pequeñas, por lo que, para la computación gráfica, en la mayoría de los casos se la puede tratar como partícula, lo que simplifica los cálculos \cite{pbr}.
+Afortunadamente, el complejo comportamiento de onda de la luz aparece en escalas muy pequeñas, por lo que, para la computación gráfica, en la mayoría de los casos se la puede tratar como partícula, lo que simplifica los cálculos \cite[p.~303]{rtr}.
 
 Tratar a la luz como una partícula es el campo de la óptica geométrica, en contraposición a la óptica física.
 La óptica geométrica trata a la luz como rayos que se mueven en líneas rectas.
 La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrándose en fenómenos como la interferencia, la difracción y la polarización.
-Si asumimos que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite{rtr}.
+Si asumimos que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite[p.~303]{rtr}.
 A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
 
 % Esto asume varias otras cosas, como linealidad, conservación de la energía, falta de polarización, fluorescencia y fosforescencia, entre otros.
@@ -66,7 +66,7 @@ A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
 La radiometría provee una serie de herramientas para describir la propagación de la luz.
 Para simular la luz, es necesario un manejo de las unidades básicas involucradas.
 Algunas de estas son la energía radiante, el flujo radiante, la radiosidad, la irradiancia, la intensidad radiante y la radiancia.
-La descripción de estas unidades surgen de \cite{rtr} y \cite{pbr}.
+La descripción de estas unidades surgen de \cite[p.~268]{rtr} y \cite[p.~177]{pbr}.
 
 La \textbf{energía radiante} es la energía de la radiación electromagnética de la luz.
 Se mide en joules y se denota con el símbolo $Q$.
@@ -152,7 +152,7 @@ Sin embargo, es también uno de los aspectos más desafiantes desde el punto de 
 
 \subsection{Iluminación local}
 
-La iluminación local es un enfoque más simple y menos demandante computacionalmente, que ayuda a dar una sensación de tridimensionalidad.
+La iluminación local \cite[p.~375]{rtr} es un enfoque más simple y menos demandante computacionalmente, que ayuda a dar una sensación de tridimensionalidad.
 Consiste en calcular la iluminación directa para cada objeto individualmente, sin considerar la iluminación indirecta que existe entre objetos vecinos.
 Al no calcular la interacción de la luz con otros objetos, se simplifican significativamente los cálculos necesarios para generar la imagen.
 
@@ -192,7 +192,7 @@ Se calcula la interacción de la luz entre distintos objetos al reflejarse, refr
 Su principal ventaja es la mejora en el realismo y coherencia de la escena.
 Su principal desventaja es la exigencia computacional y complejidad al implementar y optimizar, que causa dificultades en alcanzar tiempos interactivos.
 
-Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad, el \textit{photon mapping}, y el \textit{path tracing}, que serán presentadas a continuación.
+Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad \cite[p.~442]{rtr}, el \textit{photon mapping} \cite{photon-mapping}, y el \textit{path tracing} \cite{rendering-equation}, que serán presentadas a continuación.
 
 En 1986, James T. Kajiya presentó la \textbf{ecuación de renderizado}, formalizando varios métodos para el cálculo de iluminación global como aproximaciones a la solución de una misma ecuación, \cite{rendering-equation}:
 
@@ -214,7 +214,7 @@ Todo sujeto a si hay geometría en el camino de $x$ a $x'$, si es que $x'$ ``ve'
 
 Los términos ``intensidad radiante'' e ``intensidad emitida'' tal y como son planteados no son exactamente ninguna de las unidades radiométricas vistas en la Sección \ref{sec:radiometry} pero pueden derivarse de estas.
 
-La Ecuación \ref{eq:rendering-equation} es la base de varios métodos de iluminación global \cite{rtr}.
+La Ecuación \ref{eq:rendering-equation} es la base de varios métodos de iluminación global \cite[p.~437]{rtr}.
 Tiene en cuenta toda la escena para calcular la luz en un punto.
 La misma no presenta una solución analítica cerrada para la mayoría de los casos, por lo que se deben calcular soluciones numéricas para su resolución.
 A su vez, considera toda la iluminación de la escena, incluyendo tanto luz directa como indirecta.
