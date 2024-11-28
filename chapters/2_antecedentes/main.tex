@@ -13,23 +13,32 @@
 % 8. Vóxeles (acá van a haber integrales, rendering científico)
 % 9. Octrees
 % 10. Ducto gráfico
-% 11. Rendering diferido
 % ... no se si esto va acá ...
-% 12. Teoría de pre-filtrado
-% 13. Ray marching
+% 11. Teoría de pre-filtrado
+% 12. Ray marching
 
 En este capítulo se explican en detalle los conceptos teóricos y los antecedentes más importantes para entender el algoritmo de \textit{voxel cone tracing} y la implementación desarrollada.
 
-\section{¿Qué es la luz?}
+En las secciones \ref{sec:what-is-light} y \ref{sec:radiometry} se introducen principios básicos de la luz.
+Posteriormente, se explican los fundamentos de la iluminación global en \ref{sec:local_vs_global} y \ref{sec:brdf}.
 
-Antes de definir el problema de la iluminación global en computación gráfica y hablar de diversos trabajos que se han realizado al respecto, conviene dar un paso atrás y preguntarnos, ¿qué es la luz?
+A continuación, se describen algunos métodos destacados para lograr iluminación global, como el trazado de rayos, trazado de conos y mapeo de fotones en \ref{sec:ray-tracing}, \ref{sec:historical-cone-tracing} y \ref{sec:photon-mapping}, respectivamente.
+
+Luego se ven las primitivas usadas en el algoritmo para reducir la complejidad computacional, en \ref{sec:voxels} y \ref{sec:octree}.
+Finalmente, el capítulo concluye discutiendo las herramientas de programación para GPU disponibles en \ref{sec:graphics-pipeline}.
+
+\section{¿Qué es la luz?}\label{sec:what-is-light}
+
+Antes de definir el problema de la iluminación global en computación gráfica y hablar de diversos trabajos que se han realizado al respecto, conviene dar un paso atrás y preguntarse, ¿qué es la luz?
 La pregunta es relevante porque, más allá de las variaciones, la gran mayoría de técnicas de iluminación global se basan en modelar físicamente la luz.
 
 En el libro \textit{Physically Based Rendering}, de Pharr, Jakob y Humphreys \cite[p.~177]{pbr}, se brinda una explicación clara y resumida de la historia de la interacción entre los humanos y la luz.
+
 La percepción a partir de la luz es central para nuestra existencia.
 La incógnita de la naturaleza de la luz ha ocupado las mentes de grandes filósofos y físicos desde el comienzo de los tiempos.
 La antigua escuela filosófica hinduista de Vaisheshika (siglos VI a V antes de cristo) veía a la luz como una colección de pequeñas partículas viajando a través de rayos a una alta velocidad.
 Por otra parte, en el siglo V antes de cristo, el filósofo griego Empédocles postulaba que un fuego divino emergía de los ojos humanos y combinado con los rayos de luz del sol producía visión.
+
 Entre los siglos XVIII y XIX, eruditos como Isaac Newton, Thomas Young y Augustin-Jean Fresnel desarrollaron teorías conflictivas, donde algunas modelaban la luz como consecuencia de la propagación de ondas, y otras de partículas.
 Al mismo tiempo, André-Marie Ampère, Joseph-Louis Lagrange, Carl Friedrich Gauß y Michael Faraday investigaban las relaciones entre electricidad y magnetismo que culminaron en la repentina y dramática unificación de James Clerk Maxwell en una teoría combinada conocida como \textbf{electromagnetismo} \cite{maxwell-equations}.
 
@@ -56,21 +65,24 @@ Afortunadamente, el complejo comportamiento de onda de la luz aparece en escalas
 Tratar a la luz como una partícula es el campo de la óptica geométrica, en contraposición a la óptica física.
 La óptica geométrica trata a la luz como rayos que se mueven en líneas rectas.
 La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrándose en fenómenos como la interferencia, la difracción y la polarización.
-Si asumimos que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite[p.~303]{rtr}.
+Dado que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite[p.~303]{rtr}.
 A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
+
+Para simular la luz adecuadamente, es necesario un manejo de las unidades básicas involucradas.
+Este es el foco de la siguiente sección.
 
 % Esto asume varias otras cosas, como linealidad, conservación de la energía, falta de polarización, fluorescencia y fosforescencia, entre otros.
 
 \section{Radiometría: Unidades de la luz}\label{sec:radiometry}
 
 La radiometría provee una serie de herramientas para describir la propagación de la luz.
-Para simular la luz, es necesario un manejo de las unidades básicas involucradas.
 Algunas de estas son la energía radiante, el flujo radiante, la radiosidad, la irradiancia, la intensidad radiante y la radiancia.
 La descripción de estas unidades surgen de \cite[p.~268]{rtr} y \cite[p.~177]{pbr}.
 
 La \textbf{energía radiante} es la energía de la radiación electromagnética de la luz.
 Se mide en joules y se denota con el símbolo $Q$.
-Las fuentes de iluminación emiten fotones, y cada uno posee una longitud de onda y una energía particular.
+Las fuentes luminosas emiten fotones.
+Cada uno posee una longitud de onda y una energía particular.
 Un fotón con longitud de onda $\lambda$ tiene una energía $Q = \frac{hc}{\lambda}$, donde $c$ es la velocidad de la luz y $h$ es la constante de Planck.
 
 El \textbf{flujo radiante}, o potencia, es la energía que pasa por una superficie o región del espacio por unidad de tiempo: $\Theta = \frac{dQ}{dt}$.
@@ -87,9 +99,9 @@ Por cada círculo pasa el mismo flujo radiante, dado que la energía y el tiempo
 \end{figure}
 
 Es útil también considerar el área por la cual pasa un flujo radiante.
-Podemos definir esto como $E = \frac{\Theta}{A}$.
 Esta cantidad se llama o \textbf{radiosidad} o \textbf{irradiancia} dependiendo de si el flujo está llegando o saliendo de una superficie respectivamente.
-Estas medidas tienen unidad watts por metro cuadrado.
+Se define como flujo radiante por unidad de área: $E = \frac{\Theta}{A}$.
+Estas medidas tienen como unidad watts por metro cuadrado.
 En la Figura \ref{fig:point-light-flux}, la irradiancia en el círculo externo es menor que en el interno, dado que el área aumenta cuadráticamente con la distancia.
 
 Para definir la próxima unidad, es necesario definir el \textbf{ángulo sólido}, que es la extensión a 3D del ángulo bidimensional.
@@ -110,19 +122,19 @@ El ángulo sólido que abarca todas las direcciones posibles mide $4\pi$ sr.
     \label{fig:steradian}
 \end{figure}
 
-La \textbf{intensidad radiante} es el flujo radiante dada una dirección, o mejor dicho, un ángulo sólido.
+La \textbf{intensidad radiante} es el flujo radiante dado un ángulo sólido.
 Se denota $I(\omega) = \frac{d\Theta}{d\omega}$ y se mide en watts por estereorradián ($W sr^{-1}$).
 
-Llegamos a la unidad radiométrica más importante, la \textbf{radiancia}.
-La radiancia es la cantidad de flujo radiante emitida, reflejada, transmitida o recibida por una superficie por unidad de área y por unidad de ángulo sólido.
+La \textbf{radiancia} es la unidad radiométrica más importante.
+Es lo que miden los sensores, como los ojos o cámaras.
+Se trata de la cantidad de flujo radiante emitida, reflejada, transmitida o recibida por una superficie por unidad de área y por unidad de ángulo sólido.
 Se denota como $L$ y se mide en watts por metro cuadrado por estereorradián ($W m^{-2} sr^{-1}$).
 
-La radiancia es lo que miden los sensores, como los ojos o cámaras.
 El objetivo de evaluar una ecuación de sombreado es calcular la radiancia a lo largo de un rayo, desde el punto de vista de la cámara.
 
 La radiometría trata únicamente con cantidades físicas de la luz.
 En contraposición, un campo relacionado, la fotometría, mide la luz tal como es percibida por el ojo humano, teniendo en cuenta la sensibilidad de este a distintas longitudes de onda.
-En la tabla \ref{table:light_units} se muestran algunas unidades equivalentes en radiometría y fotometría.
+En el Cuadro \ref{table:light_units} se muestran algunas unidades equivalentes en radiometría y fotometría.
 
 \begin{table}
 \centering
@@ -144,6 +156,8 @@ En la tabla \ref{table:light_units} se muestran algunas unidades equivalentes en
 \caption{Unidades de radiometría y fotogrametría.}
 \label{table:light_units}
 \end{table}
+
+En la siguiente sección se define el concepto de iluminación global utilizando estas unidades.
 
 \section{Iluminación local e iluminación global}\label{sec:local_vs_global}
 
@@ -234,6 +248,8 @@ $n$ es la normal en el punto $p$ y $n \cdot \omega_i$ es el producto interno ent
 La radiancia saliente es la suma por todo el hemisferio visible $\Omega$ centrado en $p$.
 La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, como se vió anteriormente.
 
+Se procede a explorar más detalladamente la función $f$.
+
 % \begin{figure}
 %     \centering
 %     \includegraphics[width=\textwidth]{}
@@ -245,7 +261,7 @@ La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, com
 
 La \textbf{función de distribución de reflectancia bidireccional} (BRDF, por sus siglas en inglés), es una función $f(x, \omega, \omega')$ que dado un punto $x$, una dirección $\omega$ entrante y una saliente $\omega'$, retorna cuánta luz se refleja desde la dirección entrante hacia la saliente en el punto.
 
-Se puede obtener usando tanto modelos analíticos como midiendo objetos reales con cámaras calibradas y fuentes de luz.
+Es una característica del material que se puede obtener usando tanto modelos analíticos como midiendo objetos reales con cámaras calibradas y fuentes de luz.
 A lo largo de los años, se han propuesto varios BRDFs, tanto teóricos como empíricos \cite{review-of-brdf-models}.
 Los BRDFs son propios de los materiales, y este es uniforme a lo largo de todo el material, por lo que no se diferencia entre dos puntos distintos $x$ y $x'$ del mismo material.
 
@@ -265,6 +281,9 @@ La reflexión especular refleja un rayo solamente en un ángulo específico,
 mientras que la difusa refleja la luz en todas las direcciones de igual manera.
 
 Los modelos ideales simplifican mucho los calculos y son fisicamente posibles, aunque no existan materiales reales con estas características de reflectancia.
+
+Las secciones anteriores presentaron un modelo para simular la luz.
+Las posteriores describen algunos métodos para calcularla.
 
 \section{Trazado de rayos (\textit{ray tracing})}\label{sec:ray-tracing}
 
@@ -311,7 +330,7 @@ El mismo disminuye a medida que se toman más muestras.
 % TODO: Imagen generada con path tracing y ruido
 
 Tanto el \textit{aliasing} como el ruido pueden mitigarse con una técnica llamada \textit{supersampling} \cite{whitted-1980}. % TODO: Buscar un artículo todo sobre aliasing o supersampling
-Consiste en tomar más de una muestra por píxel, lo que implica lanzar más de un rayo por píxel, y luego promediar los resultados.
+Consiste en tomar más de una muestra por píxel, lo que implica lanzar más de un rayo por píxel y luego promediar los resultados.
 Promediar las muestras suaviza las curvas, mitigando el \textit{aliasing}, y provee más muestras aleatorias para la integración de Monte Carlo, lo que reduce el ruido.
 Es una técnica muy costosa dado que implica lanzar cantidades mucho mayores de rayos.
 Para imágenes complejas, pueden ser necesarios cientos de rayos por píxel para reducir el ruido a niveles aceptables, imposibilitando la generación de imágenes en tiempo real.
@@ -362,6 +381,8 @@ Para calcular la luz indirecta se halla la radiancia saliente de un punto $p$ en
 En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
 Se toman varias muestras, rayos lanzados desde el punto $p$ en todas las direcciones $\omega_i$.
 En el caso del trazado de conos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
+
+El siguiente método extiende el trazado de rayos para poder representar nuevos efectos de la luz.
 
 % TODO: Estaría bueno hablar del método de radiosidad antes capaz.
 % TODO: Se iba a llamar "Otros métodos de iluminación global" pero por ahora es uno solo jeje.
@@ -418,6 +439,9 @@ Imágenes generadas por esta técnica pueden verse en la Figura \ref{fig:real-ti
     \label{fig:real-time-photon-mapping}
 \end{figure}
 
+Una optimización posible es la aproximación de la geometría de la escena.
+Una primitiva utilizada para esto son los vóxeles.
+
 \section{Vóxeles}\label{sec:voxels}
 
 Un vóxel es el equivalente de un píxel en el espacio 3D.
@@ -467,7 +491,7 @@ Es innecesario el relleno.
 
 Si bien más vóxeles permiten representar más detalle, esto se vuelve muy costoso rápidamente.
 Es posible minimizar la cantidad de vóxeles, manteniendo el nivel de detalle, subdividiendo solo en las zonas con geometría más compleja.
-Estos vóxeles utilizan una estructura de datos conocida como un \textit{octree} disperso, que será explicado a continuación.
+Estos vóxeles utilizan una estructura de datos conocida como un \textit{octree} disperso, explicado a continuación.
 
 \section{Octrees}\label{sec:octree}
 
@@ -505,6 +529,8 @@ A la hora de voxelizar una escena, los vóxeles pueden ubicarse dentro de un \te
 En este caso, los nodos no se subdividen si no hay geometría dentro de la región del espacio que representan, dado que no hay vóxeles en esa región.
 
 % TODO: Imagen de esto
+
+La última sección de este capítulo introduce herramientas para la programación en GPU.
 
 \section{Ducto gráfico}\label{sec:graphics-pipeline}
 
@@ -558,27 +584,6 @@ Pueden ejecutarse más de uno en el caso que dos objetos aporten color al mismo 
 Otro ducto muy relevante, que es usado para implementar la mayoría del algoritmo, es el ducto de cómputo de propósito general.
 Consiste en la inicialización de datos de entrada, luego la ejecución de un programa en la GPU llamado \textit{compute shader} (\textit{shader} de cómputo) y finalmente el retorno de datos hacia la CPU.
 Notar que este ducto no es utilizado para generar una imagen, sino para realizar cálculos arbitrarios que toman una entrada y producen una salida, aprovechando la alta paralelización que provee la tarjeta gráfica.
-
-% TODO: Agregar una referencia acá
-\section{Renderizado diferido}\label{sec:deferred-rendering}
-
-A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa conocida como renderizado diferido.
-
-En el primero, se procesan todos los vértices en el programa.
-Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por una prueba de profundidad.
-Cuando un píxel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a que, en el espacio 3D de la escena, pueden estar a distinta profundidad y sólo el más cercano es el que se debe procesar.
-Dados dos fragmentos que podrían darle color a un mismo píxel, una prueba de profundidad descartará al que se encuentre detrás del otro, a menos que presente opacidad menor a 1.
-
-En el renderizado diferido, se procesan todos los vértices del programa pero se saltean calculos pesados en el \textit{fragment shader}.
-Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora se realizar calculos pesados de sombreado.
-% TODO: Hablar del volumen de vista?
-Se saltean los cálculos para objetos fuera del campo de visión y detrás de otros objetos.
-
-El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
-En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
-A su vez, el \textit{forward rendering} soporta mejor la opacidad.
-Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumentar el rendimiento.
-También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como \textit{bloom}, \textit{HDR} (\textit{High Dynamic Range}), corrección gamma, y normalización, entre otras.
 
 % \section{Integral de rendering}
 

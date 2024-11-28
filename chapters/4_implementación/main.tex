@@ -35,7 +35,7 @@ La arquitectura de la aplicación consta de tres paquetes: \textit{CLI}, \textit
 \textit{Engine} contiene todas las abstracciones sobre OpenGL utilizadas, provee tipos como \textit{Transform}, \textit{Light}, \textit{Camera}, comunes en aplicaciones interactivas, que permiten manipular objetos en el espacio 3D.
 \textit{Core} contiene todas las etapas y programas del algoritmo que han sido mencionados: voxelización, construcción del \textit{octree}, filtrado, actualización y el trazado de conos en si.
 El paquete \textit{CLI} (\textit{Command-Line Interface}, interfaz por línea de comandos) es el punto de entrada de la aplicación, procesa los argumentos pasados por linea de comandos y archivos de configuración y utiliza las funcionalidades expuestas por \textit{engine} y \textit{core} para crear un ambiente 3D y ejecutar el algoritmo.
-La arquitectura se muestra en la figura \ref{fig:overall_architecture}.
+La arquitectura se muestra en la Figura \ref{fig:overall_architecture}.
 
 \begin{figure}
     \centering
@@ -142,7 +142,7 @@ Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
 En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
 Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
 Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
-En la figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
+En la Figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel esta identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
 
 \begin{figure}[h!]
     \centering
@@ -171,7 +171,7 @@ El resto del \textit{brick} se encuentra en las posiciones desde $(n, m, s)$ has
     \label{fig:nodes_n_bricks}
 \end{figure}
 
-En la figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
+En la Figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
 Además cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
 
 Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío.
@@ -185,10 +185,33 @@ Cada téxel individual de un brick tiene sus propias coordenadas, como es el cas
 
 Propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
 Existe una función que lleva posiciones dentro del nodo, que representa una sección de la escena, a posiciones dentro de su brick asociado.
-En la figura \ref{fig:node_and_brick} se vé porque es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
+En la Figura \ref{fig:node_and_brick} se vé porque es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
 A la hora de tomar una muestra de una propiedad en un punto de la escena, se úbica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
 Si el punto no es el centro de uno de los vóxeles del brick, se debe interpolar el valor utilizando los vóxeles adyacentes.
 Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPUs proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.
+
+% TODO: Agregar una referencia acá
+\subsection{Renderizado diferido}\label{sec:deferred-rendering}
+
+Para renderizar la escena, se utiliza el renderizado diferido.
+
+A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa conocida como renderizado diferido.
+
+En el primero, se procesan todos los vértices en el programa.
+Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por una prueba de profundidad.
+Cuando un píxel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a que, en el espacio 3D de la escena, pueden estar a distinta profundidad y sólo el más cercano es el que se debe procesar.
+Dados dos fragmentos que podrían darle color a un mismo píxel, una prueba de profundidad descartará al que se encuentre detrás del otro, a menos que presente opacidad menor a 1.
+
+En el renderizado diferido, se procesan todos los vértices del programa pero se saltean calculos pesados en el \textit{fragment shader}.
+Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora se realizar calculos pesados de sombreado.
+% TODO: Hablar del volumen de vista?
+Se saltean los cálculos para objetos fuera del campo de visión y detrás de otros objetos.
+
+El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
+En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
+A su vez, el \textit{forward rendering} soporta mejor la opacidad.
+Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumentar el rendimiento.
+También, el renderizado diferido facilita ciertas técnicas de post-procesamiento de la imagen, como \textit{bloom}, \textit{HDR} (\textit{High Dynamic Range}), corrección gamma, y normalización, entre otras.
 
 \subsection{Menú}
 
@@ -202,7 +225,7 @@ Es muy sencillo conectar valores del código a etiquetas en el menú y botónes 
 El menú de la aplicación cuenta con varias ventanas, o submenúes, para ver valores, ajustar parámetros, y renderizar distintas imágenes.
 Uno de submenúes para depurar muestra todos los nodos de la \textit{node pool}, permite buscarlos por índice y coordenadas, y visualizarlos en el espacio.
 
-Esta se puede ver en la figura \ref{fig:node-positions-menu}.
+Esta se puede ver en la Figura \ref{fig:node-positions-menu}.
 En el menú se muestran todos los nodos con su indice en el buffer y sus coordenadas dentro de la escena, entre $0$ y la cantidad de vóxeles por dimensión, $512$ o $1024$.
 Al apretar cualquier nodo, se muestra en la escena un cubo delimitando la región de la escena representada por ese nodo.
 Se pueden mostrar muchos nodos a la vez.
@@ -253,14 +276,14 @@ Es posible guardar los valores utilizados, cambiar algo en el código, recompila
 
 \section{Limitaciones}
 
-Al implementar el algoritmo, se pudieron observar algunas limitaciones propias de la aproximación.
+Al implementar el algoritmo, se pudieron observar algunas limitaciones inherentes al uso de vóxeles.
 
 Debido a que el algoritmo simula únicamente un rebote de la luz, la luz indirecta debería estar presente únicamente en zonas cercanas a las iluminadas directamente.
 Excepto que le llegue el reflejo de alguno otra superficie, no debería haber luz indirecta en las mismas zonas donde hay luz directa.
-Sin embargo, existen situaciones en las que esto sucede, como por ejemplo en la de la figura \ref{fig:indirect-grabs-direct}.
+Sin embargo, existen situaciones en las que esto sucede, como por ejemplo en la de la Figura \ref{fig:indirect-grabs-direct}.
 En esta, se puede observar que la zona iluminada directamente también presenta un fuerte componente luz indirecta.
 
-La figura \ref{fig:indirect-grabs-direct-diagram} muestra un diagrama para ayudar a explicar este fenómeno.
+La Figura \ref{fig:indirect-grabs-direct-diagram} muestra un diagrama para ayudar a explicar este fenómeno.
 En la derecha de la imagen hay una pared roja, rodeada de espacio vacío.
 A la izquierda de la pared se muestran vóxeles de tamaños cada vez mayores y color cada vez más transparente.
 Al trazar un cono desde la pared para calcular la luz indirecta sobre la misma, este terminara muestreando varias veces el mismo color que la pared.
@@ -289,7 +312,7 @@ Al no recibir luz que reboto de ninguna otra superficie, se puede observar como 
 	\end{center}
 \end{figure}
 
-Otra limitación se observa en la figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
+Otra limitación se observa en la Figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
 En un escenario real, la luz no debería rebotar detrás del estandarte, sino únicamente en el frente.
 Dado que no se maneja refracción, luz ubicada al frente del estandarte no debería ser tomada por la pared atrás del mismo.
 Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y la unica capa de vóxeles que lo representan abarcan tanto el lado frontal como el posterior.
