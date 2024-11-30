@@ -2,7 +2,7 @@
 
 \chapter{Experimentación}\label{chap:experiments}
 
-Para analizar el rendimiento de la implementación, se realizaron experimentos en distintas tarjetas gráficas, las cuales se ven en el cuadro \ref{tab:hardware-used}.
+Para analizar el rendimiento de la implementación, se realizaron experimentos en distintas tarjetas gráficas, las cuales se ven en el Cuadro \ref{tab:hardware-used}.
 Estas, $H1$, $H2$ y $H3$, corresponden a hardware con capacidades gráficas progresivamente superiores.
 Las escenas utilizadas se muestran en las figuras \ref{fig:cornell-box-full} y \ref{fig:sponza}, que llamaremos $S1$ y $S2$ respectivamente.
 Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta especular y sombras suaves.
@@ -58,9 +58,9 @@ Se puede observar en cada una de ellas la luz indirecta difusa, luz indirecta es
 Los experimentos varían la cantidad de vóxeles por dimensión, y registran los cuadros por segundo alcanzados (FPS, por sus siglas en inglés) y el tiempo de construcción del \textit{octree} en segundos.
 Para conseguir los FPS se ejecutó el programa durante un minuto, tomando una muestra cada segundo, luego se promediaron.
 Para el tiempo de construcción del \textit{octree}, se construyó 50 veces y se calculó el tiempo promedio.
-Cada ejecución se realizó independientemente, para evitar posibles mejoras debido al uso del cache.
+Cada ejecución se realizó independientemente, para evitar posibles mejoras debido al uso del caché.
 
-En el cuadro \ref{tab:experiment-results} se muestran los resultados de estos experimentos en los 3 hardwares utilizados ($H1$, $H2$ y $H3$) descritos en el cuadro \ref{tab:hardware-used}.
+En el Cuadro \ref{tab:experiment-results} se muestran los resultados de estos experimentos en los 3 hardwares utilizados ($H1$, $H2$ y $H3$) descritos en el Cuadro \ref{tab:hardware-used}.
 Se muestran los resultados para cada una de las escenas $S1$ y $S2$, en cada uno de los hardwares, y para cada nivel de resolución (vóxeles por dimensión).
 
 \begin{table}[ht]
@@ -113,11 +113,11 @@ Se muestran los resultados para cada una de las escenas $S1$ y $S2$, en cada uno
 \section{Análisis de resultados}
 
 Una primera observación es que los cuadros por segundo se encuentran cerca del tiempo real.
-Se nota que en $H1$ los FPSs nunca superan los 20, mientras que en $H3$ nunca bajan de 140.
+Se nota que en $H1$ los FPS nunca superan los 20, mientras que en $H3$ nunca bajan de 140.
 $H2$ representa un término medio, logrando más de 60 FPS en la escena simple ($S1$) y mostrando una gran variedad de valores en la escena compleja ($S2$) para cada resolución utilizada ($256$, $512$, $1024$).
 
 Se observa que, como es de esperarse, a mayor resolución (vóxeles por dimensión), los cuadros por segundo disminuyen.
 Esto se debe a que una resolución más alta mejora la aproximación y genera imágenes de mayor calidad, pero a costa de mayor carga computacional.
 
 Un aspecto que destaca especialmente es el tiempo de construcción del octree, que permanece alrededor de los 2 segundos, cuando idealmente debería estar en el rango de los milisegundos.
-Dado que este tiempo es prácticamente igual tanto en $H1$ como en $H3$, parece evidente que el cuello de botella no es la GPU en si, si no la comunicación entre GPU y CPU.
+Dado que este tiempo es prácticamente igual tanto en $H1$ como en $H3$, parece evidente que el cuello de botella no es la GPU en sí, sino la comunicación entre GPU y CPU.

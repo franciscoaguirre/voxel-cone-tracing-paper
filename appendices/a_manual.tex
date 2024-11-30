@@ -43,7 +43,7 @@ El menú principal se accede mediante la tecla \textit{Escape}, y proporciona ac
     \label{fig:menu}
 \end{figure}
 
-Como se observa en la figura \ref{fig:menu}, los submenús disponibles son:
+Como se observa en la Figura \ref{fig:menu}, los submenús disponibles son:
 
 \begin{itemize}
 	\item All Nodes
@@ -63,7 +63,7 @@ A continuación, se describen en detalle cada uno de estos.
 
 \subsubsection{All Nodes}
 
-Este submenú permite visualizar la representación gráfica del \textit{octree} y ajustar el nivel de detalle mostrado. En la figura \ref{fig:all_nodes} se muestra el botón que activa la visualización del \textit{octree} y el \textit{slider} que permite controlar los niveles.
+Este submenú permite visualizar la representación gráfica del \textit{octree} y ajustar el nivel de detalle mostrado. En la Figura \ref{fig:all_nodes} se muestra el botón que activa la visualización del \textit{octree} y el \textit{slider} que permite controlar los niveles.
 
 \begin{figure}[h]
     \centering
@@ -74,7 +74,7 @@ Este submenú permite visualizar la representación gráfica del \textit{octree}
 
 \subsubsection{Node Search}
 
-Este submenú ofrece la funcionalidad de buscar nodos del \textit{octree} ya sea por índice o posición. Al seleccionar un nodo de la lista, este se muestra en el espacio de la escena. Además, existe la opción de destacar los nodos vecinos al nodo seleccionado, y es posible seleccionar múltiples nodos. Este menú ha sido de gran utilidad durante el proceso de depuración del programa. La figura \ref{fig:node_search} ilustra su uso.
+Este submenú ofrece la funcionalidad de buscar nodos del \textit{octree} ya sea por índice o posición. Al seleccionar un nodo de la lista, este se muestra en el espacio de la escena. Además, existe la opción de destacar los nodos vecinos al nodo seleccionado, y es posible seleccionar múltiples nodos. Este menú ha sido de gran utilidad durante el proceso de depuración del programa. La Figura \ref{fig:node_search} ilustra su uso.
 
 \begin{figure}[h]
     \centering
@@ -85,7 +85,7 @@ Este submenú ofrece la funcionalidad de buscar nodos del \textit{octree} ya sea
 
 \subsubsection{Bricks}
 
-Este submenú, a diferencia de los anteriores que muestran nodos, permite visualizar los bricks asociados a esos nodos. La figura \ref{fig:bricks} muestra las distintas opciones disponibles. Para limitar el impacto en el rendimiento, es posible visualizar una capa de vóxeles de los bricks a la vez. Asimismo, se pueden visualizar el color y la irradiancia de los vóxeles, así como las normales de los mismos.
+Este submenú, a diferencia de los anteriores que muestran nodos, permite visualizar los bricks asociados a esos nodos. La Figura \ref{fig:bricks} muestra las distintas opciones disponibles. Para limitar el impacto en el rendimiento, es posible visualizar una capa de vóxeles de los bricks a la vez. Asimismo, se pueden visualizar el color y la irradiancia de los vóxeles, así como las normales de los mismos.
 
 Los controles situados al final del submenú permiten cambiar la dirección desde la cual se observan los bricks, algo relevante dado que los vóxeles son filtrados anisotrópicamente.
 
@@ -98,7 +98,7 @@ Los controles situados al final del submenú permiten cambiar la dirección desd
 
 \subsubsection{Children}
 
-Al seleccionar un nodo utilizando el submenú \textit{Node Search}, este submenú muestra los atributos del nodo seleccionado. La figura \ref{fig:children} muestra este submenú con y sin un nodo seleccionado. Una vez seleccionado un nodo $n$, se presentan los índices de sus nodos hijos, los cuales pueden ser posteriormente buscados en el submenú \textit{Node Search}.
+Al seleccionar un nodo utilizando el submenú \textit{Node Search}, este submenú muestra los atributos del nodo seleccionado. La Figura \ref{fig:children} muestra este submenú con y sin un nodo seleccionado. Una vez seleccionado un nodo $n$, se presentan los índices de sus nodos hijos, los cuales pueden ser posteriormente buscados en el submenú \textit{Node Search}.
 
 \begin{figure}[h]
     \begin{center}
@@ -117,7 +117,7 @@ Al seleccionar un nodo utilizando el submenú \textit{Node Search}, este submen�
 
 \subsubsection{Diagnostics}
 
-El submenú \textit{Diagnostics} proporciona información sobre el rendimiento de la aplicación, específicamente los cuadros por segundo (FPS), como se muestra en la figura \ref{fig:diagnostics}.
+El submenú \textit{Diagnostics} proporciona información sobre el rendimiento de la aplicación, específicamente los cuadros por segundo (FPS), como se muestra en la Figura \ref{fig:diagnostics}.
 
 \begin{figure}[h]
     \centering
@@ -128,7 +128,7 @@ El submenú \textit{Diagnostics} proporciona información sobre el rendimiento d
 
 \subsubsection{Images}
 
-Este submenú permite mostrar diferentes imágenes en pantalla, de manera similar a cómo las teclas \textit{1} y \textit{2} permiten mostrar la escena original y la versión voxelizada respectivamente. En la figura \ref{fig:images}, se presentan las opciones disponibles:
+Este submenú permite mostrar diferentes imágenes en pantalla, de manera similar a cómo las teclas \textit{1} y \textit{2} permiten mostrar la escena original y la versión voxelizada respectivamente. En la Figura \ref{fig:images}, se presentan las opciones disponibles:
 
 \begin{itemize}
     \item Color: Muestra la escena original, equivalente a presionar la tecla \textit{1}.
@@ -154,7 +154,7 @@ Este submenú, similar al submenú \textit{Children}, muestra la cantidad de fot
 \subsubsection{Save Preset}
 
 Este submenú permite guardar todas las configuraciones seleccionadas en el menú en un archivo de \textit{preset}.
-Para guardar, simplemente se debe elegir un nombre para el archivo y presionar el botón \textit{Save}, como se muestra en la figura \ref{fig:save_preset}.
+Para guardar, simplemente se debe elegir un nombre para el archivo y presionar el botón \textit{Save}, como se muestra en la Figura \ref{fig:save_preset}.
 Estos archivos pueden ser cargados en futuras ejecuciones utilizando la opción \texttt{--preset <nombre-archivo>}.
 
 \begin{figure}[h]
@@ -170,7 +170,7 @@ Este submenú permite cambiar la proyección de la cámara a una vista ortogonal
 
 \subsubsection{Cone Tracing}
 
-Este submenú ofrece control sobre la apertura y la distancia máxima de los conos utilizados para sombras, oclusión ambiental, reflexión difusa, reflexión especular y conos de prueba. La figura \ref{fig:cone_tracing} ilustra estas opciones.
+Este submenú ofrece control sobre la apertura y la distancia máxima de los conos utilizados para sombras, oclusión ambiental, reflexión difusa, reflexión especular y conos de prueba. La Figura \ref{fig:cone_tracing} ilustra estas opciones.
 
 \begin{figure}[h]
     \centering
@@ -181,7 +181,7 @@ Este submenú ofrece control sobre la apertura y la distancia máxima de los con
 
 \subsubsection{Picker}
 
-Este submenú permite activar un modo en el cual el cursor puede ser utilizado para seleccionar un punto en la pantalla y lanzar un cono desde ese punto en la escena. El submenú se muestra en la figura \ref{fig:picker-menu}, y un ejemplo del cono de prueba en acción se presenta en la figura \ref{fig:picker-action}. El cono de prueba muestra los nodos a través de los cuales pasa.
+Este submenú permite activar un modo en el cual el cursor puede ser utilizado para seleccionar un punto en la pantalla y lanzar un cono desde ese punto en la escena. El submenú se muestra en la Figura \ref{fig:picker-menu}, y un ejemplo del cono de prueba en acción se presenta en la Figura \ref{fig:picker-action}. El cono de prueba muestra los nodos a través de los cuales pasa.
 
 \begin{figure}[h]
     \centering

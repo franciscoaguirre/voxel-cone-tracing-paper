@@ -13,42 +13,34 @@
 
 \chapter{Conclusiones y Trabajo Futuro}\label{chap:conclusions}
 
-Este proyecto logró convertir un artículo académico en una implementación práctica y funcional de código abierto.
+En este proyecto se logró una implementación práctica y funcional de la información provista por un artículo de revista \cite{voxel-cone-tracing} y una tesis \cite{gigavoxels}.
 El objetivo principal fue estudiar y comprender a profundidad el algoritmo de Voxel Cone Tracing, enfrentando los retos de llevarlo a un entorno funcional y documentando el proceso de manera que sirva como recurso útil para otros interesados en este tema.
 Así, se cumplieron los objetivos principales planteados al inicio del trabajo.
 
-\section{Logros destacados}
+\section{Principales conclusions}
 
-Se consiguió implementar el algoritmo de manera que, en el hardware intermedio probado y en una escena compleja, se lograron valores de cuadros por segundo cercanos al tiempo real.
-Los resultados de rendimiento obtenidos fueron de 10, 37 y 60 cuadros por segundos para la mejor, intermedia y peor aproximación respectivamente.
+Se consiguió implementar el algoritmo de Voxel Cone Tracing.
+Con el mismo se logró generar un rendering, en el hardware intermedio probado y en una escena compleja, con valores de cuadros por segundo cercanos al tiempo real.
 
 A lo largo del proyecto, se profundizó en el entendimiento del algoritmo y en los desafíos del desarrollo en GPU.
-Se dejó un buen recurso, detallando el algoritmo paso a paso, y un ejemplo para futuros desarrolladores.
+Se dejó un recurso, detallando el algoritmo paso a paso, y el codigo queda abierto como ejemplo para futuros desarrolladores.
 
-Más allá del programa implementado, fue un buen ejemplo de convertir un artículo académico en una implementación concreta.
-Fue muy valioso cerrar la brecha entre teoría y práctica.
+Este proyecto no solo permitió desarrollar un código concreto, sino que también sirvió como ejercicio para materializar conceptos teóricos en aplicaciones reales.
 
-\section{Retos enfrentados}
 
-El desarrollo del proyecto no fue sin sus retos.
-
+El desarrollo del proyecto presentó diversos desafíos.
 Programar en la GPU implicó un cambio de paradigma respecto al modelo tradicional en CPU.
-Las restricciones de la arquitectura y el diseño del ducto de cómputo supusieron una curva de aprendizaje significativa.
+Las restricciones arquitectónicas y el diseño del pipeline de cómputo representaron una curva de aprendizaje significativa.
+La depuración en GPU, limitada por la falta de herramientas tradicionales, requirió el desarrollo de utilidades personalizadas para visualizar los estados intermedios del algoritmo y diagnosticar problemas.
 
-La depuración en GPU, limitada por la falta de herramientas tradicionales, obligó al desarrollo de utilidades personalizadas para visualizar los estados intermedios del algoritmo y diagnosticar problemas.
+\section{Trabajo futuro}
 
-\section{Propuestas para trabajo futuro}
-
-El proyecto abre múltiples lineas de trabajo que podrían extender y mejorar la implementación actual.
+El proyecto presenta varias oportunidades para mejorar y ampliar la implementación actual:
 
 \begin{itemize}
-    \item Soporte para objetos dinámicos\\
-        Incorporar la capacidad de manejar objetos dinámicos en la escena, adaptando el octree en tiempo real.
-        Aunque esta posibilidad fue considerada durante el diseño, quedó fuera del alcance del proyecto.
-    \item Migración a Vulkan\\
-        Explorar la implementación en Vulkan permitiría experimentar con el control más granular que ofrece sobre la GPU, evaluando mejoras potenciales en rendimiento y flexibilidad.
-    \item Mejores herramientas interactivas de visualización\\
-        Desarrollar herramientas interactivas más robustas para inspeccionar los estados intermedios del algoritmo, facilitando tanto la depuración como la exploración académica.
+    \item Soporte para objetos dinámicos: Implementar el manejo de objetos dinámicos en la escena y actualizar el octree en tiempo real, una característica considerada pero no incluida en este trabajo.
+    \item Migración a Vulkan: Portar la implementación a Vulkan para aprovechar un control más detallado de la GPU, potencialmente mejorando el rendimiento y la flexibilidad.
+    \item Mejora de herramientas de visualización: Desarrollar herramientas más avanzadas para inspeccionar los estados intermedios del algoritmo, facilitando la depuración y la investigación.
 \end{itemize}
 
-Los resultados obtenidos y las experiencias documentadas constituyen una base sólida para inspirar y facilitar futuros desarrollos de \textit{Voxel Cone Tracing} o de otras técnicas de iluminación global.
+Los resultados y experiencias obtenidos proporcionan una base sólida para futuros desarrollos de Voxel Cone Tracing y otras técnicas de iluminación global.
