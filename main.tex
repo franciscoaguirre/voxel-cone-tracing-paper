@@ -24,12 +24,16 @@
 \usepackage{subcaption}
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{float}
 
 \addbibresource{referencias.bib}
 
 % título del proyecto (debe escribirse en minúscula, con excepción de la
 % letra inicial de la primera palabra y nombres propios)
-\title{Fingxels}
+\title{
+	Fingxels \\
+	\large Algoritmo de iluminación global basado en el uso de vóxeles
+}
 
 % autores
 \author{Francisco Aguirre, Felipe Pizzorno}
@@ -91,17 +95,20 @@ Agradecer, siempre es bueno agradecer. % TODO: Hacer a lo último
 % acrónimos sin explicar su significado.
 
 En este trabajo se aborda el problema de la iluminación global en tiempo real, un problema desafiante y relevante en la industria de los videojuegos, cine, simulaciones y la computación gráfica en general.
-La mayoría de las técnicas de iluminación global se basan en el método de Monte Carlo, y esto las hace computacionalmente costosas, requiriendo hardware especializado y técnicas de aprendizaje automático para alcanzar el tiempo real.
+La mayoría de las técnicas de iluminación global se basan en el método de Monte Carlo.
+Esto las hace computacionalmente costosas, requiriendo hardware especializado y técnicas de aprendizaje automático para alcanzar el tiempo real.
 
-En este contexto, se hace foco en el algoritmo de \textit{voxel cone tracing}, una técnica de trazado de conos que usa una estructura de datos basada en vóxeles que se ha demostrado prometedora por su capacidad para producir efectos de iluminación global de alta calidad en tiempo real sin necesidad de hardware especializado.
+En este contexto, se hace foco en el algoritmo de \textit{voxel cone tracing}, una técnica de trazado de conos que usa una estructura de datos basada en vóxeles.
+Se ha demostrado prometedora por su capacidad para producir efectos de iluminación global de alta calidad en tiempo real sin necesidad de hardware especializado.
 
 El objetivo principal de este trabajo es crear una implementación open source del algoritmo de \textit{voxel cone tracing} y probarla en hardware moderno. La implementación realizada no solo demuestra la viabilidad y eficacia de la técnica en un entorno de hardware actual, sino que también es un recurso didáctico valioso para cualquier persona interesada en aprender acerca de computación gráfica, iluminación global y su implementación.
 
-Para esta implementación, se utilizaron principalmente las herramientas Rust y OpenGL, debido a su alto rendimiento, abundancia de documentación y simplicidad.
-El algoritmo corre exclusivamente en la GPU, aprovechando la alta paralelización que esta provee.
-Su desarrollo se realizó en Linux, pero el programa no está limitado a este sistema operativo dado que puede ser portado fácilmente a otros.
+Para la implementación, se utilizaron principalmente las herramientas Rust y OpenGL, debido a su alto rendimiento, abundancia de documentación y simplicidad.
+El algoritmo corre mayoritariamente en la GPU para aprovechar la alta paralelización que esta provee.
+Se desarrolló en Linux, pero el programa no está limitado a este sistema operativo.
+Puede ser portado fácilmente a otros.
 
-Para evaluar la implementación, se realizaron experimentos en hardware moderno y se compararon los resultados con implementaciones previas de la técnica.
+Para la evaluación, se realizaron experimentos en distintos equipos y con distintas escenas.
 
 El código del motor se encuentra en el siguiente repositorio:
 

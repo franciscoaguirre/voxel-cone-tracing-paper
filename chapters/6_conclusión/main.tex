@@ -13,23 +13,34 @@
 
 \chapter{Conclusiones y Trabajo Futuro}\label{chap:conclusions}
 
-Se logró pasar de un artículo académico a una implementación práctica, open source.
-Se enfocó en aprender a fondo el algoritmo y en documentar la implementación para que sea un recurso útil para otros estudiantes interesados en este tema.
-Dicho esto, se cumplieron los objetivos principales.
+En este proyecto se logró una implementación práctica y funcional de la información provista por un artículo de revista \cite{voxel-cone-tracing} y una tesis \cite{gigavoxels}.
+El objetivo principal fue estudiar y comprender a profundidad el algoritmo de Voxel Cone Tracing, enfrentando los retos de llevarlo a un entorno funcional y documentando el proceso de manera que sirva como recurso útil para otros interesados en este tema.
+Así, se cumplieron los objetivos principales planteados al inicio del trabajo.
 
-La mayoría del tiempo fue dedicado a entender los conceptos y la programación en GPU mediante el uso de \textit{compute shaders}.
-Esta fue la principal dificultad encontrada en el transcurso del trabajo, implementar un algoritmo principalmente en la GPU.
-El equipo tiene mayoritariamente experiencia programando en la CPU y manipulando etapas del pipeline gráfico, pero el uso extensivo de \textit{compute shaders}, texturas (lineales, 2D, 3D), imágenes y \textit{samplers} fue algo que sin dudas enlenteció el desarrollo.
+\section{Principales conclusions}
 
-A su vez, en el transcurso del trabajo, la falta de planificación, fijación de objetivos y fechas límite fue otro problema.
+Se consiguió implementar el algoritmo de Voxel Cone Tracing.
+Con el mismo se logró generar un rendering, en el hardware intermedio probado y en una escena compleja, con valores de cuadros por segundo cercanos al tiempo real.
 
-Se plantean posibles tareas de un trabajo futuro:
+A lo largo del proyecto, se profundizó en el entendimiento del algoritmo y en los desafíos del desarrollo en GPU.
+Se dejó un recurso, detallando el algoritmo paso a paso, y el codigo queda abierto como ejemplo para futuros desarrolladores.
+
+Este proyecto no solo permitió desarrollar un código concreto, sino que también sirvió como ejercicio para materializar conceptos teóricos en aplicaciones reales.
+
+
+El desarrollo del proyecto presentó diversos desafíos.
+Programar en la GPU implicó un cambio de paradigma respecto al modelo tradicional en CPU.
+Las restricciones arquitectónicas y el diseño del pipeline de cómputo representaron una curva de aprendizaje significativa.
+La depuración en GPU, limitada por la falta de herramientas tradicionales, requirió el desarrollo de utilidades personalizadas para visualizar los estados intermedios del algoritmo y diagnosticar problemas.
+
+\section{Trabajo futuro}
+
+El proyecto presenta varias oportunidades para mejorar y ampliar la implementación actual:
+
 \begin{itemize}
-    \item Objetos dinámicos\\
-        Es posible tener objetos dinámicos en la escena, que al moverse subdividen el \textit{octree} nuevamente.
-        La estructura fue implementada con esto en mente, pero quedó fuera del alcance.
-    \item Pasar a Vulkan\\
-        Pasar el programa a Vulkan sería un buen experimento para aprender y medir la mejora en eficiencia que resulta, dado que Vulkan permite mejor control de la GPU lo que ofrece más oportunidades de optimización.
-    \item Mejores herramientas interactivas de exploración\\
-        Mejorar las herramientas interactivas para la exploración del algoritmo.
+    \item Soporte para objetos dinámicos: Implementar el manejo de objetos dinámicos en la escena y actualizar el octree en tiempo real, una característica considerada pero no incluida en este trabajo.
+    \item Migración a Vulkan: Portar la implementación a Vulkan para aprovechar un control más detallado de la GPU, potencialmente mejorando el rendimiento y la flexibilidad.
+    \item Mejora de herramientas de visualización: Desarrollar herramientas más avanzadas para inspeccionar los estados intermedios del algoritmo, facilitando la depuración y la investigación.
 \end{itemize}
+
+Los resultados y experiencias obtenidos proporcionan una base sólida para futuros desarrollos de Voxel Cone Tracing y otras técnicas de iluminación global.

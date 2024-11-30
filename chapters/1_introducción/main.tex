@@ -3,25 +3,41 @@
 % Aquí se motiva el trabajo, se plantea y define el problema, se deja claro cuales son los objetivos (general del proyecto, si correspondiese o si está inmerso en un proyecto de mayor alcance, y los específicos), se plantean los resultados esperados, se establecen resumidamente las conclusiones y se describe la
 % organización general del documento.
 
-El problema de la iluminación global en tiempo real ha sido muy estudiado.
-Resolverlo es uno de los objetivos largamente buscados de la computación gráfica, debido a que tiene una alta importancia en varias industrias, como la de los videojuegos, la del cine, las simulaciones físicas, entre otros.
-Existen varios métodos para resolver el problema de la iluminación global.
-La mayoría de ellos se basan en el trazado de rayos, que consiste en trazar rayos a partir de la cámara hacia la escena y simular los caminos que recorren los fotones.
-Su alto costo computacional limita su uso en tiempo real.
-Se han realizado varias optimizaciones a lo largo de los años; como por ejemplo simplificaciones en la geometría \cite{gigavoxels}, el uso de estructuras jerárquicas \cite{real-time-photon-mapping}, clustering \cite{faster-photon-mapping}, entre otras.
-Más allá de los avances, el problema continúa siendo un área activa de investigación.
-Métodos recientes utilizan hardware especializado para alcanzar tiempos interactivos.
-Recientemente, han habido muchos avances en utilizar la inteligencia artificial (AI) para realizar los cálculos en una menor resolución y escalarla a la resolución objetivo \cite{image-super-resolution-survey}, ahorrando costos.
+El libro ``Real-Time Rendering'' \cite[p.~1]{rtr} presenta una buena introducción al renderizado en tiempo real.
+Este se ocupa de generar imágenes rápidamente en la computadora.
+Una imagen aparece en la pantalla, el espectador actúa o reacciona, y esta retroalimentación afecta lo que se genera a continuación.
+La velocidad a la que se muestran las imágenes se mide en cuadros por segundo (FPS) o hercios (Hz).
+Aproximadamente a 6 FPS, comienza a surgir una sensación de interactividad.
+Los videojuegos apuntan a 30, 60, 72 o más FPS; a estas velocidades, el usuario se enfoca en la acción y la reacción.
 
-El trabajo presente se centra en \textit{voxel cone tracing}, un algoritmo de iluminación global que funciona en tiempo real sin necesidad de hardware específico.
-El objetivo del trabajo es aprender sobre este algoritmo, crear una implementación del mismo, y probar su eficiencia en hardware moderno.
+Una forma de proveer realismo a estas imágenes es mediante iluminación global \cite[p.~437]{rtr}.
+Esta es compleja de lograr en tiempo real.
+Para eso, se requiere una mezcla de hardware y arquitectura de software adecuados.
+
+La iluminación global en tiempo real ha sido objeto de estudio desde la década de los 70 y continúa siendo uno de los desafíos fundamentales de la computación gráfica.
+Tiene una alta importancia en varias industrias, como la de los videojuegos, la del cine, las simulaciones físicas, entre otros.
+
+Existen varios métodos para resolver el problema de la iluminación global.
+La mayoría de ellos se basan en el trazado de rayos \cite{whitted-1980}, que consiste en trazar rayos desde la cámara hacia la escena y simular los caminos que recorren los fotones.
+Sin embargo, su alto costo computacional ha limitado históricamente su uso en tiempo real.
+
+A lo largo de los años, se han desarrollado numerosas optimizaciones para reducir este costo.
+Estas incluyen simplificaciones en la geometría \cite{gigavoxels}, el uso de estructuras jerárquicas \cite{real-time-photon-mapping}, \textit{clustering} \cite{faster-photon-mapping}, entre otras.
+A pesar de estos avances, el problema continúa siendo un área activa de investigación.
+
+Métodos recientes utilizan hardware especializado para alcanzar tiempos interactivos.
+Además, se han logrado importantes avances en el uso de la inteligencia artificial (IA), empleada para realizar los cálculos en una menor resolución y escalarla a la resolución objetivo \cite{image-super-resolution-survey}, ahorrando costos.
+
+El trabajo presente se centra en \textit{voxel cone tracing} \cite{voxel-cone-tracing}, un algoritmo de iluminación global que funciona en tiempo real sin necesidad de hardware específico.
+El objetivo del trabajo es aprender sobre este algoritmo y crear una implementación open source del mismo.
 El algoritmo fue propuesto por Crassin et al en 2011 \cite{voxel-cone-tracing}, cuando no existían muchas soluciones para el problema de iluminación global en tiempo real, y la demanda estaba creciendo debido a la importancia de la industria de los videojuegos.
-Se basa en una representación de vóxeles de la geometría, el trazado de conos y el uso de estructuras jerárquicas de datos y pre-filtrado para reducir los cálculos necesarios y así alcanzar tiempos interactivos.
+
+Se basa en una representación de vóxeles \cite[p.~578]{rtr} de la geometría, el trazado de conos \cite{ray-tracing-with-cones} y el uso de estructuras jerárquicas de datos y pre-filtrado para reducir los cálculos necesarios y así alcanzar tiempos interactivos.
 No sufre de problemas de ruido y provee una buena calidad de imágenes con un rendimiento casi independiente de la complejidad de la escena.
 Computa hasta dos rebotes de la luz en su camino desde el emisor hacia la cámara, lo que permite incorporar el componente principal de la luz indirecta.
 
 El trabajo surge del interés de los miembros del equipo en técnicas de iluminación global y en vóxeles como primitiva de renderizado.
-Luego de dos cursos de computación gráfica en los que se trata por un lado la creación de ambientes interactivos y por otro la generación de imágenes realistas usando iluminación global, se buscó un algoritmo que permitiera ambas, iluminación global en tiempo real.
+Luego de dos cursos de computación gráfica en los que se trata, por un lado, la creación de ambientes interactivos y por otro la generación de imágenes realistas usando iluminación global, se buscó un algoritmo que permitiera ambas, iluminación global en tiempo real.
 El proyecto de grado se realiza en el contexto de un ambiente académico, la implementación es open source y apunta a ser un recurso didáctico útil para otras personas interesadas en aprender sobre distintas técnicas de iluminación.
 
 \section{Organización del documento}
@@ -30,5 +46,5 @@ Las siguientes secciones de este informe se organizan de la siguiente manera.
 El capítulo 2 se enfoca en la revisión de antecedentes de la técnica de \textit{voxel cone tracing}.
 El capítulo 3 se enfoca en detallar cómo funciona el algoritmo y la estructura de datos utilizada para implementarlo.
 El capítulo 4 presenta algunas decisiones tomadas respecto al desarrollo.
-El capítulo 5 muestra los resultados de los experimentos realizados con la aplicación implementada que se presentan en forma de tablas e imágenes.
+El capítulo 5 muestra los resultados de los experimentos realizados con la aplicación implementada, presentados en forma de tablas e imágenes.
 Finalmente, el capítulo 6 resume los resultados y conclusiones de este trabajo y presenta las funcionalidades y arreglos para implementar a futuro.
