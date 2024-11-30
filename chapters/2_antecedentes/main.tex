@@ -51,7 +51,7 @@ Una representación de esto se puede ver en la Figura \ref{fig:electromagnetic-w
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{electromagnetic_wave.png}
-    \caption{Representación de una onda electromagnetica propagandose por el espacio.}
+    \caption{Representación de una onda electromagnética propagándose por el espacio.}
     \label{fig:electromagnetic-wave}
 \end{figure}
 
@@ -246,7 +246,7 @@ $f$ es la BRDF.
 $L_i(p, \omega_i)$ es la radiancia entrante hacia $p$ por otra dirección $\omega_i$.
 $n$ es la normal en el punto $p$ y $n \cdot \omega_i$ es el producto interno entre la normal y la dirección, que equivale al coseno del ángulo entre ellos.
 La radiancia saliente es la suma por todo el hemisferio visible $\Omega$ centrado en $p$.
-La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, como se vió anteriormente.
+La suma de todas las radiancias a lo largo del hemisferio es la irradiancia, como se vio anteriormente.
 
 Se procede a explorar más detalladamente la función $f$.
 
@@ -268,7 +268,7 @@ Los BRDFs son propios de los materiales, y este es uniforme a lo largo de todo e
 % TODO: Agregar una foto de la máquina utilizada para medir BRDFs
 % TODO: Podemos hablar más de cómo se representan capaz
 
-Dos modelos teóricos e ideales comunmente utilizados son los siguientes:
+Dos modelos teóricos e ideales comúnmente utilizados son los siguientes:
 
 \begin{itemize}
     \item Reflexión especular: $f(x, \omega, \omega') = \rho$ cuando $\omega$ es simétrico a $\omega'$ respecto a la normal. $0$ en otro caso.
@@ -280,7 +280,7 @@ $\rho$ es la reflectividad de la superficie, es decir, la fracción de la energ�
 La reflexión especular refleja un rayo solamente en un ángulo específico,
 mientras que la difusa refleja la luz en todas las direcciones de igual manera.
 
-Los modelos ideales simplifican mucho los calculos y son fisicamente posibles, aunque no existan materiales reales con estas características de reflectancia.
+Los modelos ideales simplifican mucho los cálculos y son físicamente posibles, aunque no existan materiales reales con estas características de reflectancia.
 
 Las secciones anteriores presentaron un modelo para simular la luz.
 Las posteriores describen algunos métodos para calcularla.
@@ -288,7 +288,7 @@ Las posteriores describen algunos métodos para calcularla.
 \section{Trazado de rayos (\textit{ray tracing})}\label{sec:ray-tracing}
 
 Uno de los métodos más antiguos y populares para calcular la iluminación global es el de trazado de rayos.
-Se basa en tratar a la luz como una partícula, trazar el camino que toman los rayos de luz a través de la escena y calcular reflección, refracción y absorción del rayo cuando interseca con un objeto.
+Se basa en tratar a la luz como una partícula, trazar el camino que toman los rayos de luz a través de la escena y calcular reflexión, refracción y absorción del rayo cuando interseca con un objeto.
 La popularidad de este método surge debido a su simplicidad y al gran realismo que agrega a las imágenes generadas.
 Su primer uso como herramienta de computación gráfica para representar reflexión, refracción y sombras se atribuye a Turner Whitted, \cite{whitted-1980}.
 
@@ -423,12 +423,12 @@ Imágenes generadas por esta técnica pueden verse en la Figura \ref{fig:real-ti
     \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{real-time-photon-mapping-direct-only.png}
-        \caption{Solo luz directa}
+        \caption{Solo luz directa.}
     \end{subfigure}
     \begin{subfigure}{.5\textwidth}
         \centering
         \includegraphics[width=\textwidth]{real-time-photon-mapping-indirect-only.png}
-        \caption{Solo luz indirecta}
+        \caption{Solo luz indirecta.}
     \end{subfigure}
     \begin{subfigure}{\textwidth}
         \centering
@@ -536,7 +536,7 @@ La última sección de este capítulo introduce herramientas para la programaci�
 
 Dada una escena 3D, una cámara virtual, varios objetos y varias fuentes de luz, ¿cómo se genera una imagen 2D en el monitor de una computadora?
 
-Si bien es posible generar una imagen a partir de una escena usando la CPU, las GPUs, o tarjetas gráficas, están especialmente diseñadas para esto.
+Si bien es posible generar una imagen a partir de una escena usando la CPU, las GPU, o tarjetas gráficas, están especialmente diseñadas para esto.
 
 Las tarjetas gráficas ejecutan un \textbf{ducto gráfico} para generar las imágenes, esto es, una secuencia de transformaciones y operaciones que parten de primitivas y generan la imagen final.
 Existen varios tipos de ductos gráficos, el ducto de rasterización, el de cómputo de propósito general, el de trazado de rayos, entre otros.
@@ -549,7 +549,7 @@ En el caso de que sea fijo, el mismo ya está implementado en la tarjeta gráfic
 En algunos casos, estos pasos fijos proveen parámetros para configurar su comportamiento, este es su mayor grado de libertad.
 En el caso de que sea programable, se puede escribir un \textit{shader}, un programa de sombreado que ejecuta en la GPU, que implementa el paso en su totalidad, aportando una gran libertad a la hora de renderizar escenas.
 
-Existen varias APIs, o interfaces, con las que se puede interactuar con una tarjeta gráfica \cite{comparison-graphics-apis}, notablemente Vulkan, Direct3D, Metal, WebGPU y OpenGL.
+Existen varias API, o interfaces, con las que se puede interactuar con una tarjeta gráfica \cite{comparison-graphics-apis}, notablemente Vulkan, Direct3D, Metal, WebGPU y OpenGL.
 Todas estas permiten acceder al ducto de rasterización.
 
 En OpenGL, por ejemplo, este ducto posee las etapas que se ven en la Figura \ref{fig:raster-pipeline} \cite{rtr}.

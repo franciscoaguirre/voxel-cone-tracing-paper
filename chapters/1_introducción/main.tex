@@ -10,7 +10,7 @@ La velocidad a la que se muestran las imágenes se mide en cuadros por segundo (
 Aproximadamente a 6 FPS, comienza a surgir una sensación de interactividad.
 Los videojuegos apuntan a 30, 60, 72 o más FPS; a estas velocidades, el usuario se enfoca en la acción y la reacción.
 
-Una forma de proveer realismo a estas imagenes es mediante iluminación global \cite[p.~437]{rtr}.
+Una forma de proveer realismo a estas imágenes es mediante iluminación global \cite[p.~437]{rtr}.
 Esta es compleja de lograr en tiempo real.
 Para eso, se requiere una mezcla de hardware y arquitectura de software adecuados.
 
@@ -19,10 +19,10 @@ Tiene una alta importancia en varias industrias, como la de los videojuegos, la 
 
 Existen varios métodos para resolver el problema de la iluminación global.
 La mayoría de ellos se basan en el trazado de rayos \cite{whitted-1980}, que consiste en trazar rayos desde la cámara hacia la escena y simular los caminos que recorren los fotones.
-Sin embargo, su alto costo computacional ha limitado historicamente su uso en tiempo real.
+Sin embargo, su alto costo computacional ha limitado históricamente su uso en tiempo real.
 
 A lo largo de los años, se han desarrollado numerosas optimizaciones para reducir este costo.
-Estas incluyen simplificaciones en la geometría \cite{gigavoxels}, el uso de estructuras jerárquicas \cite{real-time-photon-mapping}, clustering \cite{faster-photon-mapping}, entre otras.
+Estas incluyen simplificaciones en la geometría \cite{gigavoxels}, el uso de estructuras jerárquicas \cite{real-time-photon-mapping}, \textit{clustering} \cite{faster-photon-mapping}, entre otras.
 A pesar de estos avances, el problema continúa siendo un área activa de investigación.
 
 Métodos recientes utilizan hardware especializado para alcanzar tiempos interactivos.
@@ -37,7 +37,7 @@ No sufre de problemas de ruido y provee una buena calidad de imágenes con un re
 Computa hasta dos rebotes de la luz en su camino desde el emisor hacia la cámara, lo que permite incorporar el componente principal de la luz indirecta.
 
 El trabajo surge del interés de los miembros del equipo en técnicas de iluminación global y en vóxeles como primitiva de renderizado.
-Luego de dos cursos de computación gráfica en los que se trata por un lado la creación de ambientes interactivos y por otro la generación de imágenes realistas usando iluminación global, se buscó un algoritmo que permitiera ambas, iluminación global en tiempo real.
+Luego de dos cursos de computación gráfica en los que se trata, por un lado, la creación de ambientes interactivos y por otro la generación de imágenes realistas usando iluminación global, se buscó un algoritmo que permitiera ambas, iluminación global en tiempo real.
 El proyecto de grado se realiza en el contexto de un ambiente académico, la implementación es open source y apunta a ser un recurso didáctico útil para otras personas interesadas en aprender sobre distintas técnicas de iluminación.
 
 \section{Organización del documento}
