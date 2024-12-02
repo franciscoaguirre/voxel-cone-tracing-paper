@@ -3,7 +3,7 @@
 \chapter{Implementación}\label{chap:implementation}
 
 La primera decisión importante en el proceso de desarrollo fue implementar el algoritmo en la GPU.
-La principal razón para esto es el alto grado de paralelismo que la misma ofrece.
+La principal razón para esto, es el alto grado de paralelismo que la misma ofrece.
 A su vez, el ducto de rasterización, ampliamente implementado y optimizado en las GPUs, puede ser utilizado, aprovechando así algoritmos y cálculos optimizados a la hora de generar una imagen.
 
 La programación en GPU precisa un lenguaje para la \textbf{CPU}, una \textbf{API de gráficos} y un lenguaje de \textbf{sombreado}.
@@ -15,20 +15,20 @@ El lenguaje de sombreado es el que se utiliza para escribir los \textit{shaders}
 Como lenguaje de CPU se eligió \textbf{Rust}, un lenguaje de sistemas moderno multiparadigma.
 Fue escogido debido a su gran comunidad, su amplia documentación y su poderoso manejador de paquetes \textit{cargo}.  
 Se caracteriza por ser eficiente, al permitir un acceso a primitivas de bajo nivel, pero manteniendo una buena experiencia de desarrollo, debido a las abstracciones de costo cero que provee.
-Otra característica a mencionar es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución como punteros nulos en situaciones que se espera un valor, o accesos a espacios de memoria no inicializados o liberados.
+Otra característica para mencionar, es la seguridad de memoria que impide comportamientos indefinidos en tiempo de ejecución, como punteros nulos en situaciones que se espera un valor, o accesos a espacios de memoria no inicializados o liberados.
 
 También se consideró el lenguaje C++ para CPU, dado que es el lenguaje más popular para aplicaciones gráficas.  
 Si bien ambos lenguajes presentan una eficiencia similar, el factor que más pesó en la decisión fue la presencia de un manejador de paquetes en Rust.
 El mismo permitió instalar varias dependencias más rápido y cambiarlas a lo largo del ciclo de desarrollo cuando fue necesario.
 Dada la implementación en la GPU, la eficiencia y el manejo de memoria fue secundario. 
 
-Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, aunque soporte otros lenguajes.
+Como API de gráficos se eligió \textbf{OpenGL}, junto con el lenguaje de sombreado \textbf{GLSL}, el más usado para OpenGL, si bien soporta otros lenguajes.
 También fueron consideradas CUDA y Vulkan, pero se terminó por escoger OpenGL debido a la facilidad de desarrollo, el conocimiento previo del equipo y la facilidad de trabajo con \textit{compute shaders}.
 Si bien Vulkan es una API más moderna, es conocida por ser más compleja que OpenGL y el equipo del trabajo no contaba con la suficiente experiencia para utilizarlo adecuadamente.
 CUDA suele usarse para cómputo de propósito general en la GPU, sin embargo, no posee ducto de rasterización, el cual fue ampliamente utilizado.
 Por lo tanto, se optó por utilizar los \textit{compute shaders} de OpenGL para el cómputo de propósito general necesario.
 
-El desarrolló se realizó en el sistema operativo \textbf{Linux} debido a los ambientes de desarrollo utilizados.
+El desarrolló se realizó en el sistema operativo \textbf{Linux}, debido a los ambientes de desarrollo utilizados.
 De igual manera, tanto Rust como OpenGL son multiplataforma, con lo que la aplicación es fácilmente portable a otros sistemas operativos.
 
 La arquitectura de la aplicación consta de tres paquetes: \textit{CLI}, \textit{Core} y \textit{Engine}.
@@ -67,7 +67,7 @@ Cada objeto de la escena tiene un material (\textit{Material}), un modelo (\text
 \textit{Transform} es un tipo que contiene la posición, rotación y escala de un objeto en la escena.
 Esto simplifica el lidiar con matrices de traslación, rotación y escala a lo largo de todo el programa.
 
-Tanto los modelos como los materiales son cargados una vez al inicio de la aplicación en el \textit{AssetRegistry} para no duplicarlos en caso de que sean utilizados por más de un objeto.
+Tanto los modelos como los materiales son cargados una vez al inicio de la aplicación en el \textit{AssetRegistry}, para no duplicarlos en caso de que sean utilizados por más de un objeto.
 Los objetos solo necesitan almacenar referencias a estos.
 
 Se representan los modelos como mallas poligonales, distinto al trazado de rayos en el que se usan ecuaciones geométricas.
@@ -76,7 +76,7 @@ Cada \textit{Model} contiene muchos \textit{Mesh} y tiene un \textit{Aabb}, un A
 Este volumen acotante se calcula en el momento que se carga el modelo y se expone para ser utilizado por el resto de la aplicación.
 
 \textit{Camera} provee el punto de vista, la dirección de vista, la dirección hacia arriba, la ventana de vista, entre otros, del que se renderiza toda la escena.
-Se soportan tanto cámaras en perspectiva como ortogonales.
+Se soportan tanto cámaras en perspectiva, como ortogonales.
 
 Para las luces, se soportan tanto luces direccionales como puntuales.
 Estas luces tienen toda la lógica necesaria para que luego \textit{core} realice la inyección de fotones.
@@ -107,9 +107,9 @@ Sus componentes se pueden ver en la Figura \ref{fig:core_architecture}.
 
 En la Figura \ref{fig:core_architecture} se pueden ver los componentes encargados de cada etapa del algoritmo.
 
-La voxelización tiene su propio módulo que hace uso del ducto de rasterización como se vio en \ref{sec:voxelization}.
-Para voxelizar la escena, está primero debe ser normalizada usando el \textit{Aabb} expuesto por \textit{Engine}.
-Se crea un \textit{Aabb} para la escena, y se le aplican transformaciones de escalado y translación de manera que sea lo más grande posible, pero quede incluida dentro de la grilla de vóxeles.
+La voxelización tiene su propio módulo que hace uso del ducto de rasterización, como se vio en \ref{sec:voxelization}.
+Para voxelizar la escena, ésta primero debe ser normalizada usando el \textit{Aabb} expuesto por \textit{Engine}.
+Se crea un \textit{Aabb} para la escena, y se le aplican transformaciones de escalado y translación de manera que sea lo más grande posible, pero que, sin embargo, quede incluida dentro de la grilla de vóxeles.
 Las mismas transformaciones luego se aplican a los modelos al momento de voxelizar, asegurando así que todo objeto quede dentro de la grilla, y que se mantengan las proporciones.
 
 La abstracción de \textit{Octree} realiza tanto construcción como el filtrado de los valores de la escena a lo largo de él.
@@ -123,10 +123,10 @@ El \textit{ConeTracer} reúne todos los conceptos anteriores e implementa el alg
 La estructura del \textit{octree}, cada nodo y sus hijos, se representa en la GPU con una textura lineal.
 Esta textura se llama \textit{node pool}.
 Cada téxel (elemento de textura) de esta textura es un puntero a otro nodo.
-Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel es un puntero al hijo correspondiente.
+Se toma la convención de que cada grupo de 8 téxeles es un nodo, donde cada téxel contiene un puntero al hijo correspondiente.
 Los primeros 4 téxeles representan los hijos con valor de $z = 0$ mientras que los últimos 4 representan los que tienen valor de $z = 1$.
 De manera similar de cada grupo de 4, los primeros 2 son los hijos con valor de $y = 0$ menor y los otros dos $y = 1$.
-Por último de cada uno de los 4 grupos de 2, el primer téxel representa al hijo con coordenada $x = 0$ y el último con coordenada $x = 1$.
+Por último, de cada uno de los 4 grupos de 2, el primer téxel representa al hijo con coordenada $x = 0$ y el último con coordenada $x = 1$.
 Si un téxel tiene el valor $0$, entonces ese hijo del nodo representa espacio vacio, y ese nodo no será guardado en la \textit{node pool}.
 Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n * 8$ comienza ese nodo, que termina en la posición de memoria $x * 8 + 7$.
 
@@ -139,7 +139,7 @@ Si un téxel tiene un valor $n \not = 0$, entonces en la posición de memoria $n
 
 Para representar los \textit{bricks}, se usa una gran textura 3D, llamada la \textit{brick pool}.
 Cada brick es una sección de $3^3$ téxeles de esta textura 3D.
-En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo color.
+En cada uno de estos téxeles se almacenan valores de la escena, por ejemplo, el color.
 Para otros valores que deben ser almacenados, como la irradiancia, se crea otra \textit{brick pool}.
 Cada téxel dentro de un brick se llama vóxel, porque además de ser un píxel de textura, también es un píxel de volumen, a los efectos de la aplicación.
 En la Figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, con una textura 2D para facilitar la visualización, donde cada téxel está identificado por sus coordenadas $x$ e $y$ (y $z$ en su versión 3D).
@@ -160,7 +160,7 @@ En la Figura \ref{fig:brick_pool_example} se muestra una \textit{brick pool}, co
 
 Cada nodo tiene asociado un brick, ambos identificados de forma única por un mismo índice, como se puede ver en las figuras \ref{fig:indexed_bricks} y \ref{fig:indexed_nodes} respectivamente.
 Dado que los bricks existen en una textura 3D, la manera de localizarlo en memoria es con un vector en $\mathbb{N}^3$.
-Para esto, si se quiere encontrar el brick correspondiente a un nodo dado su identificador, dado que nodo y brick comparten un mismo identificador en $\mathbb{N}$, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
+Si se quiere encontrar el brick correspondiente a un nodo dado su identificador, se usa una función que convierte el índice del nodo en un vector en $\mathbb{N}^3$.
 El vector de $\mathbb{N}^3$ $(n, m, s)$ es el índice del primer vóxel del brick buscado.
 El resto del \textit{brick} se encuentra en las posiciones desde $(n, m, s)$ hasta $(n + 2, m + 2, s + 2)$.
 
@@ -174,7 +174,7 @@ El resto del \textit{brick} se encuentra en las posiciones desde $(n, m, s)$ has
 En la Figura \ref{fig:nodes_n_bricks} se muestra un ejemplo de nodos, con sus bricks asociados.
 Además, cada nodo contiene $8$ téxeles, los cuales representan los hijos del nodo, donde el valor de cada téxel es el identificador de un nodo.
 
-Ya que el árbol es disperso se necesita un valor que represente que un hijo no contiene geometría, que representa espacio vacío.
+Ya que el árbol es disperso, se necesita un valor que represente que un hijo no contiene geometría, es decir, que represente espacio vacío.
 Se usa el valor 0.
 Cada téxel apunta a un nodo mediante su índice en la \textit{node pool}.
 En la figura se muestran estos índices dentro de cada téxel.
@@ -183,34 +183,34 @@ Se usa el índice del nodo para identificar su \textit{brick}, que es parte de u
 Cada brick se muestra al costado de su nodo asociado, con sus coordenadas dentro de la textura en el margen derecho.
 Cada téxel individual de un brick tiene sus propias coordenadas, como es el caso con los téxeles individuales de la \textit{node pool}.
 
-Propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
+Las propiedades de la escena, ya sea color o irradiancia, se almacenan en los \textit{bricks}.
 Existe una función que lleva posiciones dentro del nodo, que representa una sección de la escena, a posiciones dentro de su brick asociado.
-En la Figura \ref{fig:node_and_brick} se vé porque es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
-A la hora de tomar una muestra de una propiedad en un punto de la escena, se úbica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
+En la Figura \ref{fig:node_and_brick} se vé por qué es necesario, las esquinas del nodo se mapean a los centros de los vóxeles del brick.
+A la hora de tomar una muestra de una propiedad en un punto de la escena, se ubica el nodo correspondiente, se aplica la función y se toma el valor de la propiedad en el \textit{brick}.
 Si el punto no es el centro de uno de los vóxeles del brick, se debe interpolar el valor utilizando los vóxeles adyacentes.
-Almacenar los bricks en una textura 3D en lugar de en una textura lineal trae beneficios de rendimiento, ya que las GPU proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.
+Almacenar los bricks en una textura 3D en lugar de en una textura lineal, trae beneficios de rendimiento, ya que las GPU proveen interpolación trilineal acelerada por hardware, lo que elimina la necesidad de implementarla, y se obtiene mayor rendimiento.
 
 % TODO: Agregar una referencia acá
 \subsection{Renderizado diferido}\label{sec:deferred-rendering}
 
 Para renderizar la escena, se utiliza el renderizado diferido.
 
-A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa conocida como renderizado diferido.
+A la hora de renderizar una escena, hay dos grandes modelos que se pueden utilizar: el clásico, conocido como \textit{forward rendering} y una opción alternativa, conocida como renderizado diferido.
 
 En el primero, se procesan todos los vértices en el programa.
 Cada uno pasa por cada etapa del ducto gráfico y aporta a la imagen final a menos que sea desechado por una prueba de profundidad.
-Cuando un píxel genera varios fragmentos, y se deben correr calculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a que, en el espacio 3D de la escena, pueden estar a distinta profundidad y solo el más cercano es el que se debe procesar.
+Cuando un píxel genera varios fragmentos, y se deben correr cálculos pesados por fragmento, se puede estar realizando trabajo innecesario, debido a que, en el espacio 3D de la escena, los fragmentos pueden estar a distinta profundidad y solo el más cercano es el que se debe procesar.
 Dados dos fragmentos que podrían darle color a un mismo píxel, una prueba de profundidad descartará al que se encuentre detrás del otro, a menos que presente opacidad menor a 1.
 
-En el renderizado diferido, se procesan todos los vértices del programa, pero se saltean calculos pesados en el \textit{fragment shader}.
-Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posicion, normal, color y cualquier otro dato relevante de la geometria a la hora de realizar calculos pesados de sombreado.
+En el renderizado diferido, se procesan todos los vértices del programa, pero se saltean cálculos pesados en el \textit{fragment shader}.
+Se guarda toda la información necesaria para etapas posteriores en texturas llamadas \textit{geometry buffers}, datos como posición, normal, color y cualquier otro dato relevante de la geometría a la hora de realizar calculos pesados de sombreado.
 % TODO: Hablar del volumen de vista?
 Se saltean los cálculos para objetos fuera del campo de visión y detrás de otros objetos.
 
-El \textit{forward rendering} es conceptualmente más sencillo y más fácil de implementar.
-En escenas con pocos objetos y fuentes de luz, o con calculos simples de iluminacion, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
+El \textit{forward rendering} es conceptualmente más sencillo y fácil de implementar.
+En escenas con pocos objetos y fuentes de luz, o con cálculos simples de iluminación, la complejidad extra del renderizado diferido no suele estar justificada dado que el aumento de rendimiento es despreciable.
 A su vez, el \textit{forward rendering} soporta mejor la opacidad.
-Sin embargo, a medida que la complejidad de la escena y los metodos de sombreado aumenta, el renderizado diferido se vuelve cada vez una mejor opción para aumentar el rendimiento.
+Sin embargo, a medida que la complejidad de la escena y los métodos de sombreado aumenta, el renderizado diferido se vuelve una mejor opción para aumentar el rendimiento.
 También, el renderizado diferido facilita ciertas técnicas de postprocesamiento de la imagen, como \textit{bloom}, \textit{HDR} (\textit{High Dynamic Range}), corrección gamma, y normalización, entre otras.
 
 \subsection{Menú}
@@ -219,11 +219,11 @@ A lo largo de la implementación, fue necesario depurar varios errores y correr 
 Para esto, fue muy útil contar con una interfaz gráfica o menú para seleccionar varias opciones y poder ver valores de la GPU en tiempo real.
 Se desarrolló este menú utilizando un paquete del ecosistema de Rust llamado \textit{Egui} \cite{egui}.
 
-\textit{Egui} permite rápidamente crear una interfaz gráfica basada en ventanas que se renderiza junto con la aplicación en cada frame.
-Es muy sencillo conectar valores del código a etiquetas en el menú y botónes en el menú a acciones.
+\textit{Egui}, permite rápidamente crear una interfaz gráfica basada en ventanas que se renderiza junto con la aplicación en cada frame.
+Es muy sencillo conectar valores del código a etiquetas en el menú y botones en el menú a acciones.
 
-El menú de la aplicación cuenta con varias ventanas, o submenúes, para ver valores, ajustar parámetros, y renderizar distintas imágenes.
-Uno de submenúes para depurar muestra todos los nodos de la \textit{node pool}, permite buscarlos por índice y coordenadas, y visualizarlos en el espacio.
+El menú de la aplicación cuenta con varias ventanas, o submenús, para ver valores, ajustar parámetros, y renderizar distintas imágenes.
+Uno de submenús para depurar muestra todos los nodos de la \textit{node pool}, permite buscarlos por índice y coordenadas, y visualizarlos en el espacio.
 
 Esta se puede ver en la Figura \ref{fig:node-positions-menu}.
 En el menú se muestran todos los nodos con su índice en el buffer y sus coordenadas dentro de la escena, entre $0$ y la cantidad de vóxeles por dimensión, $512$ o $1024$.
@@ -267,7 +267,7 @@ Utilizando estos archivos, se pueden definir muchas escenas distintas para proba
 
 Para poder iterar más rápido, se crearon archivos de valores predeterminados.
 Estos archivos contienen valores predeterminados de opciones que cambian con el transcurso de la ejecución.
-Por ejemplo, la posición de la cámara, qué tipo de imagen se está renderizando, qué nodos están siendo visualizados.
+Por ejemplo, la posición de la cámara, qué tipo de imagen se está renderizando y qué nodos están siendo visualizados.
 Estos archivos también pueden guardarse a partir del menú.
 
 Al iniciar el programa, se puede especificar un archivo de valores predeterminados, que altera el estado inicial de la escena.
@@ -286,7 +286,7 @@ En esta, se puede observar que la zona iluminada directamente también presenta 
 La Figura \ref{fig:indirect-grabs-direct-diagram} muestra un diagrama para ayudar a explicar este fenómeno.
 En la derecha de la imagen hay una pared roja, rodeada de espacio vacío.
 A la izquierda de la pared se muestran vóxeles de tamaños cada vez mayores y color cada vez más transparente.
-Al trazar un cono desde la pared para calcular la luz indirecta sobre la misma, este terminará muestreando varias veces el mismo color que la pared.
+Al trazar un cono desde la pared para calcular la luz indirecta sobre la misma, éste terminará muestreando varias veces el mismo color que la pared.
 Al no recibir luz que reboto de ninguna otra superficie, se puede observar como la luz indirecta sobre la pared acaba incluyendo el rebote de luz de la pared misma, por lo que la luz directa termina afectando dos veces.
 
 \begin{figure}[h]
@@ -314,8 +314,8 @@ Al no recibir luz que reboto de ninguna otra superficie, se puede observar como 
 
 Otra limitación se observa en la Figura \ref{fig:indirect-behind-banner}, donde se muestra la presencia de luz indirecta detrás de un estandarte.
 En un escenario real, la luz no debería rebotar detrás del estandarte, sino únicamente en el frente.
-Dado que no se maneja refracción, luz ubicada al frente del estandarte no debería ser tomada por la pared atrás del mismo.
-Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y la unica capa de vóxeles que lo representan abarcan tanto el lado frontal como el posterior.
+Dado que no se maneja refracción, luz ubicada al frente del estandarte no debería ser tomada por la pared detrás del mismo.
+Sin embargo, esto ocurre porque la superficie del estandarte es muy delgada, y la única capa de vóxeles que lo representan abarcan tanto el lado frontal como el posterior.
 Este problema es resuelto agregando una mayor resolución, ya que esto genera dos capas de vóxeles para los estandartes, por lo que a la pared no le afecta la luz reflejada la cara frontal del estandarte.
 
 \begin{figure}[h]
