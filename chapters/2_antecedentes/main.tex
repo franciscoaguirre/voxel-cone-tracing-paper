@@ -56,20 +56,19 @@ Una representación de esto se puede ver en la Figura \ref{fig:electromagnetic-w
 \end{figure}
 
 A principios del siglo XX, los trabajos liderados por Max Planck, Max Born, Erwin Schrödinger y Werner Heisenberg condujeron a otro cambio sustancial en el entendimiento de la luz.
-A nivel microscópico, las propiedades elementales como energía y momento solo pueden existir como un múltiplo entero de una cantidad base conocida como un \textbf{cuanto}.
+A nivel microscópico, las propiedades elementales como energía y momento, solo pueden existir como un múltiplo entero de una cantidad base conocida como un \textbf{cuanto}.
 En el caso de las oscilaciones electromagnéticas, este cuanto se conoce como \textbf{fotón}.
-La luz existe tanto como onda y como partícula \cite{quantum-light}.
+La luz existe como onda y como partícula \cite{quantum-light}.
 
 Afortunadamente, el complejo comportamiento de onda de la luz aparece en escalas muy pequeñas, por lo que, para la computación gráfica, en la mayoría de los casos se la puede tratar como partícula, lo que simplifica los cálculos \cite[p.~303]{rtr}.
 
 Tratar a la luz como una partícula es el campo de la óptica geométrica, en contraposición a la óptica física.
 La óptica geométrica trata a la luz como rayos que se mueven en líneas rectas.
 La óptica física aborda la luz desde el punto de vista de su naturaleza ondulatoria, centrándose en fenómenos como la interferencia, la difracción y la polarización.
-Dado que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos efectos no ocurren, y se puede tratar la luz como rayos \cite[p.~303]{rtr}.
+Dado que las irregularidades de las superficies son en general mucho más grandes que la longitud de onda de la luz, estos fenómenos no ocurren, y se puede tratar la luz como rayos \cite[p.~303]{rtr}.
 A su vez, se ignoran otros fenómenos como la fluorescencia y la fosforescencia.
 
-Para simular la luz adecuadamente, es necesario un manejo de las unidades básicas involucradas.
-Este es el foco de la siguiente sección.
+Para simular la luz adecuadamente, es necesario el manejo de las unidades básicas abordadas en la siguiente sección.
 
 % Esto asume varias otras cosas, como linealidad, conservación de la energía, falta de polarización, fluorescencia y fosforescencia, entre otros.
 
@@ -77,7 +76,7 @@ Este es el foco de la siguiente sección.
 
 La radiometría provee una serie de herramientas para describir la propagación de la luz.
 Algunas de estas son la energía radiante, el flujo radiante, la radiosidad, la irradiancia, la intensidad radiante y la radiancia.
-La descripción de estas unidades surgen de \cite[p.~268]{rtr} y \cite[p.~177]{pbr}.
+La descripción de estas unidades surge de \cite[p.~268]{rtr} y \cite[p.~177]{pbr}.
 
 La \textbf{energía radiante} es la energía de la radiación electromagnética de la luz.
 Se mide en joules y se denota con el símbolo $Q$.
@@ -176,13 +175,12 @@ Su mayor desventaja es que no abarca fenómenos como la refracción, las cáusti
 Un modelo ampliamente utilizado para iluminación local es el de Blinn-Phong \cite{blinn-phong}, que posee tres componentes principales: luz \textbf{ambiente}, \textbf{difusa} y \textbf{especular}.
 La luz ambiente es uniforme y está presente en toda la escena.
 No proviene de una fuente de luz en particular y simula el efecto de la luz indirecta que proviene del resto de la escena.
-La luz difusa representa el efecto de la luz directa que incide sobre una superficie rugosa y se refleja en todas las direcciones.
-Depende del ángulo entre la dirección de la luz y la normal de la superficie.
+La luz difusa representa el efecto de la luz directa que incide sobre una superficie rugosa y se refleja en todas las direcciones, depende del ángulo entre la dirección de la luz y la normal de la superficie.
 La luz especular depende de la dirección de vista, de la normal de la superficie y de la dirección de la fuente luminosa en cada punto de la superficie.
 Simula el brillo que se ve cuando la luz se refleja sobre superficies pulidas.
 En la Figura \ref{fig:sphere-blinn-phong} se puede observar este sombreado aplicado a una esfera.
 
-\begin{figure}
+\begin{figure}[h!]
     \begin{center}
     \begin{subfigure}{.49\textwidth}
         \includegraphics[width=\textwidth]{sphere-unshaded.png}
@@ -204,7 +202,7 @@ En contraposición a la iluminación local, la iluminación global calcula la in
 Se calcula la interacción de la luz entre distintos objetos al reflejarse, refractarse y dispersarse en el entorno.
 
 Su principal ventaja es la mejora en el realismo y coherencia de la escena.
-Su principal desventaja es la exigencia computacional y complejidad al implementar y optimizar, que causa dificultades en alcanzar tiempos interactivos.
+Su principal desventaja es la exigencia computacional y la complejidad de implementación, lo que causa dificultades en alcanzar tiempos interactivos.
 
 Entre las técnicas más utilizadas se encuentra el trazado de rayos, la radiosidad \cite[p.~442]{rtr}, el \textit{photon mapping} \cite{photon-mapping}, y el \textit{path tracing} \cite{rendering-equation}, que serán presentadas a continuación.
 
@@ -216,7 +214,7 @@ En 1986, James T. Kajiya presentó la \textbf{ecuación de renderizado}, formali
 
 donde:
 \begin{itemize}
-    \item $I(x, x')$ se relaciona con al intensidad radiante que pasa del punto $x'$ al punto $x$.
+    \item $I(x, x')$ se relaciona con la intensidad radiante que pasa del punto $x'$ al punto $x$.
     \item $g(x, x')$ es un término de "geometría", evalúa si hay algo interponiéndose en el camino de $x'$ a $x$.
     \item $\epsilon(x, x')$ se relaciona con la intensidad emitida desde $x'$ en dirección a $x$.
     \item $f(x, x', x'')$ es la función de distribución de reflectancia bidireccional (BRDF, por sus siglas en inglés). Se relaciona con la intensidad de luz reflejada desde $x''$ hacia $x$ a través de $x'$. En la Sección \ref{sec:brdf} se analizan casos particulares de esta función.
@@ -334,16 +332,15 @@ Consiste en tomar más de una muestra por píxel, lo que implica lanzar más de 
 Promediar las muestras suaviza las curvas, mitigando el \textit{aliasing}, y provee más muestras aleatorias para la integración de Monte Carlo, lo que reduce el ruido.
 Es una técnica muy costosa dado que implica lanzar cantidades mucho mayores de rayos.
 Para imágenes complejas, pueden ser necesarios cientos de rayos por píxel para reducir el ruido a niveles aceptables, imposibilitando la generación de imágenes en tiempo real.
-Debido a la complejidad computacional agregada por esta técnica, han surgido otras.
-La estrella de las técnicas de reducción de ruido son los \textit{denoisers} basados en el uso de redes neuronales. % TODO: Agregar una referencia sobre esto
+Otra técnica de reducción de ruido es utilizando \textit{denoisers}, basados en el uso de redes neuronales. % TODO: Agregar una referencia sobre esto
 
-Varios métodos de iluminación global basados en el trazado de rayos han surgido desde entonces.
+Una variación del trazado de rayos que apunta a reducir el ruido es presentada a continuación.
 
 \section{Trazado de conos}\label{sec:historical-cone-tracing}
 
 En su artículo de 1984 \cite{ray-tracing-with-cones}, Amanatides propone una extensión al trazado de rayos en la que sustituye los rayos por conos.
 Los rayos tienen un origen, una dirección y son infinitesimalmente finos.
-Los conos tienen un origen y una dirección al igual que los rayos.
+Los conos tienen también un origen y una dirección, al igual que los rayos.
 Su principal diferencia es que tienen un ángulo de apertura, lo que les agrega un grosor no despreciable.
 Usando este grosor, los conos son capaces de no solo probar la existencia de intersecciones, sino también de calcular el porcentaje de área de la intersección.
 El método fue propuesto para solucionar el \textit{aliasing} presente en el trazado de rayos, como alternativa al \textit{supersampling}.
@@ -378,7 +375,7 @@ Se toman en cuenta los distintos tipos de objetos (esfera, plano, entre otros) y
 % TODO: Poner imagen de un hemisferio partido en conos.
 
 Para calcular la luz indirecta se halla la radiancia saliente de un punto $p$ en dirección a la cámara.
-En \textit{path tracing}, este valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
+En \textit{path tracing}, éste valor se calcula aproximando la integral sobre el hemisferio con el método de Monte Carlo.
 Se toman varias muestras, rayos lanzados desde el punto $p$ en todas las direcciones $\omega_i$.
 En el caso del trazado de conos, se particiona el hemisferio en secciones que pueden ser aproximadas mediante estos conos.
 
@@ -481,7 +478,7 @@ Por ejemplo, en contextos médicos se usan para indicar la opacidad y densidad d
 Para el renderizado, se pueden utilizar para almacenar valores como el color o la irradiancia.
 En general, no es necesario guardar la posición de un vóxel, ya que su lugar en la grilla ya lo indica.
 
-El proceso de convertir otra representación, por ejemplo una malla de polígonos, en una estructura de vóxeles se llama \textbf{voxelización}.
+El proceso de convertir otra representación, por ejemplo, una malla de polígonos, en una estructura de vóxeles se llama \textbf{voxelización}.
 Involucra intersecar la representación poligonal con la grilla de vóxeles, y marcar los vóxeles que se solapen con esta.
 
 Algunos programas usan grillas completas de vóxeles.
@@ -500,7 +497,7 @@ Suele usarse para representar datos espaciales \cite{octree-textures}.
 Se puede utilizar para dividir el espacio 3D de manera jerárquica, en varios niveles.
 
 Para construir uno, se parte de un volumen original cúbico o paralelepípedo que se divide en dos partes iguales por dimensión, resultando en $8$ octantes iguales.
-En la estructura de árbol, el nodo raíz representa el volumen original y cada uno de sus $8$ hijos representa a cada octante.
+En la estructura de árbol, el nodo raíz representa el volumen original y cada uno de sus $8$ hijos, representa a cada octante.
 Aplicando recursivamente, se divide el espacio en $8^{(n - 1)}$ secciones, donde $n$ es la cantidad de niveles del árbol, y el primer nivel tiene un solo nodo que representa toda la escena.
 
 De manera similar, un espacio 2D se puede dividir utilizando un \textit{quadtree}, en donde cada nodo interno tiene $4$ hijos.
@@ -536,7 +533,7 @@ La última sección de este capítulo introduce herramientas para la programaci�
 
 Dada una escena 3D, una cámara virtual, varios objetos y varias fuentes de luz, ¿cómo se genera una imagen 2D en el monitor de una computadora?
 
-Si bien es posible generar una imagen a partir de una escena usando la CPU, las GPU, o tarjetas gráficas, están especialmente diseñadas para esto.
+Si bien es posible generar una imagen a partir de una escena usando la CPU, las GPU, o tarjetas gráficas, fueron específicamente diseñadas para esto.
 
 Las tarjetas gráficas ejecutan un \textbf{ducto gráfico} para generar las imágenes, esto es, una secuencia de transformaciones y operaciones que parten de primitivas y generan la imagen final.
 Existen varios tipos de ductos gráficos, el ducto de rasterización, el de cómputo de propósito general, el de trazado de rayos, entre otros.
@@ -576,7 +573,7 @@ El \textit{geometry shader} puede generar nuevos vértices, por lo que es útil 
 Aquí se ejecuta un hilo por cada primitiva de salida del \textit{vertex shader}.
 Estas primitivas pueden tener más de un vértice.
 
-Finalmente, el \textit{fragment shader} (o \textit{pixel shader}) trabaja con píxeles y no con vértices.
+Finalmente, el \textit{fragment shader}, o \textit{pixel shader}, trabaja con píxeles y no con vértices.
 Es en este \textit{shader} donde se realizan los cálculos de iluminación para calcular el color de cada píxel.
 Se ejecuta como mínimo un hilo por cada píxel no vacío de la imagen que se quiere generar.
 Pueden ejecutarse más de uno en el caso que dos objetos aporten color al mismo píxel, en cuyo caso puede ser que uno sea descartado o pueden mezclarse los colores de ambos en caso de que presenten una opacidad menor a 1.

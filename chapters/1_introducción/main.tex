@@ -5,7 +5,7 @@
 
 El libro ``Real-Time Rendering'' \cite[p.~1]{rtr} presenta una buena introducción al renderizado en tiempo real.
 Este se ocupa de generar imágenes rápidamente en la computadora.
-Una imagen aparece en la pantalla, el espectador actúa o reacciona, y esta retroalimentación afecta lo que se genera a continuación.
+Una imagen aparece en la pantalla, el espectador actúa o reacciona y esta retroalimentación afecta lo que se genera a continuación.
 La velocidad a la que se muestran las imágenes se mide en cuadros por segundo (FPS) o hercios (Hz).
 Aproximadamente a 6 FPS, comienza a surgir una sensación de interactividad.
 Los videojuegos apuntan a 30, 60, 72 o más FPS; a estas velocidades, el usuario se enfoca en la acción y la reacción.
@@ -30,7 +30,7 @@ Además, se han logrado importantes avances en el uso de la inteligencia artific
 
 El trabajo presente se centra en \textit{voxel cone tracing} \cite{voxel-cone-tracing}, un algoritmo de iluminación global que funciona en tiempo real sin necesidad de hardware específico.
 El objetivo del trabajo es aprender sobre este algoritmo y crear una implementación open source del mismo.
-El algoritmo fue propuesto por Crassin et al en 2011 \cite{voxel-cone-tracing}, cuando no existían muchas soluciones para el problema de iluminación global en tiempo real, y la demanda estaba creciendo debido a la importancia de la industria de los videojuegos.
+El algoritmo fue propuesto por Crassin et al en 2011 \cite{voxel-cone-tracing}, cuando no existían muchas soluciones para el problema de iluminación global en tiempo real y la demanda estaba creciendo debido a la importancia de la industria de los videojuegos.
 
 Se basa en una representación de vóxeles \cite[p.~578]{rtr} de la geometría, el trazado de conos \cite{ray-tracing-with-cones} y el uso de estructuras jerárquicas de datos y pre-filtrado para reducir los cálculos necesarios y así alcanzar tiempos interactivos.
 No sufre de problemas de ruido y provee una buena calidad de imágenes con un rendimiento casi independiente de la complejidad de la escena.
