@@ -3,11 +3,11 @@
 
 <svg
    width="210mm"
-   height="297mm"
-   viewBox="0 0 210 297"
+   height="382mm"
+   viewBox="0 0 210 382"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
    sodipodi:docname="octree-diagrams.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.9517504"
-     inkscape:cx="639.68222"
-     inkscape:cy="527.98761"
-     inkscape:window-width="1128"
-     inkscape:window-height="683"
+     inkscape:zoom="1.2830078"
+     inkscape:cx="325.0175"
+     inkscape:cy="1225.6355"
+     inkscape:window-width="1728"
+     inkscape:window-height="962"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="38"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer5"
      showgrid="false" />
@@ -66,7 +66,7 @@
        miter_limit="4"
        not_jump="false"
        sort_points="true"
-       message="&lt;b&gt;Ctrl + click&lt;/b&gt; on existing node and move it" />
+       message="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1" />
     <inkscape:path-effect
        effect="powerstroke"
        id="path-effect10"
@@ -82,7 +82,7 @@
        miter_limit="4"
        not_jump="false"
        sort_points="true"
-       message="&lt;b&gt;Ctrl + click&lt;/b&gt; on existing node and move it" />
+       message="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
     <symbol
        id="LeftAndDownArrow">
       <title
@@ -269,7 +269,7 @@
          transform="matrix(-1,0,0,1,76.893181,27.445593)" />
     </g>
     <path
-       style="fill:#ffffff;fill-opacity:0.80000001;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
+       style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
        d="m 173.02746,18.0935 27.45945,-8.040353 v 15.211098 z"
        id="path183"
        inkscape:export-filename="octree-diagrams/cone.svg"
@@ -281,7 +281,7 @@
        d="m 173.11946,18.039916 h 27.25723"
        id="path184" />
     <path
-       style="fill:#ffffff;fill-opacity:0.80000001;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
+       style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
        d="m 173.02746,39.247505 27.45945,-8.040353 V 46.41825 Z"
        id="path185"
        inkscape:export-filename="octree-diagrams/cone-1-sample.svg"
@@ -289,15 +289,15 @@
        inkscape:export-ydpi="96"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:#ffffff;fill-opacity:0.80000001;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
+       style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
        d="m 173.11946,39.193921 h 27.25723"
        id="path186" />
     <path
-       style="fill:#ffffff;fill-opacity:0.80000001;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
+       style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
        d="m 178.90755,37.604774 v 3.108571"
        id="path187" />
     <ellipse
-       style="fill:none;fill-opacity:0.80000001;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.99574596"
+       style="fill:none;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.995746"
        id="path188"
        cx="178.94344"
        cy="39.129444"
@@ -323,7 +323,7 @@
        id="path191" />
     <path
        style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
-       d="m 183.6488,56.797185 0,5.714612"
+       d="m 183.6488,56.797185 v 5.714612"
        id="path192"
        sodipodi:nodetypes="cc" />
     <ellipse
@@ -353,7 +353,7 @@
        id="path194" />
     <path
        style="fill:#ffffff;fill-opacity:0.8;stroke:#000000;stroke-width:0.2;stroke-dasharray:0.2, 0.2;stroke-dashoffset:0;stroke-opacity:0.737255"
-       d="m 194.09686,75.331643 0,11.307012"
+       d="M 194.09686,75.331643 V 86.638655"
        id="path195"
        sodipodi:nodetypes="cc" />
     <ellipse
@@ -530,7 +530,7 @@
              y="132.22781"
              inkscape:label="Third Child" />
           <rect
-             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.73725498"
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
              id="rect157"
              width="8.3478765"
              height="8.3478765"
@@ -616,7 +616,7 @@
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <rect
-         style="fill:#272390;fill-opacity:0.43000001;stroke:#000000;stroke-width:0.2;stroke-opacity:0.482353"
+         style="fill:#272390;fill-opacity:0.43;stroke:#000000;stroke-width:0.2;stroke-opacity:0.482353"
          id="rect151"
          width="8.3478765"
          height="8.3478765"
@@ -855,7 +855,7 @@
            inkscape:label="Children"
            transform="translate(81.314369,-92.827675)">
           <rect
-             style="fill:#2a2aca;stroke:#000000;stroke-width:0.2;stroke-opacity:1;fill-opacity:0.25"
+             style="fill:#2a2aca;fill-opacity:0.25;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
              id="rect105"
              width="8.3478765"
              height="8.3478765"
@@ -863,7 +863,7 @@
              y="139.95827"
              inkscape:label="First Child" />
           <rect
-             style="fill:#4b3aac;stroke:#000000;stroke-width:0.2;stroke-opacity:1;fill-opacity:0.75"
+             style="fill:#4b3aac;fill-opacity:0.75;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
              id="rect106"
              width="8.3478765"
              height="8.3478765"
@@ -871,7 +871,7 @@
              y="139.95827"
              inkscape:label="Second Child" />
           <rect
-             style="fill:#2a2aca;stroke:#000000;stroke-width:0.2;stroke-opacity:1;fill-opacity:0.75"
+             style="fill:#2a2aca;fill-opacity:0.75;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
              id="rect107"
              width="8.3478765"
              height="8.3478765"
@@ -974,7 +974,7 @@
              y="132.22781"
              inkscape:label="Third Child" />
           <rect
-             style="fill:#8f5a72;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.73725498"
+             style="fill:#8f5a72;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.737255"
              id="rect138"
              width="8.3478765"
              height="8.3478765"
@@ -1520,7 +1520,7 @@
        inkscape:export-xdpi="96"
        inkscape:export-ydpi="96">
       <rect
-         style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:0.48235294;fill-opacity:1"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:0.482353"
          id="rect121"
          width="8.3478765"
          height="8.3478765"
@@ -1738,6 +1738,470 @@
       <rect
          style="fill:#f4891a;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
          id="rect147"
+         width="1.9369692"
+         height="1.9369692"
+         x="121.56072"
+         y="30.013216"
+         inkscape:label="Voxel" />
+    </g>
+    <g
+       id="g60-0"
+       inkscape:label="Part 9"
+       transform="translate(-25.301097,268.19066)"
+       inkscape:export-filename="../created-images/octree/part9.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:0.482353"
+         id="rect3-2"
+         width="8.3478765"
+         height="8.3478765"
+         x="115.16947"
+         y="27.936794"
+         inkscape:label="Root" />
+      <g
+         id="g28-4"
+         inkscape:label="Level 1">
+        <g
+           id="g11-8"
+           inkscape:label="Children"
+           transform="translate(81.314369,-92.827675)">
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect4-3"
+             width="8.3478765"
+             height="8.3478765"
+             x="17.277224"
+             y="139.95827"
+             inkscape:label="First Child" />
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect5-9"
+             width="8.3478765"
+             height="8.3478765"
+             x="28.32914"
+             y="139.95827"
+             inkscape:label="Second Child" />
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect11-0"
+             width="8.3478765"
+             height="8.3478765"
+             x="39.381058"
+             y="139.95827"
+             inkscape:label="Third Child" />
+        </g>
+        <g
+           id="g14-5"
+           inkscape:label="Arrow"
+           transform="translate(81.314369,-85.09722)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path11-2"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path14-2"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g16-7"
+           inkscape:label="Arrow"
+           transform="rotate(-35.988707,-61.697918,-53.404535)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path15-3"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path16-7"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g20-9"
+           inkscape:label="Arrow"
+           transform="matrix(-0.80913283,-0.58762578,-0.58762578,0.80913283,218.50122,-46.448462)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path17-0"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path20-2"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g27-3"
+           inkscape:label="Fourth Arrow"
+           transform="matrix(-1,0,0,1,156.71665,-85.09722)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path25-9"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             id="path26-9"
+             style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+             d="m 54.564628,103.61796 -0.643371,0.91209 z m 0.231511,0.42013 -0.445451,0.63149 z"
+             inkscape:label="NullPointer"
+             transform="matrix(-1,0,0,1,76.893181,27.445593)" />
+        </g>
+      </g>
+      <g
+         id="g58-7"
+         inkscape:label="Level 2"
+         style="fill:#2a2aca;fill-opacity:1">
+        <g
+           id="g32-0"
+           inkscape:label="Children"
+           transform="translate(76.063216,-65.813323)"
+           style="fill:#2a2aca;fill-opacity:1">
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect30-3"
+             width="8.3478765"
+             height="8.3478765"
+             x="28.32914"
+             y="132.22781"
+             inkscape:label="Second Child" />
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect31-9"
+             width="8.3478765"
+             height="8.3478765"
+             x="39.381058"
+             y="132.22781"
+             inkscape:label="Third Child" />
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#e14b22;stroke-width:0.4;stroke-dasharray:none;stroke-opacity:0.737255"
+             id="rect32-8"
+             width="8.3478765"
+             height="8.3478765"
+             x="50.432972"
+             y="132.22781"
+             inkscape:label="Fourth Child" />
+        </g>
+        <g
+           id="g41-6"
+           inkscape:label="Fourth Arrow"
+           transform="translate(76.088556,-65.874093)"
+           style="fill:#2a2aca;fill-opacity:1">
+          <path
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path37-5"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             id="path41-7"
+             style="fill:#2a2aca;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+             d="m 54.564628,103.61796 -0.643371,0.91209 z m 0.231511,0.42013 -0.445451,0.63149 z"
+             inkscape:label="NullPointer"
+             transform="matrix(-1,0,0,1,76.893181,27.445593)" />
+        </g>
+        <g
+           id="g43-6"
+           inkscape:label="Arrow"
+           transform="rotate(-35.988707,-34.638676,-35.679187)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path42-2"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path43-7"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g54-0"
+           inkscape:label="Arrow"
+           transform="matrix(-0.80913282,-0.58762577,-0.58762577,0.80913282,213.25006,-27.164564)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path44-3"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path53-9"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g55-9"
+           inkscape:label="Arrow"
+           transform="matrix(-1,0,0,1,151.46549,-65.813323)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path54-9"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path55-1"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+      </g>
+      <rect
+         style="fill:#f4891a;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+         id="rect59-7"
+         width="4.0739384"
+         height="4.0739384"
+         x="113.88713"
+         y="51.369041"
+         inkscape:label="Voxel" />
+    </g>
+    <g
+       id="g143-2"
+       inkscape:label="Part 8"
+       transform="translate(-74.412463,268.19066)"
+       inkscape:export-filename="../created-images/octree/border-transfer-b.png"
+       inkscape:export-xdpi="343.79904"
+       inkscape:export-ydpi="343.79904">
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:0.482353"
+         id="rect121-3"
+         width="8.3478765"
+         height="8.3478765"
+         x="115.16947"
+         y="27.936794"
+         inkscape:label="Root" />
+      <g
+         id="g132-6"
+         inkscape:label="Level 1">
+        <g
+           id="g124-5"
+           inkscape:label="Children"
+           transform="translate(81.314369,-92.827675)">
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect122-5"
+             width="8.3478765"
+             height="8.3478765"
+             x="17.277224"
+             y="139.95827"
+             inkscape:label="First Child" />
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect123-8"
+             width="8.3478765"
+             height="8.3478765"
+             x="28.32914"
+             y="139.95827"
+             inkscape:label="Second Child" />
+          <rect
+             style="fill:none;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect124-1"
+             width="8.3478765"
+             height="8.3478765"
+             x="39.381058"
+             y="139.95827"
+             inkscape:label="Third Child" />
+        </g>
+        <g
+           id="g125-4"
+           inkscape:label="Arrow"
+           transform="translate(81.314369,-85.09722)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path124-7"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path125-1"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g127-3"
+           inkscape:label="Arrow"
+           transform="rotate(-35.988707,-61.697918,-53.404535)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path126-8"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path127-4"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g129-8"
+           inkscape:label="Arrow"
+           transform="matrix(-0.80913283,-0.58762578,-0.58762578,0.80913283,218.50122,-46.448462)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path128-0"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path129-4"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g131-6"
+           inkscape:label="Fourth Arrow"
+           transform="matrix(-1,0,0,1,156.71665,-85.09722)">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path130-0"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             id="path131-3"
+             style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+             d="m 54.564628,103.61796 -0.643371,0.91209 z m 0.231511,0.42013 -0.445451,0.63149 z"
+             inkscape:label="NullPointer"
+             transform="matrix(-1,0,0,1,76.893181,27.445593)" />
+        </g>
+      </g>
+      <g
+         id="g142-2"
+         inkscape:label="Level 2"
+         style="fill:#2a2aca;fill-opacity:1">
+        <g
+           id="g134-6"
+           inkscape:label="Children"
+           transform="translate(76.063216,-65.813323)"
+           style="fill:#2a2aca;fill-opacity:1">
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect132-9"
+             width="8.3478765"
+             height="8.3478765"
+             x="28.32914"
+             y="132.22781"
+             inkscape:label="Second Child" />
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+             id="rect133-4"
+             width="8.3478765"
+             height="8.3478765"
+             x="39.381058"
+             y="132.22781"
+             inkscape:label="Third Child" />
+          <rect
+             style="fill:#2a2aca;fill-opacity:1;stroke:#e14b22;stroke-width:0.4;stroke-dasharray:none;stroke-opacity:0.737255"
+             id="rect134-1"
+             width="8.3478765"
+             height="8.3478765"
+             x="50.432972"
+             y="132.22781"
+             inkscape:label="Fourth Child" />
+        </g>
+        <g
+           id="g135-3"
+           inkscape:label="Fourth Arrow"
+           transform="translate(76.088556,-65.874093)"
+           style="fill:#2a2aca;fill-opacity:1">
+          <path
+             style="fill:#2a2aca;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path134-7"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             id="path135-8"
+             style="fill:#2a2aca;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.2;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+             d="m 54.564628,103.61796 -0.643371,0.91209 z m 0.231511,0.42013 -0.445451,0.63149 z"
+             inkscape:label="NullPointer"
+             transform="matrix(-1,0,0,1,76.893181,27.445593)" />
+        </g>
+        <g
+           id="g137-8"
+           inkscape:label="Arrow"
+           transform="rotate(-35.988707,-34.638676,-35.679187)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path136-3"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path137-8"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g139-1"
+           inkscape:label="Arrow"
+           transform="matrix(-0.80913282,-0.58762577,-0.58762577,0.80913282,213.25006,-27.164564)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.200001;stroke-dasharray:none;stroke-opacity:1"
+             d="M 31.867454,125.37872 22.7307,131.51273"
+             id="path138-5"
+             inkscape:label="ArrowBody"
+             sodipodi:nodetypes="cc" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path139-3"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+        <g
+           id="g141-5"
+           inkscape:label="Arrow"
+           transform="matrix(-1,0,0,1,151.46549,-65.813323)"
+           style="fill:#000000;fill-opacity:1">
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="M 38.317554,119.7934 22.358436,130.50674"
+             id="path140-4"
+             inkscape:label="ArrowBody"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+          <path
+             style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21213;stroke-dasharray:none;stroke-opacity:1"
+             d="m 23.236979,130.60834 -0.896004,-0.12127 0.30701,-0.85134 z"
+             id="path141-3"
+             inkscape:label="ArrowHead"
+             transform="matrix(0.94282017,0,0,0.94282017,1.6487359,8.4710815)" />
+        </g>
+      </g>
+      <rect
+         style="fill:#f4891a;fill-opacity:1;stroke:#000000;stroke-width:0.2;stroke-opacity:1"
+         id="rect147-6"
          width="1.9369692"
          height="1.9369692"
          x="121.56072"
@@ -2580,7 +3044,7 @@
              y="139.95827"
              inkscape:label="Second Child" />
           <rect
-             style="fill:#2a2aca;fill-opacity:0.75;stroke:#ca4739;stroke-width:0.4;stroke-opacity:0.84705883;stroke-dasharray:none"
+             style="fill:#2a2aca;fill-opacity:0.75;stroke:#ca4739;stroke-width:0.4;stroke-dasharray:none;stroke-opacity:0.847059"
              id="rect220"
              width="8.3478765"
              height="8.3478765"
@@ -2667,7 +3131,7 @@
            transform="translate(76.063216,-65.813323)"
            style="fill:#2a2aca;fill-opacity:1">
           <rect
-             style="fill:#2a2aca;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-opacity:0.84705883;stroke-dasharray:none"
+             style="fill:#2a2aca;fill-opacity:1;stroke:none;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.847059"
              id="rect228"
              width="8.3478765"
              height="8.3478765"
@@ -2675,7 +3139,7 @@
              y="132.22781"
              inkscape:label="Second Child" />
           <rect
-             style="fill:#2a2aca;fill-opacity:1;stroke:#120605;stroke-width:0.2;stroke-opacity:0.84705883;stroke-dasharray:none"
+             style="fill:#2a2aca;fill-opacity:1;stroke:#120605;stroke-width:0.2;stroke-dasharray:none;stroke-opacity:0.847059"
              id="rect229"
              width="8.3478765"
              height="8.3478765"
@@ -2765,5 +3229,21 @@
         </g>
       </g>
     </g>
+    <path
+       style="opacity:1;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:100;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 40.757712,300.13478 c 8.223407,0 8.223407,0 8.223407,0"
+       id="path1" />
+    <path
+       style="opacity:1;fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:100;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 45.128672,296.12981 v 8.24593"
+       id="path4" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:100;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 84.359222,319.53963 c 8.124683,0 8.124683,0 8.124683,0"
+       id="path1-6" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.2;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:100;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+       d="m 88.631458,315.53466 v 8.24593"
+       id="path4-7" />
   </g>
 </svg>
