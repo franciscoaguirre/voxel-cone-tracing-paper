@@ -22,7 +22,7 @@
             export PATH="${pkgs.lib.makeBinPath buildInputs}";
             mkdir -p .cache/texmf-var
             env TEXMFHOME=.cache TEXMFVAR=.cache/texmf-var \
-              SOURCE_DATE_EPOCH=$(date -d "2024-11-10" +%s) \
+              SOURCE_DATE_EPOCH=$(date -d "2024-12-02" +%s) \
               latexmk -interaction=nonstopmode -pdf -lualatex \
               -pretex="\pdfvariable suppressoptionalinfo 512\relax" \
               -usepretex main.tex
